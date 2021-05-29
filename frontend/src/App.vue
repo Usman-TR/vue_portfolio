@@ -1,9 +1,9 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> |
+    <router-link to="/">Meta</router-link> |
     <router-link to="/about">About</router-link> |
     <router-link to="/expert">Expert</router-link> |
-    <router-link to="/profile">Profile</router-link>
+    <router-link to="/profile">Profile - {{  this.$store.state.username  }}</router-link>
   </div>
   <router-view/>
 </template>
