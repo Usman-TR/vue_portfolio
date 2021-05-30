@@ -7,7 +7,7 @@
                 v-bind:books=books
             >
                 <p>title: {{  book.title  }}</p>
-                <p>author: {{  book.author  }}</p>
+                <p>author: {{  book.authors  }}</p>
         </div>
     </div>
 </template>

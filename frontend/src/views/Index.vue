@@ -12,6 +12,7 @@
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
 import BookList from '@/components/BookList.vue'
+import api from '@/services/api'
 
 export default {
   name: 'Index',
@@ -20,18 +21,22 @@ export default {
   },
   data: function () {
     return {
-      books_data: [
-        { title: 'something nice to say', author: 'good boy' },
-        { title: 'something nice to say again', author: 'bad boy' }]
+      books: {}
     }
   },
   computed: {
-    books () {
-      return [
-        { title: 'something nice to say', author: 'good boy' },
-        { title: 'something nice to say again', author: 'bad boy' }
-      ]
-    }
+  },
+  mounted () {
+    api
+      .get('/users/admin/books/')
+      .then(response => {
+        this.books = response.data
+        console.log(response.data)
+        console.log('working here')
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 }
 </script>
