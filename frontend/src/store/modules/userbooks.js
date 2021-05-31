@@ -11,8 +11,8 @@ const getters = {
 }
 
 const actions = {
-  getBooks ({ commit }) {
-    userService.fetchBooks()
+  getBooks ({ commit }, username) {
+    userService.fetchBooks(username)
       .then(books => {
         commit('setbooks', books)
       })

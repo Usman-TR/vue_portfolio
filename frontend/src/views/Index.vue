@@ -1,9 +1,7 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-<!--    <HelloWorld msg="Welcome to Your Vue.js App"/> -->
     <BookList v-bind:books=books
-    list_title="List title"
+    v-bind:list_title=usernames_list
      />
   </div>
 </template>
@@ -12,7 +10,7 @@
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
 import BookList from '@/components/BookList.vue'
-import api from '@/services/api'
+// import api from '@/services/api'
 
 export default {
   name: 'Index',
@@ -21,22 +19,14 @@ export default {
   },
   data: function () {
     return {
-      books: {}
+      books: this.$store.state.user.books
     }
   },
   computed: {
-  },
-  mounted () {
-    api
-      .get('/users/admin/books/')
-      .then(response => {
-        this.books = response.data
-        console.log(response.data)
-        console.log('working here')
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    usernames_list () {
+      return this.$store.state.user.username + '\'s books'
+    }
   }
+
 }
 </script>
