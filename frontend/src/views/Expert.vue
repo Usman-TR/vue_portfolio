@@ -5,8 +5,4 @@
 </template>
 
 <script>
-
-export default {
-  name: 'Expert'
-}
 </script>

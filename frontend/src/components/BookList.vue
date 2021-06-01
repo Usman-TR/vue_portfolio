@@ -2,8 +2,9 @@
     <div class="book-list-container">
         <h3>{{  list_title  }}</h3>
         <div class="cards-container">
-            <MDBCard style="width: 18rem" v-for="book in books" :key="book.title" v-bind:books=books>
-                <MDBCardImg top src="https://mdbootstrap.com/img/new/standard/city/062.jpg" alt="..."/>
+            <MDBCard style="width: 18rem" v-for="book in books" :key="book.title">
+                <MDBCardImg v-if="book.imageLink" top v-bind:src=getImage(book.imageLink) />
+                <MDBCardImg v-else top src="https://mdbootstrap.com/img/new/standard/city/062.jpg" alt="..."/>
                 <MDBCardBody>
                 <MDBCardTitle>{{  book.title  }}</MDBCardTitle>
                 <MDBCardText>
@@ -13,7 +14,7 @@
                 <MDBCardText>Оценка: {{  book.my_rating  }}</MDBCardText><br>
                 <MDBCardText>{{  book.authors  }}</MDBCardText>
                 <MDBCardBody>
-                <MDBCardLink href="#">Перейти</MDBCardLink>
+                <MDBCardLink v-bind:href=book.previewLink>Перейти</MDBCardLink>
                 </MDBCardBody>
             </MDBCard>
         </div>
@@ -36,6 +37,11 @@ export default {
     MDBCardText,
     MDBCardLink,
     MDBCardImg
+  },
+  methods: {
+    getImage (path) {
+      return path
+    }
   }
 }
 </script>

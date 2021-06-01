@@ -20,7 +20,7 @@ export default {
     usernames_list: () => 'Ваша коллекция',
     books: state => state.user.books
   }),
-  created: function () {
+  beforeCreate: function () {
     this.$store.dispatch('getUser')
   },
   components: {
