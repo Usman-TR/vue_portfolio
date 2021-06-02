@@ -12,7 +12,6 @@
 import { mapState } from 'vuex'
 import BookList from '@/components/BookList.vue'
 import ProfileContainer from '@/components/ProfileContainer.vue'
-
 export default {
   name: 'Profile',
   computed: mapState({

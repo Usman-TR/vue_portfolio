@@ -19,6 +19,7 @@ export default createStore({
     getUser ({ commit }) {
       userService.fetchUser(this.state.user.username)
         .then(user => {
+          console.log(user)
           commit('setUser', user, { root: true })
         })
     }

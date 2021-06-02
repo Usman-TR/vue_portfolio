@@ -3,8 +3,8 @@
       <div class="user_info_main">
         <img class="profile_img" src="@/assets/profile-avatar.svg" alt='{{ user.username }}'>
         <p class="profile_username">{{ user.username }}</p>
-        <p class="level">Магистр (ИСТ)</p>
-        <p class="university">ГГНТУ им. Миллионщиклва</p>
+        <p class="level">Профиль: {{  user.profile  }}</p>
+        <p class="university">{{  user.university  }}</p>
         <p class="rating">Рейтинг: {{  user.rating  }}</p>
       </div>
     </div>
