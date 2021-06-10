@@ -1,8 +1,12 @@
 from django.db import models
 
-
 class Book(models.Model):
-    title = models.CharField(max_length=10)
+    rating = models.FloatField(default=0.0)
+    ISBN = models.CharField(max_length=50, )
+    numberVoters = models.FloatField(default=0)
+
+    def __str__(self) -> str:
+        return self.ISBN
 
 
 class University(models.Model):
@@ -15,6 +19,7 @@ class Profile(models.Model):
 
 class Achievement(models.Model):
     title = models.CharField(max_length=10)
+
 
 class Ratings(models.Model):
     title = models.CharField(max_length=10)
