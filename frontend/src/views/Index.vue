@@ -35,6 +35,15 @@ export default {
   computed: {
     usernames_list () {
       return this.$store.state.user.username + '\'s books'
+    },
+    user_books_parsed () {
+      this.books.forEach(element => {
+        this.search_books({ isbn: element.isbn })
+      })
+      return this.search_books({ isbn: this.books.isbn })
+    },
+    searchedBooks_computed () {
+      return this.search_books(this.books)
     }
   },
   methods: {
@@ -51,6 +60,7 @@ export default {
           const volume = json.items
           const exportBooks = this.parse_volume(volume)
           this.searchedBooks = exportBooks
+          // return exportBooks
         } else {
           console.log('Ошибка HTTP: ' + response.status)
         }
@@ -63,6 +73,7 @@ export default {
           const volume = json.items
           const exportBooks = this.parse_volume(volume)
           this.books = exportBooks
+          // return exportBooks
         } else {
           console.log('Ошибка HTTP: ' + response.status)
         }
