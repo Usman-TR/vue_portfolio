@@ -1,16 +1,19 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-<!--    <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+    <div>
+       <input v-model.lazy="searchSeq" placeholder='Поисковой запрос'>
+       <button v-on:click="search_books({ text: searchSeq })">Найти</button>
+       <BookList v-bind:books=searchedBooks
+          v-bind:list_title=searchSeq
+          />
+     </div>
     <BookList v-bind:books=books
-    list_title="List title"
+    v-bind:list_title=usernames_list
      />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
 import BookList from '@/components/BookList.vue'
 
 export default {
@@ -20,17 +23,92 @@ export default {
   },
   data: function () {
     return {
-      books_data: [
-        { title: 'something nice to say', author: 'good boy' },
-        { title: 'something nice to say again', author: 'bad boy' }]
+      books: this.$store.state.user.books,
+      searchSeq: '',
+      searchedBooks: {}
     }
   },
+  beforeCreate: function () {
+    this.$store.dispatch('getUser')
+    this.books = this.$store.state.user.books
+  },
   computed: {
-    books () {
-      return [
-        { title: 'something nice to say', author: 'good boy' },
-        { title: 'something nice to say again', author: 'bad boy' }
-      ]
+    usernames_list () {
+      return this.$store.state.user.username + '\'s books'
+    },
+    user_books_parsed () {
+      this.books.forEach(element => {
+        this.search_books({ isbn: element.isbn })
+      })
+      return this.search_books({ isbn: this.books.isbn })
+    },
+    searchedBooks_computed () {
+      return this.search_books(this.books)
+    }
+  },
+  methods: {
+    async search_books (obj) {
+      const text = obj.text
+      const isbn = obj.isbn
+      const url = 'https://www.googleapis.com/books/v1/volumes?q='
+      if (text) {
+        const searchSeq = String(text).replaceAll('  ', ' ').replaceAll(' ', '+')
+        const response = await fetch(url + searchSeq)
+        if (response.ok) {
+          const json = await response.json()
+          console.log(json)
+          const volume = json.items
+          const exportBooks = this.parse_volume(volume)
+          this.searchedBooks = exportBooks
+          // return exportBooks
+        } else {
+          console.log('Ошибка HTTP: ' + response.status)
+        }
+      } else if (isbn) {
+        const searchSeq = 'isbn:' + isbn
+        const response = await fetch(url + searchSeq)
+        if (response.ok) {
+          const json = await response.json()
+          console.log(json)
+          const volume = json.items
+          const exportBooks = this.parse_volume(volume)
+          this.books = exportBooks
+          // return exportBooks
+        } else {
+          console.log('Ошибка HTTP: ' + response.status)
+        }
+      }
+    },
+    parse_volume (volume) {
+      const exportBooks = []
+      volume.forEach(element => {
+        const title = element.volumeInfo.title
+        const authors = element.volumeInfo.authors
+        const description = element.volumeInfo.description
+        const publishedDate = element.volumeInfo.publishedDate
+        const previewLink = element.volumeInfo.previewLink
+        const language = element.volumeInfo.language
+        const canonicalVolumeLink = element.volumeInfo.canonicalVolumeLink
+        let imageLink = false
+        if (typeof (element.volumeInfo.imageLinks) === 'object') {
+          if (typeof (element.volumeInfo.imageLinks.thumbnail) === 'string') {
+            imageLink = element.volumeInfo.imageLinks.thumbnail
+          } else if (typeof (element.volumeInfo.imageLinks.smallThumbnail) === 'string') {
+            imageLink = element.volumeInfo.imageLinks.smallThumbnail
+          }
+        }
+        exportBooks.push({
+          title: title,
+          authors: authors,
+          description: description,
+          publishedDate: publishedDate,
+          previewLink: previewLink,
+          language: language,
+          canonicalVolumeLink: canonicalVolumeLink,
+          imageLink: imageLink
+        })
+      })
+      return exportBooks
     }
   }
 }
