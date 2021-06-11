@@ -21,9 +21,7 @@ from .views import get_username, get_user_books
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include('rest_auth.urls')),
-    path('api/v1/registration/', include('rest_auth.registration.urls')),
-
-    path('users/<str:username>', get_username, name='get_username'),
-    path('users/<str:username>/books/', get_user_books, name='get_user_books')
+    path('users/<str:username>/', get_username),
+    path('users/<str:username>/books/', get_user_books, name='get_user_books'),
+    path('users/', include('accounts.urls')),
 ]
