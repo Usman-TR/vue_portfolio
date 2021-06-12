@@ -23,5 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/<str:username>/', get_username),
     path('users/<str:username>/books/', get_user_books, name='get_user_books'),
-    path('users/', include('accounts.urls')),
+    path('api/v1/users/', include('accounts.urls')),
 ]
