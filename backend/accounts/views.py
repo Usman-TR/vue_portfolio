@@ -5,5 +5,5 @@ from .serializers import UserSerializer
 class UserDetailView(generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-
+    lookup_field = 'username'
 

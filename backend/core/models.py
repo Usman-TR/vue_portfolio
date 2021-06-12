@@ -1,8 +1,9 @@
 from django.db import models
 
+
 class Book(models.Model):
     rating = models.FloatField(default=0.0)
-    ISBN = models.CharField(max_length=50, )
+    ISBN = models.CharField(max_length=50)
     numberVoters = models.FloatField(default=0)
 
     def __str__(self) -> str:
