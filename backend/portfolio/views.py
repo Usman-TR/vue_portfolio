@@ -1,5 +1,4 @@
 from django.http import JsonResponse
-import json
 users = {'admin':
          {
              'id': 1,
@@ -71,9 +70,9 @@ users = {'admin':
 # ]
 
 
-def get_username(request, username):
-    user = users[username]
-    return JsonResponse(user, safe=False, json_dumps_params={'indent': 2})
+# def get_username(request, username):
+#     user = users[username]
+#     return JsonResponse(user, safe=False, json_dumps_params={'indent': 2})
 
 
 def get_user_books(request, username):
