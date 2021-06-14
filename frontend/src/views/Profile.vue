@@ -1,7 +1,9 @@
 <template>
   <div class="Profile">
+    <a v-if="this.$store.state.user.authentificated" @click="logout">Logout</a>
     <ProfileContainer v-bind:user=user />
     <BookList v-bind:books=books v-bind:list_title=usernames_list />
+    {{  this.$store.state.user  }}
   </div>
 
 </template>
@@ -25,6 +27,16 @@ export default {
   components: {
     BookList,
     ProfileContainer
+  },
+  methods: {
+    logout: function () {
+      this.$store.dispatch('logout')
+        .then(() => {
+          // this.$store.commit('setUser')
+          this.$router.push('/login')
+        })
+        .catch(err => console.log(err))
+    }
   }
 }
 </script>
