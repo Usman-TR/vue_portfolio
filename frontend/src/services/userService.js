@@ -5,8 +5,12 @@ export default {
     return api.get(`/users/${username}`)
       .then(response => response.data)
   },
-  fetchBooks (username) {
-    return api.get(`/users/${username}/books/`)
+  login (user) {
+    return api.post('/api/v1/users/api/v1/login/', user)
+      .then(response => response.data)
+  },
+  register (user) {
+    return api.post('/api/v1/users/api/v1/registration/', user)
       .then(response => response.data)
   },
   postBook (payload) {

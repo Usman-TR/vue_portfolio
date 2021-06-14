@@ -7,9 +7,12 @@
           v-bind:list_title=searchSeq
           />
      </div>
-    <BookList v-bind:books=books
+    <BookList v-if="this.$store.state.user_is_authentificated" v-bind:books=books
     v-bind:list_title=usernames_list
      />
+     <div v-else>
+       <router-link to="/login">Войдите в аккаунт</router-link>
+     </div>
   </div>
 </template>
 
