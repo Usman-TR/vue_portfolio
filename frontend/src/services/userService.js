@@ -6,11 +6,11 @@ export default {
       .then(response => response.data)
   },
   login (user) {
-    return api.post('/api/v1/users/api/v1/login/', user)
+    return api.post('/api/v1/users/login/', user)
       .then(response => response.data)
   },
   register (user) {
-    return api.post('/api/v1/users/api/v1/registration/', user)
+    return api.post('/api/v1/users/registration/', user)
       .then(response => response.data)
   },
   postBook (payload) {
