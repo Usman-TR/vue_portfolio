@@ -9,7 +9,14 @@ export default createStore({
   })],
   state: {
     user: { username: 'user', authentificated: false, is_expert: false },
-    token: localStorage.getItem('token') || ''
+    token: localStorage.getItem('token') || '',
+    authStatus: 'default'
+  },
+  getters: {
+    user: state => state.user,
+    token: state => state.token,
+    isLoggedIn: state => !!state.token,
+    authStatus: state => state.authStatus
   },
   mutations: {
     setUser (state, user) {
@@ -17,6 +24,15 @@ export default createStore({
     },
     setToken (state, token) {
       state.token = token
+    },
+    authStatusLoading (state) {
+      state.auth_status = 'loading'
+    },
+    authStatusSuccess (state) {
+      state.auth_status = 'success'
+    },
+    authStatusError (state) {
+      state.auth_status = 'error'
     }
   },
   actions: {
@@ -29,15 +45,20 @@ export default createStore({
         })
     },
     login ({ commit }, data) {
+      commit('authStatusLoading', { root: true })
       userService.login(data)
         .then(result => {
           console.log('login in store')
-          console.log(result)
           if (result.key.length > 1) {
+            console.log('login in store key len > 1')
             data.authentificated = true
             const authUser = { username: data.username, authentificated: true }
             commit('setToken', result.key, { root: true })
             commit('setUser', authUser, { root: true })
+            commit('authStatusSuccess', { root: true })
+          } else {
+            console.log('login in store key len <= 1')
+            commit('authStatusError')
           }
         })
     },
@@ -45,6 +66,12 @@ export default createStore({
       localStorage.clear()
       const emptyUser = { username: 'user', authentificated: false, is_expert: false }
       commit('setUser', emptyUser, { root: true })
+    },
+    register ({ commit }, data) {
+      userService.register(data)
+        .then(result => {
+          console.log('register in store')
+        })
     }
   },
   modules: {

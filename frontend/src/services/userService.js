@@ -1,4 +1,5 @@
 import api from '@/services/api'
+import Cookies from 'js-cookie'
 
 export default {
   fetchUser (username) {
@@ -6,7 +7,14 @@ export default {
       .then(response => response.data)
   },
   login (user) {
-    return api.post('/api/v1/users/login/', user)
+    return api.post('/api/v1/users/login/', user,
+      {
+        headers:
+        {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': Cookies.get('csrftoken')
+        }
+      })
       .then(response => response.data)
   },
   register (user) {
