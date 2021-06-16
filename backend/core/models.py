@@ -13,6 +13,9 @@ class Book(models.Model):
 class University(models.Model):
     title = models.CharField(max_length=10)
 
+    def __str__(self) -> str:
+        return self.title
+
 
 class Profile(models.Model):
     title = models.CharField(max_length=10)

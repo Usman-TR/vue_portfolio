@@ -5,7 +5,7 @@ from core.serializers import BookSerializer, UniversitySerializer
 
 class UserSerializer(serializers.ModelSerializer):
     books = BookSerializer(many=True)
-    university = UniversitySerializer(many=True)
+    university = UniversitySerializer(many=False)
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'email', 'first_name', 'last_name',
