@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import userbooks from './modules/userbooks'
+import api from '../services/api'
 import userService from '../services/userService'
 import createPersistedState from 'vuex-persistedstate'
 
@@ -51,6 +52,7 @@ export default createStore({
           console.log('login in store')
           if (result.key.length > 1) {
             console.log('login in store key len > 1')
+            api.defaults.headers.common.token = result.key || '' // for all requests
             data.authentificated = true
             const authUser = { username: data.username, authentificated: true }
             commit('setToken', result.key, { root: true })

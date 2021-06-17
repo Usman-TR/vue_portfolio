@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 
 export default {
   fetchUser (username) {
-    return api.get(`/users/${username}`)
+    return api.get(`/api/v1/users//${username}`)
       .then(response => response.data)
   },
   login (user) {
@@ -21,8 +21,8 @@ export default {
     return api.post('/api/v1/users/registration/', user)
       .then(response => response.data)
   },
-  postBook (payload) {
-    return api.post(`/users/${payload.username}/books/`, payload)
+  getUserBooks (username) {
+    return api.get(`/api/v1/users/${username}/books/`)
       .then(response => response.data)
   },
   deleteBook (username, bookId) {
