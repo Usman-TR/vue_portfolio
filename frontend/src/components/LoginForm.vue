@@ -1,16 +1,19 @@
 <template>
   <div class="login_component">
-    <div>
-   <form class="login" @submit.prevent="login">
-     <h1>Авторизация</h1>
-     <p v-if="message">{{  message  }}</p>
-     <input required v-model="username" type="text" placeholder="Логин" />
-     <input required v-model="password" type="password" placeholder="Пароль" />
-     <hr/>
-     <button type="submit">Login</button>
-   </form>
- </div>
-    <p><router-link to="/registration">Registration</router-link></p>
+    <div v-if="!getAuthStatus()">
+      <form class="login" @submit.prevent="login">
+        <h1>Авторизация</h1>
+        <p v-if="message">{{  message  }}</p>
+        <input required v-model="username" type="text" placeholder="Логин" />
+        <input required v-model="password" type="password" placeholder="Пароль" />
+        <hr/>
+        <button type="submit">Login</button>
+        <p><router-link to="/registration">Регистрация</router-link></p>
+      </form>
+    </div>
+    <div v-else>
+      <h2>Вы авторизованы как {{  this.$store.getters.user.username  }}</h2>
+    </div>
   </div>
 </template>
 
@@ -29,17 +32,10 @@ export default {
       const username = this.username
       const password = this.password
       this.$store.dispatch('login', { username, password })
-        .then(() => {
-          // this.$store.commit('setUser', { username: username, authentificated: true })
-          if (this.$store.state.user.authentificated === true) {
-            this.$router.push('/')
-          } else {
-            this.message = 'Непровильный логин или пароль'
-            this.$router.push('/login')
-          }
-        })
+        .then(() => { this.$router.push('/login') })
         .catch(err => console.log(err))
-    }
+    },
+    getAuthStatus: function () { return this.$store.getters.user.authentificated }
   }
 }
 </script>

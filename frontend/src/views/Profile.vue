@@ -2,7 +2,7 @@
   <div class="Profile">
     <a v-if="this.$store.state.user.authentificated" @click="logout">Logout</a>
     <ProfileContainer v-bind:user=user />
-    <BookList v-bind:books=books v-bind:list_title=usernames_list />
+    <BookList v-bind:books=getParsedBooks(books) v-bind:list_title=usernames_list />
     {{  this.$store.state.user  }}
   </div>
 
@@ -36,6 +36,28 @@ export default {
           this.$router.push('/login')
         })
         .catch(err => console.log(err))
+    },
+    getParsedBooks: function (books) {
+      books.forEach(element => {
+        this.parseISBN(element.ISBN)
+      });
+    },
+    parseISBN: async function (isbn) {
+      const url = 'https://www.googleapis.com/books/v1/volumes?q='
+      const searchSeq = 'isbn:' + isbn
+      const response = await fetch(url + searchSeq)
+      if (response.ok) {
+        const json = await response.json()
+        console.log(json)
+        const volume = json.items
+        element = volume
+        console.log(element)
+        // const exportBooks = this.parse_volume(volume)
+        // this.books = exportBooks
+        // return exportBooks
+      } else {
+        console.log('Ошибка HTTP: ' + response.status)
+      }
     }
   }
 }

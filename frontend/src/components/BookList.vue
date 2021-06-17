@@ -11,7 +11,6 @@
                     {{  book.description  }}
                 </MDBCardText>
                 </MDBCardBody>
-                <MDBCardText>Оценка: {{  book.my_rating  }}</MDBCardText><br>
                 <MDBCardText>{{  book.authors  }}</MDBCardText>
                 <MDBCardFooter class="text-muted">
                   <MDBCardLink v-bind:href=book.previewLink>Перейти</MDBCardLink>
@@ -42,6 +41,26 @@ export default {
   methods: {
     getImage (path) {
       return path
+    },
+    parsed_books (books) {
+      const outputList = []
+      books.forEach(element => {
+        // console.log(element.ISBN)
+        fetch('https://www.googleapis.com/books/v1/volumes?q=isbn:' + element.ISBN)
+          .then(response => response.json())
+          .then(result => {
+            outputList.push({
+              title: result.items[0].volumeInfo.title,
+              imageLink: result.items[0].volumeInfo.imageLinks[0] || '#',
+              description: result.items[0].volumeInfo.description,
+              authors: result.items[0].volumeInfo.authors,
+              previewLink: result.items[0].volumeInfo.previewLink || '#'
+            })
+          })
+          .catch(error => console.log(error))
+      })
+      console.log(outputList)
+      return outputList
     }
   }
 }
