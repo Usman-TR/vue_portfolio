@@ -1,9 +1,9 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link v-if="this.$store.state.user.is_expert" to="/expert">Expert</router-link>
-    <router-link v-if="this.$store.state.user.authentificated"  to="/profile">{{  this.$store.state.user.username  }}</router-link>
-    <router-link v-else to="/login">Login</router-link>
+    <router-link to="/">Главная</router-link> |
+    <router-link v-if="this.$store.state.user.is_expert" to="/expert">Эксперт</router-link>
+    <router-link v-if="this.$store.state.user.authentificated" to="/profile">{{  this.$store.state.user.username  }}</router-link>
+    <router-link v-else to="/login">Войти</router-link>
   </div>
   <router-view/>
 </template>

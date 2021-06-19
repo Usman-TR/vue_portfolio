@@ -25,3 +25,4 @@ pnpm-debug.log*
 env/
 .vscode/
 __pycache__/
+backend/db.sqlite3

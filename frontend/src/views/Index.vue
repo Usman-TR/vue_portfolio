@@ -7,7 +7,7 @@
           v-bind:list_title=searchSeq
           />
      </div>
-    <BookList v-if="this.$store.state.user_is_authentificated" v-bind:books=books
+    <BookList v-if="this.$store.state.user.authentificated" v-bind:books=books
     v-bind:list_title=usernames_list
      />
      <div v-else>
@@ -26,27 +26,18 @@ export default {
   },
   data: function () {
     return {
-      books: this.$store.state.user.books,
+      books: this.$store.getters.books,
       searchSeq: '',
       searchedBooks: {}
     }
   },
   beforeCreate: function () {
-    this.$store.dispatch('getUser')
-    this.books = this.$store.state.user.books
+    // this.$store.dispatch('getUser')
+    this.$store.dispatch('userbooks/getBooks', this.$store.state.user.username)
   },
   computed: {
     usernames_list () {
       return this.$store.state.user.username + '\'s books'
-    },
-    user_books_parsed () {
-      this.books.forEach(element => {
-        this.search_books({ isbn: element.isbn })
-      })
-      return this.search_books({ isbn: this.books.isbn })
-    },
-    searchedBooks_computed () {
-      return this.search_books(this.books)
     }
   },
   methods: {
