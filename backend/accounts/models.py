@@ -9,6 +9,7 @@ class CustomUser(AbstractUser):
     university = models.ForeignKey('core.University', on_delete=models.SET_NULL, null=True, blank=True)
     profile = models.ManyToManyField('core.Profile')
     books = models.ManyToManyField('core.Book')
+    achivements = models.ManyToManyField('core.Achivement')
 
 
 

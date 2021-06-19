@@ -28,10 +28,10 @@ class Profile(models.Model):
         return self.title
 
 
-class Achievement(models.Model):
+class Achivement(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField(blank=True)
-    #image = models.ImageField()
+    image = models.ImageField(upload_to='achivements', blank=True)
 
     def __str__(self) -> str:
         return self.title

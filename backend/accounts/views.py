@@ -26,6 +26,22 @@ def get_userbooks(request, username):
         }
     )
 
+def get_achivements(request, username):
+    achivements = CustomUser.objects.filter(username=username).first().achivements.all()
+    return JsonResponse(
+        {
+            "achivements": [
+                {
+                    "id": achivement.id,
+                    "title": achivement.title,
+                    "description": achivement.description,
+                    "image": str(achivement.image),
+                }
+                for achivement in achivements
+            ]
+        }
+    )
+
 
 # users = {'admin':
 #          {
