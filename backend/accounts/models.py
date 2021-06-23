@@ -6,9 +6,11 @@ class CustomUser(AbstractUser):
     middle_name = models.CharField(max_length=100)
     about_me = models.CharField(max_length=500)
     rating = models.FloatField(default=3.0)
-    university = models.ForeignKey('core.University', on_delete=models.SET_NULL, null=True, blank=True)
-    profile = models.ManyToManyField('core.Profile')
+    university = models.ForeignKey('core.University', on_delete=models.CASCADE, blank=True, null=True)
+    profile = models.ManyToManyField('core.Profile', blank=True)
     books = models.ManyToManyField('core.Book')
+    achivements = models.ManyToManyField('core.Achivement', blank=True)
+    expert = models.BooleanField(default=False)
 
 
 
