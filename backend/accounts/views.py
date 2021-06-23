@@ -4,7 +4,7 @@ from .serializers import UserSerializer
 from django.http import JsonResponse
 
 
-class UserDetailView(generics.RetrieveAPIView):
+class UserView(generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
@@ -26,6 +26,21 @@ def get_userbooks(request, username):
         }
     )
 
+
+def get_userbook(request, username, pk):
+    book = CustomUser.objects.filter(username=username).first().books.filter(id=pk).first()
+    return JsonResponse(
+        {
+            "book":
+                {
+                    "id": book.id,
+                    "rating": book.rating,
+                    "ISBN": book.ISBN,
+                    "numberVoters": book.numberVoters,
+                }
+        }
+    )
+
 def get_achivements(request, username):
     achivements = CustomUser.objects.filter(username=username).first().achivements.all()
     return JsonResponse(
@@ -41,6 +56,9 @@ def get_achivements(request, username):
             ]
         }
     )
+
+def add_rating(request, rating, book, user, expert_id):
+    pass
 
 
 # users = {'admin':
