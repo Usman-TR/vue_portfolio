@@ -1,6 +1,5 @@
-from .models import Book, University, Achivement
+from .models import Book, University, Achivement, Ratings
 from rest_framework import serializers
-
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,3 +17,4 @@ class AchivementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Achivement
         fields = '__all__'
+

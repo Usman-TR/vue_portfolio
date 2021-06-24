@@ -1,3 +1,4 @@
+from core.models import Ratings
 from rest_framework import generics
 from .models import CustomUser
 from .serializers import UserSerializer
@@ -57,9 +58,9 @@ def get_achivements(request, username):
         }
     )
 
-def add_rating(request, rating, book, user, expert_id):
-    pass
-
+# def add_rating(request, username, pk):
+#     res = Ratings.objects.get(username=username)
+#     return res
 
 # users = {'admin':
 #          {
