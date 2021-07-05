@@ -40,7 +40,7 @@ export default {
     getParsedBooks: function (books) {
       books.forEach(element => {
         this.parseISBN(element.ISBN)
-      });
+      })
     },
     parseISBN: async function (isbn) {
       const url = 'https://www.googleapis.com/books/v1/volumes?q='
@@ -49,9 +49,9 @@ export default {
       if (response.ok) {
         const json = await response.json()
         console.log(json)
-        const volume = json.items
-        element = volume
-        console.log(element)
+        // const volume = json.items
+        // element = volume
+        // console.log(element)
         // const exportBooks = this.parse_volume(volume)
         // this.books = exportBooks
         // return exportBooks
