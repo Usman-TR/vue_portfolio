@@ -27,12 +27,15 @@ export default createStore({
       state.token = token
     },
     authStatusLoading (state) {
+      console.log('auth_status = loading')
       state.auth_status = 'loading'
     },
     authStatusSuccess (state) {
+      console.log('auth_status = success')
       state.auth_status = 'success'
     },
     authStatusError (state) {
+      console.log('auth_status = error')
       state.auth_status = 'error'
     }
   },
@@ -49,7 +52,7 @@ export default createStore({
       commit('authStatusLoading', { root: true })
       userService.login(data)
         .then(result => {
-          console.log('login in store')
+          console.log('login in store', result)
           if (result.key.length > 1) {
             console.log('login in store key len > 1')
             api.defaults.headers.common.token = result.key || '' // for all requests
@@ -63,6 +66,10 @@ export default createStore({
             commit('authStatusError')
           }
         })
+        .catch(() => {
+          commit('authStatusError')
+        }
+        )
     },
     logout ({ commit }, data) {
       localStorage.clear()
@@ -72,7 +79,7 @@ export default createStore({
     register ({ commit }, data) {
       userService.register(data)
         .then(result => {
-          console.log('register in store')
+          console.log('register in store', result)
         })
     }
   },

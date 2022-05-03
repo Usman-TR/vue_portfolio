@@ -8,6 +8,12 @@
         <input required v-model="password" type="password" placeholder="Пароль" />
         <hr/>
         <button type="submit">Login</button>
+        <br>
+        auth_status: {{  auth_status  }}<br>
+        <div class="error" v-if="loginTries > 0 && auth_status === 'error'">
+          <p>Неправильный email или пароль</p>
+        </div>
+        {{loginTries}}
         <p><router-link to="/registration">Регистрация</router-link></p>
       </form>
     </div>
@@ -18,17 +24,24 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'LoginForm',
   data () {
     return {
       username: '',
       password: '',
-      message: ''
+      message: '',
+      loginTries: 0
     }
   },
+  computed: mapState({
+    auth_status: state => state.auth_status
+  }),
   methods: {
     login: function () {
+      this.loginTries += 1
       const username = this.username
       const password = this.password
       this.$store.dispatch('login', { username, password })

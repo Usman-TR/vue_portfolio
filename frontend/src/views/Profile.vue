@@ -1,9 +1,17 @@
 <template>
   <div class="Profile">
-    <a v-if="this.$store.state.user.authentificated" @click="logout">Logout</a>
-    <ProfileContainer v-bind:user=user />
-    <BookList v-bind:books=getParsedBooks(books) v-bind:list_title=usernames_list />
-    {{  this.$store.state.user  }}
+    <span v-if="this.$store.state.user.authentificated">
+      <a @click="logout">Logout</a>
+      <p @click="editProfile">Редактировать</p>
+      <ProfileContainer v-bind:user=user v-if="!editIsActive" />
+      <EditProfileContainer v-bind:user=user v-else />
+      <BookList v-bind:books=getParsedBooks(books) v-bind:list_title=usernames_list />
+      books: {{  books[0]  }} <br>
+      {{  this.$store.state.userbooks.books  }}
+    </span>
+    <span v-else>
+      <h1>Авторизуйтесь для доступа</h1>
+    </span>
   </div>
 
 </template>
@@ -14,21 +22,32 @@
 import { mapState } from 'vuex'
 import BookList from '@/components/BookList.vue'
 import ProfileContainer from '@/components/ProfileContainer.vue'
+import EditProfileContainer from '@/components/EditProfileContainer.vue'
 export default {
   name: 'Profile',
+  data: function () {
+    return {
+      editIsActive: false
+    }
+  },
   computed: mapState({
     user: state => state.user,
     usernames_list: () => 'Ваша коллекция',
-    books: state => state.user.books
+    books: state => state.user.books,
+    auth_status: state => state.authStatus,
   }),
   beforeCreate: function () {
     this.$store.dispatch('getUser')
   },
   components: {
     BookList,
-    ProfileContainer
+    ProfileContainer,
+    EditProfileContainer
   },
   methods: {
+    editProfile: function () {
+      this.editIsActive = true
+    },
     logout: function () {
       this.$store.dispatch('logout')
         .then(() => {
@@ -38,9 +57,11 @@ export default {
         .catch(err => console.log(err))
     },
     getParsedBooks: function (books) {
-      books.forEach(element => {
-        this.parseISBN(element.ISBN)
-      })
+      if (books) {
+        books.forEach(element => {
+          this.parseISBN(element.ISBN)
+        })
+      }
     },
     parseISBN: async function (isbn) {
       const url = 'https://www.googleapis.com/books/v1/volumes?q='

@@ -1,7 +1,12 @@
 import userService from '../../services/userService'
 
 const state = {
-  books: {}
+  books: [
+    {
+      title: 'test 1',
+      authors: 'author list'
+    }
+  ]
 }
 
 const getters = {
