@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import userbooks from './modules/userbooks'
 import api from '../services/api'
 import userService from '../services/userService'
+// import bookService from '../services/bookService'
 import createPersistedState from 'vuex-persistedstate'
 
 export default createStore({

@@ -18,6 +18,7 @@
 
 <script>
 import BookList from '@/components/BookList.vue'
+import bookService from '../services/bookService'
 
 export default {
   name: 'Index',
@@ -32,7 +33,6 @@ export default {
     }
   },
   beforeCreate: function () {
-    // this.$store.dispatch('getUser')
     this.$store.dispatch('userbooks/getBooks', this.$store.state.user.username)
   },
   computed: {
@@ -43,7 +43,7 @@ export default {
   methods: {
     async search_books (obj) {
       const text = obj.text
-      const isbn = obj.isbn
+      // const isbn = obj.isbn
       const url = 'https://www.googleapis.com/books/v1/volumes?q='
       if (text) {
         const searchSeq = String(text).replaceAll('  ', ' ').replaceAll(' ', '+')
@@ -52,57 +52,13 @@ export default {
           const json = await response.json()
           console.log(json)
           const volume = json.items
-          const exportBooks = this.parse_volume(volume)
+          const exportBooks = bookService.parse_volume(volume)
           this.searchedBooks = exportBooks
           // return exportBooks
         } else {
           console.log('Ошибка HTTP: ' + response.status)
         }
-      } else if (isbn) {
-        const searchSeq = 'isbn:' + isbn
-        const response = await fetch(url + searchSeq)
-        if (response.ok) {
-          const json = await response.json()
-          console.log(json)
-          const volume = json.items
-          const exportBooks = this.parse_volume(volume)
-          this.books = exportBooks
-          // return exportBooks
-        } else {
-          console.log('Ошибка HTTP: ' + response.status)
-        }
       }
-    },
-    parse_volume (volume) {
-      const exportBooks = []
-      volume.forEach(element => {
-        const title = element.volumeInfo.title
-        const authors = element.volumeInfo.authors
-        const description = element.volumeInfo.description
-        const publishedDate = element.volumeInfo.publishedDate
-        const previewLink = element.volumeInfo.previewLink
-        const language = element.volumeInfo.language
-        const canonicalVolumeLink = element.volumeInfo.canonicalVolumeLink
-        let imageLink = false
-        if (typeof (element.volumeInfo.imageLinks) === 'object') {
-          if (typeof (element.volumeInfo.imageLinks.thumbnail) === 'string') {
-            imageLink = element.volumeInfo.imageLinks.thumbnail
-          } else if (typeof (element.volumeInfo.imageLinks.smallThumbnail) === 'string') {
-            imageLink = element.volumeInfo.imageLinks.smallThumbnail
-          }
-        }
-        exportBooks.push({
-          title: title,
-          authors: authors,
-          description: description,
-          publishedDate: publishedDate,
-          previewLink: previewLink,
-          language: language,
-          canonicalVolumeLink: canonicalVolumeLink,
-          imageLink: imageLink
-        })
-      })
-      return exportBooks
     }
   }
 }
