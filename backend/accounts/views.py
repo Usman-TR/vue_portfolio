@@ -57,8 +57,16 @@ def get_achivements(request, username):
         }
     )
 
-def add_rating(request, rating, book, user, expert_id):
-    pass
+def evaluate_knowledge(request, book, username):
+    # rating book user expert
+    student = CustomUser.objects.filter(username=username).first()
+    book = student.books.filter(id=book).first()
+    old_rating = book.rating
+    old_numberOfVoters = book.numberVoters
+    new_rating = (old_numberOfVoters * old_rating + request.data.rating) / (old_numberOfVoters + 1)
+    book.rating = new_rating
+    book.save()
+
 
 
 # users = {'admin':
