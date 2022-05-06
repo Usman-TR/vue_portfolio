@@ -37,7 +37,7 @@ class Achivement(models.Model):
         return self.title
 
 
-class Ratings(models.Model):
+class Ratings(models.Model): # for ecaluationg knowledge
     raiting = models.IntegerField(default=0)
     book = models.ForeignKey(
         Book, on_delete=models.CASCADE)
@@ -48,3 +48,15 @@ class Ratings(models.Model):
 
     def __str__(self) -> str:
         return f'{self.book} {self.raiting} {self.user}'
+
+
+class MarkRequest(models.Model):
+    user = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE)
+    expert = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE , related_name='expert_markrequest')
+    # profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    closed = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return f'{self.user} {self.expert} {self.book} {self.closed}'
+

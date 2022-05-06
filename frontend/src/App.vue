@@ -1,7 +1,7 @@
 <template>
   <div id="nav">
     <router-link to="/">Главная</router-link> |
-    <router-link v-if="this.$store.state.user.is_expert" to="/expert">Эксперт</router-link>
+    <router-link v-if="this.$store.state.user.expert" to="/expert">Кабинет эксперта</router-link> |
     <router-link v-if="this.$store.state.user.authentificated" to="/profile">{{  this.$store.state.user.username  }}</router-link>
     <router-link v-else to="/login">Войти</router-link>
   </div>

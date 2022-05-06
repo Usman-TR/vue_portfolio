@@ -1,4 +1,4 @@
-// import api from '@/services/api'
+import api from '@/services/api'
 // import Cookies from 'js-cookie'
 
 export default {
@@ -30,6 +30,7 @@ export default {
       const previewLink = element.volumeInfo.previewLink
       const language = element.volumeInfo.language
       const canonicalVolumeLink = element.volumeInfo.canonicalVolumeLink
+      const industryIdentifiers = element.volumeInfo.industryIdentifiers
       let imageLink = false
       if (typeof (element.volumeInfo.imageLinks) === 'object') {
         if (typeof (element.volumeInfo.imageLinks.thumbnail) === 'string') {
@@ -46,10 +47,23 @@ export default {
         previewLink: previewLink,
         language: language,
         canonicalVolumeLink: canonicalVolumeLink,
-        imageLink: imageLink
+        imageLink: imageLink,
+        industryIdentifiers: industryIdentifiers
       })
     })
     return exportBooks
+  },
+  addBook (username, isbn) {
+    return api.get(`/api/v1/users//${username}/books/add/${isbn}`)
+  },
+  addMarkRequest (username, isbn, expert) {
+    return api.get(`/api/v1/users//${username}/request/${expert}/${isbn}`)
+  },
+  setMark (requestId, username, rating) {
+    return api.get(`/api/v1/users/${username}/evaluate/${requestId}/${rating}`)
+  },
+  getRequests (username) {
+    return api.get(`/api/v1/users/${username}/requests`)
   },
   async search_books (obj) {
     const text = obj.text

@@ -1,7 +1,11 @@
+# coding: utf8
+from fileinput import close
+import profile
 from rest_framework import generics
 from .models import CustomUser
 from .serializers import UserSerializer
 from django.http import JsonResponse
+from core.models import Ratings, Book, MarkRequest, Profile
 
 
 class UserView(generics.RetrieveAPIView):
@@ -41,6 +45,49 @@ def get_userbook(request, username, pk):
         }
     )
 
+def add_book(request, username, book):
+    #check if book is already in db
+    user = CustomUser.objects.filter(username=username).first()
+    b = Book.objects.filter(ISBN=book).first()
+    if b is None:
+        b = Book(ISBN=book)
+        b.save()
+        user.books.add(b)
+        user.save()
+        return JsonResponse({"status": 'done'})
+    user.books.add(b)
+    user.save()
+    return JsonResponse({"status": 'done'})
+
+def request_mark(request, username, expert, book):
+    user = CustomUser.objects.filter(username=username).first()
+    expert_user = CustomUser.objects.filter(username=expert).first()
+
+    b = Book.objects.filter(ISBN=book).first()
+    if not b:
+        return JsonResponse({"status": 'error'})
+    mark_request = MarkRequest(book=b, user=user, expert=expert_user)
+    mark_request.save()
+    return JsonResponse({"status": 'done'})
+
+def get_request_marks(request, username):
+    expert_id = CustomUser.objects.filter(username=username).first().id
+    user_requests = MarkRequest.objects.filter(expert=expert_id, closed=False)
+    return JsonResponse(
+        {
+            "requests": [
+                {
+                    "id": req.id,
+                    "username": req.user.username,
+					"book": str(req.book.ISBN)
+                }
+                for req in user_requests
+            ]
+        }
+    )
+
+
+
 def get_achivements(request, username):
     achivements = CustomUser.objects.filter(username=username).first().achivements.all()
     return JsonResponse(
@@ -57,16 +104,18 @@ def get_achivements(request, username):
         }
     )
 
-def evaluate_knowledge(request, book, username):
+def evaluate_knowledge(request, expert, request_id, rating):
     # rating book user expert
-    student = CustomUser.objects.filter(username=username).first()
-    book = student.books.filter(id=book).first()
-    old_rating = book.rating
-    old_numberOfVoters = book.numberVoters
-    new_rating = (old_numberOfVoters * old_rating + request.data.rating) / (old_numberOfVoters + 1)
-    book.rating = new_rating
-    book.save()
-
+	# update with mark_request object
+	mark_request = MarkRequest.objects.filter(id=request_id).first()
+	student = mark_request.user
+	book = mark_request.book
+	expert = mark_request.expert
+	mark_row = Ratings(raiting=rating, book=book, user=student, expert_id=expert)
+	mark_row.save()
+	mark_request.closed = True
+	mark_request.save()
+	return JsonResponse({"status": 'done'})
 
 
 # users = {'admin':
