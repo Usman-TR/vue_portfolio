@@ -6,6 +6,7 @@ from .models import CustomUser
 from .serializers import UserSerializer
 from django.http import JsonResponse
 from core.models import Ratings, Book, MarkRequest, Profile
+import json
 
 
 class UserView(generics.RetrieveAPIView):
@@ -15,17 +16,45 @@ class UserView(generics.RetrieveAPIView):
 
 
 def get_userbooks(request, username):
-    books = CustomUser.objects.filter(username=username).first().books.all()
+    print('username', username)
+    user = CustomUser.objects.filter(username=username).first()
+    books = user.books.all()
+    marks = Ratings.objects.filter(user=user).all()
+
+    # marks[0].expert_id
+    # marks[0].raiting
+    # marks[0].book
+
+    marked_book_dict = {}
+    for m in marks:
+        marked_book_dict[m.book.id] = { 'mark': m.raiting, 'expert': m.expert_id }
+
+    export = []
+
+    for book in books:
+        book_dict = { 'id': book.id, 'rating': book.rating, 'ISBN': book.ISBN, 'GoogleId': book.GoogleId,
+                      'numberVoters': book.numberVoters, 'marked': False, 'mark': -1, 'expert': -1 }
+        if book.id in marked_book_dict.keys():
+            book_dict['mark'] = marked_book_dict[book.id]['mark']
+            book_dict['expert'] = marked_book_dict[book.id]['expert'].username
+            book_dict['marked'] = True
+        export.append(book_dict)
+
+
     return JsonResponse(
         {
             "books": [
                 {
-                    "id": book.id,
-                    "rating": book.rating,
-                    "ISBN": book.ISBN,
-                    "numberVoters": book.numberVoters,
+                    "id": book['id'],
+                    "rating": book['rating'],
+                    "ISBN": book['ISBN'],
+                    "GoogleId": book['GoogleId'],
+                    "numberVoters": book['numberVoters'],
+                    "marked": book['marked'],
+                    "mark": book['mark'],
+                    "expert": book['expert']
                 }
-                for book in books
+                for book in export
             ]
         }
     )
@@ -40,17 +69,26 @@ def get_userbook(request, username, pk):
                     "id": book.id,
                     "rating": book.rating,
                     "ISBN": book.ISBN,
+                    "GoogleId": book.GoogleId,
                     "numberVoters": book.numberVoters,
+                    "test": 12
                 }
         }
     )
 
-def add_book(request, username, book):
-    #check if book is already in db
+def add_book(request, username):
+
+    data = json.loads(request.body)
+    GoogleId = data.get('GoogleId', '')
+    ISBN = data.get('ISBN', '')
+    title = data.get('title', '')
+
+    print('*'*5, GoogleId, ISBN, title)
+
     user = CustomUser.objects.filter(username=username).first()
-    b = Book.objects.filter(ISBN=book).first()
+    b = Book.objects.filter(GoogleId=GoogleId).first()
     if b is None:
-        b = Book(ISBN=book)
+        b = Book(GoogleId=GoogleId, ISBN=ISBN, title=title)
         b.save()
         user.books.add(b)
         user.save()
@@ -62,8 +100,7 @@ def add_book(request, username, book):
 def request_mark(request, username, expert, book):
     user = CustomUser.objects.filter(username=username).first()
     expert_user = CustomUser.objects.filter(username=expert).first()
-
-    b = Book.objects.filter(ISBN=book).first()
+    b = Book.objects.filter(GoogleId=book).first()
     if not b:
         return JsonResponse({"status": 'error'})
     mark_request = MarkRequest(book=b, user=user, expert=expert_user)
@@ -79,7 +116,7 @@ def get_request_marks(request, username):
                 {
                     "id": req.id,
                     "username": req.user.username,
-					"book": str(req.book.ISBN)
+					"book": str(req.book.GoogleId)
                 }
                 for req in user_requests
             ]
@@ -104,6 +141,23 @@ def get_achivements(request, username):
         }
     )
 
+def get_experts(request):
+    experts = CustomUser.objects.filter(expert=True).all()
+    return JsonResponse(
+        {
+            "experts": [
+                {
+                    "id": expert.id,
+                    "username": expert.username,
+                    "first_name": expert.first_name,
+                    "last_name": expert.last_name,
+                    "profile": expert.profile.all()[0].title
+                }
+                for expert in experts
+            ]
+        }
+    )
+
 def evaluate_knowledge(request, expert, request_id, rating):
     # rating book user expert
 	# update with mark_request object
@@ -116,84 +170,3 @@ def evaluate_knowledge(request, expert, request_id, rating):
 	mark_request.closed = True
 	mark_request.save()
 	return JsonResponse({"status": 'done'})
-
-
-# users = {'admin':
-#          {
-#              'id': 1,
-#              'username': 'admin',
-#              'email': 'admin@mail.ru',
-#              'description': 'about admin',
-#              'rating': 5,
-#              'is_expert': True,
-#              'university': 'GGNTU',
-#              'books': [
-#                  {
-#                      'id': 1,
-#                      'rating': 10,
-#                      'ISBN': '022-15-234',
-#                      'readed': True,
-#                      'my_rating': 10,
-#                      'expert_id': 1
-#                  },
-#                  {
-#                      'id': 2,
-#                      'rating': 10,
-#                      'ISBN': '103-17-324',
-#                      'readed': False,
-#                      'my_rating': 10,
-#                      'expert_id': 1
-#                  },
-#              ]
-#          },
-#          'student':
-#          {
-#              'id': 1,
-#              'username': 'student',
-#              'email': 'student@mail.ru',
-#              'description': 'about student',
-#              'rating': 3,
-#              'is_expert': False,
-#              'university': 'CHGU',
-#              'books': [
-#                  {
-#                      'id': 3,
-#                      'rating': 10,
-#                      'ISBN': '312-15-709',
-#                      'readed': True,
-#                      'my_rating': 10,
-#                      'expert_id': 1
-#                  },
-#                  {
-#                      'id': 4,
-#                      'rating': 10,
-#                      'ISBN': '590-11-567',
-#                      'readed': False,
-#                      'my_rating': 10,
-#                      'expert_id': 2
-#                  },
-#              ]
-#          }
-#          }
-# books = [
-#     {
-#     'id': 1,
-#     'title': 'Python',
-#     'year': '2020',
-#     'description':'Book about python',
-#     'rating': 10,
-#     'publisher': 'i.monoteist',
-#     'authors': 'Isa Ezerbaev',
-#     'ISBN': '022-15-234'
-#     }
-# ]
-
-
-# def get_username(request, username):
-#     user = users[username]
-#     return JsonResponse(user, safe=False, json_dumps_params={'indent': 2})
-
-
-# def get_user_books(request, username):
-#     books = users[username]['books']
-#     return JsonResponse(books, safe=False, json_dumps_params={'indent': 2})

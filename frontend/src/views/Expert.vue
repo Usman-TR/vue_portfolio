@@ -1,9 +1,6 @@
 <template>
   <div class="expert">
-    <h1>This is page for Expert</h1>
-    <div>
-      {{markedRequests}}
-    </div>
+    <div v-if="requests.length === 0">Нет запросов на получение оценки</div>
     <div v-for="req in requests" :key="req.id" :id='"req" + req.id'>
       {{ req.id }} - {{ req.username }} - {{ req.book }} - <button v-on:click="evaluateForm(req)" v-if="!markedRequests.includes('req' + req.id)">Оценить</button><span v-else>Оценено</span>
     </div>
@@ -12,7 +9,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import BookList from '@/components/BookList.vue'
 import bookService from '../services/bookService'
 
 export default {
@@ -24,28 +20,27 @@ export default {
     }
   },
   computed: mapState({
-    user: state => state.user,
+    user: state => state.user
   }),
   mounted () {
     this.updateRequestList()
   },
   components: {
-    BookList,
   },
   methods: {
     updateRequestList () {
       const username = this.$store.state.user.username
       console.log(username)
       bookService.getRequests(username)
-      .then((reqs) => {
-        this.requests = reqs.data.requests
-        console.log(reqs)
-       })
+        .then((reqs) => {
+          this.requests = reqs.data.requests
+          console.log(reqs)
+        })
     },
     evaluateForm (req) {
       let mark = prompt('Введите оценку от 2 до 5')
       console.log(mark)
-      while (!(mark == '2' || mark == '3' || mark == '4' || mark == '5')) {
+      while (!(mark === '2' || mark === '3' || mark === '4' || mark === '5')) {
         if (mark === '' || mark === null) {
           break
         }
@@ -57,7 +52,6 @@ export default {
           this.markedRequests.push('req' + req.id)
         })
       }
-
     }
   }
 }

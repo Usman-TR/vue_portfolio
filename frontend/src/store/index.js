@@ -22,6 +22,7 @@ export default createStore({
   },
   mutations: {
     setUser (state, user) {
+      console.log('login setUser in store', user)
       state.user = Object.assign(state.user, user)
     },
     setToken (state, token) {
@@ -48,6 +49,7 @@ export default createStore({
           console.log(user)
           commit('setUser', user, { root: true })
         })
+      // this.dispatch('userbooks/getBooks')
     },
     login ({ commit }, data) {
       commit('authStatusLoading', { root: true })
@@ -55,8 +57,7 @@ export default createStore({
         .then(result => {
           console.log('login in store', result)
           if (result.key.length > 1) {
-            console.log('login in store key len > 1')
-            api.defaults.headers.common.token = result.key || '' // for all requests
+            api.defaults.headers.common.token = result.key || ''
             data.authentificated = true
             const authUser = { username: data.username, authentificated: true }
             commit('setToken', result.key, { root: true })

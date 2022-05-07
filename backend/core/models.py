@@ -1,3 +1,4 @@
+from turtle import title
 from django.db import models
 from django.db.models.fields import URLField
 
@@ -5,10 +6,12 @@ from django.db.models.fields import URLField
 class Book(models.Model):
     rating = models.FloatField(default=0.0)
     ISBN = models.CharField(max_length=50)
+    GoogleId = models.CharField(max_length=150, default='')
     numberVoters = models.FloatField(default=0)
+    title = models.CharField(default='no title', max_length=150)
 
     def __str__(self) -> str:
-        return self.ISBN
+        return f'{self.id} {self.title} {self.ISBN} {self.GoogleId}'
 
 
 class University(models.Model):

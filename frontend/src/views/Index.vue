@@ -37,11 +37,11 @@ export default {
   methods: {
     async search_books (obj) {
       const text = obj.text
-      // const isbn = obj.isbn
       const url = 'https://www.googleapis.com/books/v1/volumes?q='
+      const params = '&maxResults=40&startIndex=1'
       if (text) {
         const searchSeq = String(text).replaceAll('  ', ' ').replaceAll(' ', '+')
-        const response = await fetch(url + searchSeq)
+        const response = await fetch(url + searchSeq + params)
         if (response.ok) {
           const json = await response.json()
           console.log(json)

@@ -12,7 +12,7 @@
         <p class="first_name">Имя: {{ user.first_name }}</p>
         <p class="last_name">Фамилия: {{ user.last_name }}</p>
         <p class="middle_name">Отчество: {{ user.middle_name }}</p>
-        <p class="middle_name">Количество книг: {{ user.books.length }}</p>
+        <p class="middle_name">Количество книг: {{ user.books }}</p>
       </div>
     </div>
 </template>

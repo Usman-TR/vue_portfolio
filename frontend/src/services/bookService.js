@@ -2,25 +2,33 @@ import api from '@/services/api'
 // import Cookies from 'js-cookie'
 
 export default {
-  parseISBN: async function (isbn) {
-    const url = 'https://www.googleapis.com/books/v1/volumes?q='
-    const searchSeq = 'isbn:' + isbn
-    console.log('searchSeq', searchSeq)
+  parseGoogleId: async function (GoogleId) {
+    const url = 'https://www.googleapis.com/books/v1/volumes/'
+    const searchSeq = GoogleId
+
     const response = await fetch(url + searchSeq)
-    if (response.ok) {
-      const json = await response.json()
-      console.log(json)
-      const volume = json.items
-      // console.log(element)
-      const exportBooks = this.parse_volume(volume)
-      // this.books = exportBooks
-      console.log('exportBooks:', exportBooks)
-      return exportBooks
-    } else {
-      console.log('Ошибка HTTP: ' + response.status)
-    }
+    const volume = await response.json()
+    // console.log('volume', volume)
+
+    const exportBooks = this.parse_volume([volume])
+    return exportBooks
+
+    // if (response.ok) {
+    //   const json = await response.json()
+    //   console.log('**-', GoogleId)
+    //   const volume = json.items
+    //   console.log(volume)
+    //   const exportBooks = this.parse_volume(volume)
+    //   // this.books = exportBooks
+    //   console.log('exportBooks:', exportBooks)
+    //   return exportBooks
+    // } else {
+    //   console.log('Ошибка HTTP: ' + response.status)
+    //   return ''
+    // }
   },
   parse_volume (volume) {
+    // console.log('parse_volume', volume)
     const exportBooks = []
     volume.forEach(element => {
       const title = element.volumeInfo.title
@@ -53,11 +61,19 @@ export default {
     })
     return exportBooks
   },
-  addBook (username, isbn) {
-    return api.get(`/api/v1/users//${username}/books/add/${isbn}`)
+  addBookGet (username, GoogleId) {
+    return api.get(`/api/v1/users//${username}/books/add/${GoogleId}`)
   },
-  addMarkRequest (username, isbn, expert) {
-    return api.get(`/api/v1/users//${username}/request/${expert}/${isbn}`)
+  addBook (username, data) {
+    // console.log(data)
+    return api.post(`/api/v1/users//${username}/books/add/`, {
+      GoogleId: data.GoogleId,
+      ISBN: data.ISBN,
+      title: data.title
+    })
+  },
+  addMarkRequest (username, GoogleId, expert) {
+    return api.get(`/api/v1/users//${username}/request/${expert}/${GoogleId}`)
   },
   setMark (requestId, username, rating) {
     return api.get(`/api/v1/users/${username}/evaluate/${requestId}/${rating}`)
@@ -65,39 +81,7 @@ export default {
   getRequests (username) {
     return api.get(`/api/v1/users/${username}/requests`)
   },
-  async search_books (obj) {
-    const text = obj.text
-    const isbn = obj.isbn
-    const url = 'https://www.googleapis.com/books/v1/volumes?q='
-    console.log('search_books 1')
-    if (text) {
-      const searchSeq = String(text).replaceAll('  ', ' ').replaceAll(' ', '+')
-      const response = await fetch(url + searchSeq)
-      if (response.ok) {
-        const json = await response.json()
-        console.log(json)
-        const volume = json.items
-        const exportBooks = this.parse_volume(volume)
-        // this.searchedBooks = exportBooks
-        console.log('search_books 2')
-        return exportBooks
-      } else {
-        console.log('Ошибка HTTP: ' + response.status)
-      }
-    } else if (isbn) {
-      const searchSeq = 'isbn:' + isbn
-      const response = await fetch(url + searchSeq)
-      if (response.ok) {
-        const json = await response.json()
-        console.log(json)
-        const volume = json.items
-        const exportBooks = this.parse_volume(volume)
-        // this.books = exportBooks
-        console.log('search_books 3')
-        return exportBooks
-      } else {
-        console.log('Ошибка HTTP: ' + response.status)
-      }
-    }
+  getExperts () {
+    return api.get('/api/v1/users/experts')
   }
 }

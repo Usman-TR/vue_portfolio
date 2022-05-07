@@ -20,8 +20,8 @@
                   </MDBCardText>
                 <MDBCardFooter class="text-muted">
                   <MDBCardLink v-bind:href=book.previewLink>Перейти</MDBCardLink>
-                  <MDBCardLink v-if="getIndustryId(book.industryIdentifiers)!= ''" v-on:click="addBook(getIndustryId(book.industryIdentifiers))">Добавить</MDBCardLink>
-                  <MDBCardLink v-on:click="checkKnowledge(getIndustryId(book.industryIdentifiers))">Проверить усвоение</MDBCardLink>
+                  <MDBCardLink v-on:click="addBook(getBookSaveData(book))">Добавить</MDBCardLink>
+                  <MDBCardLink v-on:click="checkKnowledge(getBookSaveData(book).GoogleId)">Получить оценку</MDBCardLink>
                 </MDBCardFooter>
             </MDBCard>
         </div>
@@ -50,8 +50,8 @@ export default {
   },
   methods: {
     checkKnowledge (bookId) {
-      let expert = prompt("Введите логин эксперта")
-      bookService.addMarkRequest(this.$store.state.user.username, bookId, expert).then((res) => alert("Отправлено"))
+      const expert = prompt('Введите логин эксперта')
+      bookService.addMarkRequest(this.$store.state.user.username, bookId, expert).then((res) => alert('Отправлено'))
     },
     getImage (path) {
       return path
@@ -59,26 +59,50 @@ export default {
     cutText (str) {
       return str.slice(0, 100) + '...'
     },
-    getIndustryId (arr) {
-      if (arr[0].identifier) {
-        return arr[0].identifier
-      } else {
+    getISBN (arr) {
+      try {
+        if (arr[0].identifier) {
+          return arr[0].identifier
+        }
+      } catch (e) {
+        console.log('cant find ISBN')
         return ''
       }
     },
-    addBook (isbn) {
-      const username = this.$store.state.user.username
-      bookService.addBook(username, isbn).then((result) => {
-        if (result.status === 200) {
+    getUrlVars (location) {
+      var vars = {}
+      location.replace(/[?&]+([^=&]+)=([^&]*)/gi,
+        function (m, key, value) {
+          vars[key] = value
+        })
+      return vars
+    },
+    getBookSaveData (book) {
+      // ISBN
+      const ISBN = this.getISBN(book.industryIdentifiers)
 
+      // etag
+      const GoogleId = this.getUrlVars(book.previewLink).id
+      // title
+      const title = book.title
+      console.log(GoogleId, ISBN, title)
+
+      return { GoogleId: GoogleId, ISBN: ISBN, title: title }
+    },
+    addBook (GoogleId, ISBN, title) {
+      const username = this.$store.state.user.username
+      bookService.addBook(username, GoogleId, ISBN, title).then((result) => {
+        if (result.status === 200) {
+          alert('добавлено')
+        } else {
+          alert('Ошибка', result)
         }
       })
     },
     parsed_books (books) {
       const outputList = []
       books.forEach(element => {
-        // console.log(element.ISBN)
-        fetch('https://www.googleapis.com/books/v1/volumes?q=isbn:' + element.ISBN)
+        fetch('https://www.googleapis.com/books/v1/volumes/' + element.GoogleId)
           .then(response => response.json())
           .then(result => {
             outputList.push({
