@@ -22,14 +22,14 @@ def update_user(request, username):
         data = json.loads(request.body)
 
         profile_id = data.get('profile', '')
-        university_id = data.get('university', '')
-        print('*'*3, university_id)
+        university_obj = data.get('university', '')
+        print('*'*3, profile_id, university_obj)
 
         if profile_id is not '':
             profile = Profile.objects.filter(id=profile_id)
             user.profile.set(profile)
-        if university_id is not '':
-            university = University.objects.filter(id=university_id).first()
+        if university_obj is not '':
+            university = University.objects.filter(id=university_obj).first()
             print('*/'*4, university)
             user.university = university
         user.about_me = data.get('about_me', '')
@@ -46,10 +46,6 @@ def get_userbooks(request, username):
     user = CustomUser.objects.filter(username=username).first()
     books = user.books.all()
     marks = Ratings.objects.filter(user=user).all()
-
-    # marks[0].expert_id
-    # marks[0].raiting
-    # marks[0].book
 
     marked_book_dict = {}
     for m in marks:
@@ -97,10 +93,10 @@ def get_userbook(request, username, pk):
                     "ISBN": book.ISBN,
                     "GoogleId": book.GoogleId,
                     "numberVoters": book.numberVoters,
-                    "test": 12
                 }
         }
     )
+
 
 def add_book(request, username):
 
@@ -108,13 +104,17 @@ def add_book(request, username):
     GoogleId = data.get('GoogleId', '')
     ISBN = data.get('ISBN', '')
     title = data.get('title', '')
+    authors = data.get('authors', '')
+    description = data.get('description', '')
+    preview = data.get('preview', '')
+
 
     print('*'*5, GoogleId, ISBN, title)
 
     user = CustomUser.objects.filter(username=username).first()
     b = Book.objects.filter(GoogleId=GoogleId).first()
     if b is None:
-        b = Book(GoogleId=GoogleId, ISBN=ISBN, title=title)
+        b = Book(GoogleId=GoogleId, ISBN=ISBN, title=title, authors=authors, description=description, preview=preview)
         b.save()
         user.books.add(b)
         user.save()
@@ -150,6 +150,32 @@ def get_request_marks(request, username):
     )
 
 
+def get_progress(request, username):
+    user = CustomUser.objects.filter(username=username).first()
+    profile = Profile.objects.filter(id=user.profile.first().id).first()
+    marks = Ratings.objects.filter(user=user).all()
+
+    marked_list = []
+
+    for m in marks:
+        marked_list.append(m.book.id)
+
+    books = profile.books.all()
+
+    progress_counter = 0
+    for b in books:
+        print(b.id)
+        if b.id in marked_list:
+            progress_counter += 1
+
+    total_profile_books = len(books)
+
+    progress = round(progress_counter / total_profile_books, 2)
+
+    # print(progress, total_profile_books, progress_counter)
+
+    return JsonResponse({"progress": progress})
+
 
 def get_achivements(request, username):
     achivements = CustomUser.objects.filter(username=username).first().achivements.all()
@@ -175,9 +201,34 @@ def get_profiles(request):
                 {
                     "id": profile.id,
                     "title": profile.title,
-                    "description": profile.description
+                    "description": profile.description,
                 }
                 for profile in profiles
+            ]
+        }
+    )
+
+def get_profile_books(request, profile_id):
+    # data = json.loads(request.body)
+    # profile_id = data.get('profile', '')
+    if profile_id == '':
+        raise BadRequest('Profile does not exists')
+    profile = Profile.objects.filter(id=profile_id).first()
+    return JsonResponse(
+        {
+            "books": [
+                {
+                    "id": book.id,
+                    "rating": book.rating,
+                    "ISBN": book.ISBN,
+                    "GoogleId": book.GoogleId,
+                    "numberVoters": book.numberVoters,
+                    "title": book.title,
+                    "description": book.description,
+                    "authors": book.authors,
+                    "preview": book.preview
+                }
+                for book in profile.books.all()
             ]
         }
     )

@@ -79,19 +79,24 @@ export default {
     },
     getBookSaveData (book) {
       // ISBN
+      console.log('book', book)
       const ISBN = this.getISBN(book.industryIdentifiers)
 
       // etag
       const GoogleId = this.getUrlVars(book.previewLink).id
       // title
       const title = book.title
+
+      const description = book.description
+      const authors = book.authors
+      const preview = book.imageLink
       console.log(GoogleId, ISBN, title)
 
-      return { GoogleId: GoogleId, ISBN: ISBN, title: title }
+      return { GoogleId: GoogleId, ISBN: ISBN, title: title, preview: preview, description: description, authors: authors }
     },
-    addBook (GoogleId, ISBN, title) {
+    addBook (data) {
       const username = this.$store.state.user.username
-      bookService.addBook(username, GoogleId, ISBN, title).then((result) => {
+      bookService.addBook(username, data).then((result) => {
         if (result.status === 200) {
           alert('добавлено')
         } else {

@@ -65,11 +65,14 @@ export default {
     return api.get(`/api/v1/users//${username}/books/add/${GoogleId}`)
   },
   addBook (username, data) {
-    // console.log(data)
+    console.log(data)
     return api.post(`/api/v1/users//${username}/books/add/`, {
       GoogleId: data.GoogleId,
       ISBN: data.ISBN,
-      title: data.title
+      title: data.title,
+      authors: data.authors,
+      description: data.description,
+      preview: data.preview
     })
   },
   addMarkRequest (username, GoogleId, expert) {
@@ -83,5 +86,12 @@ export default {
   },
   getExperts () {
     return api.get('/api/v1/users/experts')
+  },
+  getProgress (username) {
+    return api.get(`/api/v1/users/${username}/progress`)
+  },
+  getProfileBooks (profileId) {
+    console.log('getProfileBooks', profileId)
+    return api.get(`/api/v1/users/profiles/${profileId}/books`)
   }
 }

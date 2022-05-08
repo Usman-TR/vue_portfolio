@@ -9,6 +9,10 @@ class Book(models.Model):
     GoogleId = models.CharField(max_length=150, default='')
     numberVoters = models.FloatField(default=0)
     title = models.CharField(default='no title', max_length=150)
+    authors = models.CharField(default='no authors', max_length=300)
+    description = models.CharField(default='no description', max_length=400)
+    preview = models.CharField(default='no preview', max_length=300)
+
 
     def __str__(self) -> str:
         return f'{self.id} {self.title} {self.ISBN} {self.GoogleId}'
@@ -26,6 +30,7 @@ class University(models.Model):
 class Profile(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField(blank=True)
+    books = models.ManyToManyField('core.Book')
 
     def __str__(self) -> str:
         return self.title
