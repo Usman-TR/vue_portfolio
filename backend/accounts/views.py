@@ -1,12 +1,14 @@
 # coding: utf8
 from fileinput import close
 import profile
+from core.models import University
 from rest_framework import generics
 from .models import CustomUser
 from .serializers import UserSerializer
 from django.http import JsonResponse
 from core.models import Ratings, Book, MarkRequest, Profile
 import json
+from django.core.exceptions import BadRequest
 
 
 class UserView(generics.RetrieveAPIView):
@@ -14,6 +16,30 @@ class UserView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     lookup_field = 'username'
 
+def update_user(request, username):
+    try:
+        user = CustomUser.objects.filter(username=username).first()
+        data = json.loads(request.body)
+
+        profile_id = data.get('profile', '')
+        university_id = data.get('university', '')
+        print('*'*3, university_id)
+
+        if profile_id is not '':
+            profile = Profile.objects.filter(id=profile_id)
+            user.profile.set(profile)
+        if university_id is not '':
+            university = University.objects.filter(id=university_id).first()
+            print('*/'*4, university)
+            user.university = university
+        user.about_me = data.get('about_me', '')
+        user.first_name = data.get('first_name', '')
+        user.last_name = data.get('last_name', '')
+        user.middle_name = data.get('middle_name', '')
+        user.save()
+        return JsonResponse({"status": 'done'})
+    except Exception as e:
+        raise BadRequest('Invalid request: ' + str(e))
 
 def get_userbooks(request, username):
     print('username', username)
@@ -137,6 +163,37 @@ def get_achivements(request, username):
                     "image": str(achivement.image),
                 }
                 for achivement in achivements
+            ]
+        }
+    )
+
+def get_profiles(request):
+    profiles = Profile.objects.all()
+    return JsonResponse(
+        {
+            "profiles": [
+                {
+                    "id": profile.id,
+                    "title": profile.title,
+                    "description": profile.description
+                }
+                for profile in profiles
+            ]
+        }
+    )
+
+def get_universities(request):
+    universities = University.objects.all()
+    return JsonResponse(
+        {
+            "universities": [
+                {
+                    "id": university.id,
+                    "title": university.title,
+                    "description": university.description,
+                    "url": university.url
+                }
+                for university in universities
             ]
         }
     )

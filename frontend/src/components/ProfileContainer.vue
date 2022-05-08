@@ -5,14 +5,13 @@
         <p class="profile_username">Логин: {{ user.username }}</p>
         <p class="isExpert" v-if="user.expert">Эксперт</p>
         <p class="profile">Профиль: {{  user.profile[0].title  }}</p>
-        <p class="university">Университет: {{  user.university  }}</p>
+        <p class="university">Университет: {{  user.university.title  }}</p>
         <p class="about_me">О себе: {{  user.about_me  }}</p>
         <p class="rating">Рейтинг: {{  user.rating  }}</p>
         <p class="email">Почта: {{ user.email }}</p>
         <p class="first_name">Имя: {{ user.first_name }}</p>
         <p class="last_name">Фамилия: {{ user.last_name }}</p>
         <p class="middle_name">Отчество: {{ user.middle_name }}</p>
-        <p class="middle_name">Количество книг: {{ user.books }}</p>
       </div>
     </div>
 </template>

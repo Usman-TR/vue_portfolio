@@ -4,7 +4,7 @@
        <input v-model.lazy="searchSeq" placeholder='Поисковой запрос'>
        <button v-on:click="search_books({ text: searchSeq })">Найти</button>
        <BookList v-bind:books=searchedBooks
-          v-bind:list_title=searchSeq
+          v-bind:list_title=searchTitle
           />
      </div>
   </div>
@@ -32,6 +32,9 @@ export default {
   computed: {
     usernames_list () {
       return this.$store.state.user.username + '\'s books'
+    },
+    searchTitle () {
+      return 'Результаты поиска по запросу "' + this.searchSeq + '"'
     }
   },
   methods: {
