@@ -6,7 +6,7 @@ from rest_framework import generics
 from .models import CustomUser
 from .serializers import UserSerializer
 from django.http import JsonResponse
-from core.models import Ratings, Book, MarkRequest, Profile
+from core.models import Ratings, Book, MarkRequest, Profile, Achivement
 import json
 from django.core.exceptions import BadRequest
 
@@ -42,7 +42,6 @@ def update_user(request, username):
         raise BadRequest('Invalid request: ' + str(e))
 
 def get_userbooks(request, username):
-    print('username', username)
     user = CustomUser.objects.filter(username=username).first()
     books = user.books.all()
     marks = Ratings.objects.filter(user=user).all()
@@ -98,6 +97,97 @@ def get_userbook(request, username, pk):
     )
 
 
+def get_achievements(request):
+    achivements = Achivement.objects.all()
+    achivements_books = []
+
+    for achivement in achivements:
+        temp_books = []
+        for book in achivement.books.all():
+            temp_book = {
+                    "id": book.id,
+                    "rating": book.rating,
+                    "ISBN": book.ISBN,
+                    "GoogleId": book.GoogleId,
+                    "numberVoters": book.numberVoters,
+                    "title": book.title
+                }
+            temp_books.append(temp_book)
+        ach_decriptor = {
+                    "id": achivement.id,
+                    "title": achivement.title,
+                    "description": achivement.description,
+                    "image": achivement.image.url,
+                    "books": temp_books
+                    }
+        achivements_books.append(ach_decriptor)
+    # print('*'*10,achivements_books)
+
+    return JsonResponse(achivements_books, safe=False)
+    # return JsonResponse({"status": 'done'})
+
+
+def get_user_achievements(request, username):
+    user = CustomUser.objects.filter(username=username).first()
+
+    marks = Ratings.objects.filter(user=user).all()
+
+    user_books = []
+
+    for m in marks:
+        temp_book = {
+                    "id": m.book.id,
+                    "rating": m.book.rating,
+                    "ISBN": m.book.ISBN,
+                    "GoogleId": m.book.GoogleId,
+                    "numberVoters": m.book.numberVoters,
+                    "title": m.book.title
+                }
+        user_books.append(temp_book)
+
+
+    achivements = Achivement.objects.all()
+    # achievemnts[] => achievemnt => list of ids
+    # get all user book ids from marks
+    # if all ach id's is in userbooks => give ach
+
+    achivements_books = []
+    for achivement in achivements:
+        temp_books = []
+        for book in achivement.books.all():
+            temp_book = {
+                    "id": book.id,
+                    "rating": book.rating,
+                    "ISBN": book.ISBN,
+                    "GoogleId": book.GoogleId,
+                    "numberVoters": book.numberVoters,
+                    "title": book.title
+                }
+            temp_books.append(temp_book)
+        ach_decriptor = {
+                    "id": achivement.id,
+                    "title": achivement.title,
+                    "description": achivement.description,
+                    "image": achivement.image.url,
+                    "books": temp_books
+                    }
+        achivements_books.append(ach_decriptor)
+
+        user_achievements = []
+        for achivement_books in achivements_books:
+            ach_counter = len(achivement_books['books'])
+            for book in achivement_books['books']:
+                for user_book in user_books:
+                    print(book['id'], user_book['id'])
+                    if book['id'] == user_book['id']:
+                        ach_counter -= 1
+                    if ach_counter <= 0:
+                        break
+            if ach_counter <= 0:
+                user_achievements.append(achivement_books)
+    return JsonResponse(user_achievements, safe=False)
+
+
 def add_book(request, username):
 
     data = json.loads(request.body)
@@ -129,6 +219,11 @@ def request_mark(request, username, expert, book):
     b = Book.objects.filter(GoogleId=book).first()
     if not b:
         return JsonResponse({"status": 'error'})
+
+    existing_marks_check = MarkRequest.objects.filter(book=b).all()
+    if len(existing_marks_check) > 0:
+        return JsonResponse({"status": 'exists'})
+
     mark_request = MarkRequest(book=b, user=user, expert=expert_user)
     mark_request.save()
     return JsonResponse({"status": 'done'})

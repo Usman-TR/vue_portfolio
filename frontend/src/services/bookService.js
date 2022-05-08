@@ -90,6 +90,12 @@ export default {
   getProgress (username) {
     return api.get(`/api/v1/users/${username}/progress`)
   },
+  getAllAchievements (username) {
+    return api.get('/api/v1/users/achievements')
+  },
+  getUserAchievements (username) {
+    return api.get(`/api/v1/users/${username}/achievements`)
+  },
   getProfileBooks (profileId) {
     console.log('getProfileBooks', profileId)
     return api.get(`/api/v1/users/profiles/${profileId}/books`)

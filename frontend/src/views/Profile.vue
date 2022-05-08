@@ -13,6 +13,7 @@
         <button v-on:click="getExperts()">Все эксперты</button>
         <div v-if="this.experts.length != 0">{{this.experts}}</div>
       </div>
+      <AchievementList v-bind:achievements=userAchievements />
       <BookListParser v-bind:books=getMarkedBookList() v-bind:list_title='marked_list_title' />
       <BookListParser v-bind:books=getUnMarkedBookList() v-bind:list_title=usernames_list />
     </span>
@@ -28,6 +29,7 @@
 // import store from '@/store/'
 import { mapState } from 'vuex'
 import BookListParser from '@/components/BookListParser.vue'
+import AchievementList from '@/components/AchievementList.vue'
 import ProfileContainer from '@/components/ProfileContainer.vue'
 import EditProfileContainer from '@/components/EditProfileContainer.vue'
 import bookService from '@/services/bookService.js'
@@ -40,7 +42,8 @@ export default {
       editIsActive: false,
       exportBooks: [],
       experts: [],
-      progress: 0
+      progress: 0,
+      userAchievements: []
     }
   },
   computed: mapState({
@@ -57,17 +60,26 @@ export default {
   mounted () {
     this.updateUserBooks(this.exportBooks)
     this.get_progress()
+    this.getUserAchievements()
   },
   components: {
     BookListParser,
     ProfileContainer,
-    EditProfileContainer
+    EditProfileContainer,
+    AchievementList
   },
   methods: {
     get_progress () {
       bookService.getProgress(this.$store.state.user.username)
         .then((res) => {
           this.progress = res.data.progress * 100
+        })
+    },
+    getUserAchievements () {
+      return bookService.getUserAchievements(this.$store.state.user.username)
+        .then((res) => {
+          console.log(res.data)
+          this.userAchievements = res.data
         })
     },
     getExperts () {
