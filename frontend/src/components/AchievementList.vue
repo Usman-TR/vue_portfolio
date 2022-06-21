@@ -1,6 +1,6 @@
 <template>
     <div class="achievement-list-container">
-        <h3>Список ваших достижений</h3>
+        <h3>Достижения</h3>
         <div class="cards-container">
               <MDBCard style="width: 18rem" v-for="achievement in achievements" :key="achievement.title">
                 <MDBCardImg v-if="achievement.image" top v-bind:src=achievement.image class="img-fluid" />

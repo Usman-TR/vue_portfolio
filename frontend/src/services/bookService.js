@@ -12,20 +12,6 @@ export default {
 
     const exportBooks = this.parse_volume([volume])
     return exportBooks
-
-    // if (response.ok) {
-    //   const json = await response.json()
-    //   console.log('**-', GoogleId)
-    //   const volume = json.items
-    //   console.log(volume)
-    //   const exportBooks = this.parse_volume(volume)
-    //   // this.books = exportBooks
-    //   console.log('exportBooks:', exportBooks)
-    //   return exportBooks
-    // } else {
-    //   console.log('Ошибка HTTP: ' + response.status)
-    //   return ''
-    // }
   },
   parse_volume (volume) {
     // console.log('parse_volume', volume)

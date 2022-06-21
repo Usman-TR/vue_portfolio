@@ -1,17 +1,41 @@
 <template>
   <div class="Profile">
     <span v-if="this.$store.state.user.authentificated">
-      <a @click="logout">Logout</a>
-      <p @click="editProfile">Редактировать</p>
-      <p>Прогресс {{progress}}%</p>
-      <div class="profressBarFull">
-        <p :class="'profressBar'" v-bind:style="{ width: progress + '%' }"><span class="progressLabel">{{progress}}%</span></p>
+      <div class="btn-group">
+          <button class="btn btn-sm button_menu" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            ...
+          </button>
+          <ul class="dropdown-menu">
+              <li @click="editProfile">
+                <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 21.1827H4.5C4.30109 21.1827 4.11032 21.1037 3.96967 20.9631C3.82902 20.8224 3.75 20.6317 3.75 20.4327V16.2434C3.75 16.1449 3.7694 16.0474 3.80709 15.9564C3.84478 15.8654 3.90003 15.7827 3.96967 15.7131L15.2197 4.46308C15.3603 4.32243 15.5511 4.24341 15.75 4.24341C15.9489 4.24341 16.1397 4.32243 16.2803 4.46308L20.4697 8.65242C20.6103 8.79307 20.6893 8.98384 20.6893 9.18275C20.6893 9.38166 20.6103 9.57243 20.4697 9.71308L9 21.1827Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12.75 6.93274L18 12.1827" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="edit">Редактировать</span>
+                </li>
+              <li @click="logout">
+                <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14.25 8.93274V3.18274H3.75V21.1827H14.25V14.9327" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9 11.1827C8.58579 11.1827 8.25 11.5185 8.25 11.9327C8.25 12.347 8.58579 12.6827 9 12.6827V11.1827ZM21 12.6827C21.4142 12.6827 21.75 12.347 21.75 11.9327C21.75 11.5185 21.4142 11.1827 21 11.1827V12.6827ZM9 12.6827H21V11.1827H9V12.6827Z" fill="black"/>
+                    <path d="M19.35 8.48274C19.1015 8.15137 18.6314 8.08421 18.3 8.33274C17.9686 8.58127 17.9015 9.05137 18.15 9.38274L19.35 8.48274ZM20.4 12.3827C20.6485 12.7141 21.1186 12.7813 21.45 12.5327C21.7814 12.2842 21.8485 11.8141 21.6 11.4827L20.4 12.3827ZM18.15 9.38274L20.4 12.3827L21.6 11.4827L19.35 8.48274L18.15 9.38274Z" fill="black"/>
+                    <path d="M19.35 15.3827C19.1015 15.7141 18.6314 15.7813 18.3 15.5327C17.9686 15.2842 17.9015 14.8141 18.15 14.4827L19.35 15.3827ZM20.4 11.4827C20.6485 11.1514 21.1186 11.0842 21.45 11.3327C21.7814 11.5813 21.8485 12.0514 21.6 12.3827L20.4 11.4827ZM18.15 14.4827L20.4 11.4827L21.6 12.3827L19.35 15.3827L18.15 14.4827Z" fill="black"/>
+                </svg>
+
+                <span class="logout">Выйти</span>
+                </li>
+          </ul>
       </div>
       <ProfileContainer v-bind:user=user v-if="!editIsActive" />
       <EditProfileContainer v-bind:user=user v-else />
-      <div>
+      <!-- <div>
         <button v-on:click="getExperts()">Все эксперты</button>
         <div v-if="this.experts.length != 0">{{this.experts}}</div>
+      </div> -->
+      <div class="profressBarFull">
+        <p :class="'profressBar'" v-bind:style="{ width: progress + '%' }"><span class="progressLabel">{{progress}}%</span></p>
+        <p :class="'profressBarUngraded'" v-bind:style="{ width: ungraded + '%' }"></p>
+        <div class="progress_year">{{new Date().getFullYear()}}</div>
+        <div class="progress_numbers">{{total_graded}}/{{total_profile_books}} ({{progress}}%)</div>
       </div>
       <AchievementList v-bind:achievements=userAchievements />
       <BookListParser v-bind:books=getMarkedBookList() v-bind:list_title='marked_list_title' />
@@ -43,7 +67,10 @@ export default {
       exportBooks: [],
       experts: [],
       progress: 0,
-      userAchievements: []
+      ungraded: 0,
+      userAchievements: [],
+      total_profile_books: 0,
+      total_graded: 0
     }
   },
   computed: mapState({
@@ -73,6 +100,9 @@ export default {
       bookService.getProgress(this.$store.state.user.username)
         .then((res) => {
           this.progress = res.data.progress * 100
+          this.ungraded = res.data.ungraded * 100
+          this.total_profile_books = res.data.total
+          this.total_graded = res.data.total_graded
         })
     },
     getUserAchievements () {
@@ -137,27 +167,99 @@ export default {
 }
 </script>
 <style>
+
 .profressBarFull {
   height: 20px;
-  width: 60vw;
+  width: 90vw;
   position: relative;
-  left: 20vw;
+  left: 5vw;
   border-radius: 15px;
-  background-color: rgb(192, 157, 157);
+  background-color: #F5F0FF;
   text-align: right;
   color: #fff;
+  margin-bottom: 28px;
 }
 .profressBar {
   /* border: 3px solid red; */
-  background-color: rgb(149, 193, 153);
+  /* background-color: rgb(149, 193, 153); */
+  background: #835ED2;
   position: relative;
-  left: -3px;
+  /* left: -3px; */
   height: 20px;
   border-radius: 15px;
+  z-index: 50;
 }
 .progressLabel{
   position: relative;
   left: -10px;
   top: -2px;
 }
+.profressBarUngraded{
+  background: #DACAFC;
+  /* border: 3px solid red; */
+  position: relative;
+  /* left: -3px; */
+  height: 20px;
+  border-radius: 15px;
+  top: -36px;
+  z-index: 45;
+}
+
+.btn-group {
+  /* position: absolute; */
+  color: #835ED2;
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-end;
+  justify-content: flex-end;
+  /* border: 3px solid red; */
+  /* height: 20px; */
+  outline: none !important;
+}
+
+.btn-group:focus {
+    outline-style: none !important;
+}
+
+.button_menu {
+  letter-spacing: 3px;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 4px;
+  padding: 5px;
+  margin: 5px;
+
+}
+
+.dropdown-menu > * {
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+.dropdown-menu svg{
+  margin-right: 10px;
+}
+
+.dropdown-menu .edit{
+  position: relative;
+  top: 1px;
+}
+.progress_year {
+  position: absolute;
+  color: #C1ACE6;
+  top: -25px;
+  left: -5px;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+}
+.progress_numbers {
+  position: absolute;
+  color: #C1ACE6;
+  top: -25px;
+  right: -5px;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+}
+
 </style>

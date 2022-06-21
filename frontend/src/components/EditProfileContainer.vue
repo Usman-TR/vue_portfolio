@@ -117,12 +117,10 @@ export default {
   .user_info_main .university{
     padding: 0;
     margin: 10px;
-    font-size: small;
   }
   .user_info_main .rating{
     padding: 0;
     margin: 25px;
-    font-size: small;
   }
   .profile_img{
     width: 200px;
