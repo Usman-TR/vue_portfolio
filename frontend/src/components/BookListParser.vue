@@ -65,7 +65,6 @@ export default {
           return arr[0].identifier
         }
       } catch (e) {
-        console.log('cant find ISBN')
         return ''
       }
     },
@@ -79,7 +78,6 @@ export default {
     },
     getBookSaveData (book) {
       // ISBN
-      console.log('book', book)
       const ISBN = this.getISBN(book.industryIdentifiers)
 
       // etag
@@ -90,7 +88,6 @@ export default {
       const description = book.description
       const authors = book.authors
       const preview = book.imageLink
-      console.log(GoogleId, ISBN, title)
 
       return { GoogleId: GoogleId, ISBN: ISBN, title: title, preview: preview, description: description, authors: authors }
     },
@@ -120,7 +117,6 @@ export default {
           })
           .catch(error => console.log(error))
       })
-      console.log(outputList)
       return outputList
     }
   }

@@ -7,7 +7,13 @@
           v-bind:list_title=searchTitle
           />
        <BookListDB v-bind:books=profileBooks
-          v-bind:list_title="'Книги по специальности ' + this.$store.state.user.profile[0].title"
+          v-bind:list_title="'Специализация'" v-bind:list_id="'popularListID546'"
+          />
+        <BookListDB v-bind:books=recomendationBooks
+          v-bind:list_title="'Рекомендации'" v-bind:sub_title="recomendationTitle" v-bind:list_id="'recomendationListID854'"
+          />
+        <BookListDB v-bind:books=popularBooks
+          v-bind:list_title="'Популярные'" v-bind:list_id="'popularListID239'"
           />
      </div>
   </div>
@@ -29,7 +35,10 @@ export default {
       books: this.$store.getters.books,
       searchSeq: '',
       searchedBooks: [],
-      profileBooks: []
+      profileBooks: [],
+      recomendationBooks: [],
+      popularBooks: [],
+      recomendationTitle: ''
     }
   },
   beforeCreate: function () {
@@ -37,6 +46,8 @@ export default {
   },
   mounted () {
     this.loadProfileBooks()
+    this.loadRecomendationBooks()
+    this.loadPopularBooks()
   },
   computed: {
     usernames_list () {
@@ -60,7 +71,6 @@ export default {
         const response = await fetch(url + searchSeq + params)
         if (response.ok) {
           const json = await response.json()
-          console.log(json)
           const volume = json.items
           const exportBooks = bookService.parse_volume(volume)
           this.searchedBooks = exportBooks
@@ -72,11 +82,22 @@ export default {
     },
     async loadProfileBooks () {
       const profileId = this.$store.state.user.profile[0].id
-      console.log('profileId', profileId)
       bookService.getProfileBooks(profileId)
         .then((res) => {
           this.profileBooks = res.data.books
-          console.log(res)
+        })
+    },
+    async loadRecomendationBooks () {
+      bookService.getRecomendationBooks()
+        .then((res) => {
+          this.recomendationBooks = res.data.books
+          this.recomendationTitle = res.data.title
+        })
+    },
+    async loadPopularBooks () {
+      bookService.getPopularBooks()
+        .then((res) => {
+          this.popularBooks = res.data.books
         })
     }
   }

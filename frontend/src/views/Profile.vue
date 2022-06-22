@@ -1,7 +1,7 @@
 <template>
   <div class="Profile">
     <span v-if="this.$store.state.user.authentificated">
-      <div class="btn-group">
+      <div class="btn-group" v-if="!editIsActive">
           <button class="btn btn-sm button_menu" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             ...
           </button>
@@ -26,20 +26,20 @@
           </ul>
       </div>
       <ProfileContainer v-bind:user=user v-if="!editIsActive" />
-      <EditProfileContainer v-bind:user=user v-else />
+      <EditProfileContainer v-bind:user=user v-else @closeEdit="this.editIsActive=false"/>
       <!-- <div>
         <button v-on:click="getExperts()">Все эксперты</button>
         <div v-if="this.experts.length != 0">{{this.experts}}</div>
       </div> -->
-      <div class="profressBarFull">
+      <div class="profressBarFull" v-if="!editIsActive">
         <p :class="'profressBar'" v-bind:style="{ width: progress + '%' }"><span class="progressLabel">{{progress}}%</span></p>
         <p :class="'profressBarUngraded'" v-bind:style="{ width: ungraded + '%' }"></p>
         <div class="progress_year">{{new Date().getFullYear()}}</div>
         <div class="progress_numbers">{{total_graded}}/{{total_profile_books}} ({{progress}}%)</div>
       </div>
-      <AchievementList v-bind:achievements=userAchievements />
-      <BookListParser v-bind:books=getMarkedBookList() v-bind:list_title='marked_list_title' />
-      <BookListParser v-bind:books=getUnMarkedBookList() v-bind:list_title=usernames_list />
+      <AchievementList v-bind:achievements=userAchievements v-if="!editIsActive" />
+      <BookListParser v-bind:books=getMarkedBookList() v-bind:list_title='marked_list_title' v-if="!editIsActive"/>
+      <BookListParser v-bind:books=getUnMarkedBookList() v-bind:list_title=usernames_list v-if="!editIsActive"/>
     </span>
     <span v-else>
       <h1>Авторизуйтесь для доступа</h1>

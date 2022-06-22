@@ -1,12 +1,13 @@
 # coding: utf8
 from fileinput import close
 import profile
+# from backend.core.models import RecomendationBooks
 from core.models import University
 from rest_framework import generics
 from .models import CustomUser
 from .serializers import UserSerializer
 from django.http import JsonResponse
-from core.models import Ratings, Book, MarkRequest, Profile, Achivement
+from core.models import Ratings, Book, MarkRequest, Profile, Achivement, RecomendationBooks
 import json
 from django.core.exceptions import BadRequest
 
@@ -252,6 +253,15 @@ def get_progress(request, username):
 
     marked_list = []
 
+
+    my_books = []
+
+    for profile_book in profile.books.all():
+        if profile_book in user.books.all():
+            my_books.append(profile_book)
+    # print('***my_books', my_books)
+    # print('***my_books len', len(my_books))
+
     for m in marks:
         marked_list.append(m.book.id)
 
@@ -259,7 +269,6 @@ def get_progress(request, username):
 
     progress_counter = 0
     for b in books:
-        print(b.id)
         if b.id in marked_list:
             progress_counter += 1
 
@@ -268,8 +277,9 @@ def get_progress(request, username):
     progress = round(progress_counter / total_profile_books, 2)
 
     # print(progress, total_profile_books, progress_counter)
+    # print('***my_books total', progress_counter, len(my_books))
 
-    return JsonResponse({"progress": progress})
+    return JsonResponse({"progress": progress, 'ungraded': len(my_books)/total_profile_books, 'total': total_profile_books, 'total_graded': progress_counter})
 
 
 def get_achivements(request, username):
@@ -327,6 +337,53 @@ def get_profile_books(request, profile_id):
             ]
         }
     )
+
+def get_popular_books(request):
+    popular_books = Book.objects.order_by('-rating')[:30].all()
+    return JsonResponse(
+        {
+            "books": [
+                {
+                    "id": book.id,
+                    "rating": book.rating,
+                    "ISBN": book.ISBN,
+                    "GoogleId": book.GoogleId,
+                    "numberVoters": book.numberVoters,
+                    "title": book.title,
+                    "description": book.description,
+                    "authors": book.authors,
+                    "preview": book.preview
+                }
+                for book in popular_books
+            ]
+        }
+    )
+
+def get_recomendation_books(request):
+    recomendation = RecomendationBooks.objects.order_by('?')[0]
+    print('******', len(recomendation.books.all()), recomendation.books.all())
+    return JsonResponse(
+        {
+            'title': recomendation.title,
+            "books": [
+                {
+                    "id": book.id,
+                    "rating": book.rating,
+                    "ISBN": book.ISBN,
+                    "GoogleId": book.GoogleId,
+                    "numberVoters": book.numberVoters,
+                    "title": book.title,
+                    "description": book.description,
+                    "authors": book.authors,
+                    "preview": book.preview
+                }
+                for book in recomendation.books.all()
+            ]
+        }
+    )
+
+
+
 
 def get_universities(request):
     universities = University.objects.all()

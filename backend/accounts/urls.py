@@ -1,5 +1,5 @@
 from django.urls import  path, include
-from .views import UserView, get_userbooks, get_userbook, get_achivements, evaluate_knowledge, add_book, request_mark, get_request_marks, get_experts, get_profiles, update_user, get_universities, get_profile_books, get_progress, get_achievements, get_user_achievements
+from .views import UserView, get_userbooks, get_userbook, get_achivements, evaluate_knowledge, add_book, request_mark, get_request_marks, get_experts, get_profiles, update_user, get_universities, get_profile_books, get_progress, get_achievements, get_user_achievements, get_popular_books, get_recomendation_books
 
 
 urlpatterns = [
@@ -20,6 +20,8 @@ urlpatterns = [
     path('<str:username>/update', update_user, name='update_user'),
     path('<str:username>/progress', get_progress, name='get_progress'),
     path('profiles/<str:profile_id>/books', get_profile_books, name='get_profile_books'),
+    path('popular', get_popular_books, name='get_popular_books'),
+    path('recomendation', get_recomendation_books, name='get_recomendation_books'),
     path('achievements', get_achievements, name='get_achievements'),
     path('<str:username>/achievements', get_user_achievements, name='get_user_achievements')
 ]

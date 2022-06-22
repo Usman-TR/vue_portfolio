@@ -10,7 +10,7 @@ class Book(models.Model):
     numberVoters = models.FloatField(default=0)
     title = models.CharField(default='no title', max_length=150)
     authors = models.CharField(default='no authors', max_length=300)
-    description = models.CharField(default='no description', max_length=400)
+    description = models.CharField(default='no description', max_length=4000)
     preview = models.CharField(default='no preview', max_length=300)
 
 
@@ -69,3 +69,10 @@ class MarkRequest(models.Model):
     def __str__(self) -> str:
         return f'{self.user} {self.expert} {self.book} {self.closed}'
 
+
+class RecomendationBooks(models.Model):
+    title = models.CharField(max_length=150)
+    books = models.ManyToManyField('core.Book')
+
+    def __str__(self) -> str:
+        return self.title

@@ -4,7 +4,7 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import 'bootstrap/scss/bootstrap.scss'
-import "bootstrap"
+import 'bootstrap'
 
 createApp(App)
   .use(store)

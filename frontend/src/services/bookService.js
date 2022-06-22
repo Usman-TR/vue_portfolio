@@ -85,5 +85,11 @@ export default {
   getProfileBooks (profileId) {
     console.log('getProfileBooks', profileId)
     return api.get(`/api/v1/users/profiles/${profileId}/books`)
+  },
+  getRecomendationBooks () {
+    return api.get('/api/v1/users/recomendation')
+  },
+  getPopularBooks () {
+    return api.get('/api/v1/users/popular')
   }
 }

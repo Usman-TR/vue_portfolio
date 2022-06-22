@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db.models.deletion import PROTECT
-from .models import Book, University, Profile, Achivement, Ratings, MarkRequest
+from .models import Book, University, Profile, Achivement, Ratings, MarkRequest, RecomendationBooks
 # Register your models here.
 
 admin.site.register(Book)
@@ -9,3 +9,4 @@ admin.site.register(Profile)
 admin.site.register(Achivement)
 admin.site.register(Ratings)
 admin.site.register(MarkRequest)
+admin.site.register(RecomendationBooks)
