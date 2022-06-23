@@ -45,7 +45,9 @@ export default {
       const username = this.username
       const password = this.password
       this.$store.dispatch('login', { username, password })
-        .then(() => { this.$router.push('/login') })
+        .then(() => {
+          this.$router.push('/')
+        })
         .catch(err => console.log(err))
     },
     getAuthStatus: function () { return this.$store.getters.user.authentificated }

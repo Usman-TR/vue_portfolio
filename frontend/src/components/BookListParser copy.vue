@@ -1,11 +1,8 @@
 <template>
     <div class="book-list-container">
-        <div class="list_header">
-          <h3>{{  list_title  }}</h3>
-          <p class="list_toogle" v-on:click="this.show_full = !this.show_full"><span v-if="!this.show_full">Показать все</span><span v-else>Показать меньше</span> </p>
-        </div>
-        <div v-if="show_full" class="cards-container">
-              <MDBCard style="width: 18rem" v-for="(book, idx) in limitItems(books)" :key="'card' + idx + book.title" v-on:click="showBookPage(book)">
+        <h3>{{  list_title  }}</h3>
+        <div class="cards-container">
+              <MDBCard style="width: 18rem" v-for="book in books" :key="book.title">
                 <MDBCardImg v-if="book.imageLink" top v-bind:src=getImage(book.imageLink) class="img-fluid" />
                 <img v-else top alt="Vue logo" src="../assets/default-book.png">
                 <MDBCardBody>
@@ -28,50 +25,19 @@
                 </MDBCardFooter>
             </MDBCard>
         </div>
-        <div :id="list_id" v-if="!show_full" class="carousel carousel-dark slide" data-bs-ride="carousel">
-  <div class="carousel-indicators">
-    <button type="button" :data-bs-target="'#' + list_id" :data-bs-slide-to="idx" aria-label="" v-for="(book, idx) in limitItems(books)" :key="'slider' + book.title" :class="{ active: idx==0 }"></button>
-  </div>
-  <div class="carousel-inner">
-    <div class="carousel-item" data-bs-interval="5000"
-      v-on:click="showBookPage(book)"
-      v-for="(book, idx) in limitItems(books)"
-      :key="'slider' + book.title"
-      :class="{ active: idx==0 }"
-      >
-      <img v-if="book.imageLink" top v-bind:src="getImage(book.imageLink)" class="img-fluid" />
-      <img v-else top alt="Vue logo" src="../assets/default-book.png">
-      <div class="carousel-caption-custom">
-        <h5>{{cutText(book.title)}}</h5>
-        <p v-if="book.description">{{  cutText(book.description)  }}</p>
-      </div>
-    </div>
-  </div>
-  <button class="carousel-control-prev" type="button" :data-bs-target="'#' + list_id" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" :data-bs-target="'#' + list_id" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-</div>
-<BookPage :book="active_book" v-if="BookPageActive" @hideBookPage="hideBookPage()"/>
     </div>
 </template>
 
 <script>
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardLink, MDBCardImg, MDBCardFooter } from 'mdb-vue-ui-kit'
 import bookService from '@/services/bookService.js'
-import BookPage from '@/components/BookPage.vue'
 
 export default {
   name: 'BookList',
   props: {
     books: Object,
     list_title: String,
-    add_books_button: Boolean,
-    list_id: String
+    add_books_button: Boolean
   },
   components: {
     MDBCard,
@@ -80,38 +46,9 @@ export default {
     MDBCardText,
     MDBCardLink,
     MDBCardImg,
-    MDBCardFooter,
-    BookPage
-  },
-  data: function () {
-    return {
-      show_full: true,
-      active_book: {},
-      BookPageActive: false
-    }
+    MDBCardFooter
   },
   methods: {
-    prepBookForPage (bookParsed) {
-      console.log('***', bookParsed)
-      const book = {
-        authors: bookParsed.authors,
-        description: bookParsed.description,
-        title: bookParsed.title,
-        preview: bookParsed.imageLink
-      }
-      return book
-    },
-    limitItems (items, maxNum = 15) {
-      return items.slice(0, maxNum)
-    },
-    showBookPage (book) {
-      this.active_book = this.prepBookForPage(book)
-      this.BookPageActive = true
-    },
-    hideBookPage () {
-      this.active_book = {}
-      this.BookPageActive = false
-    },
     checkKnowledge (bookId) {
       const expert = prompt('Введите логин эксперта')
       bookService.addMarkRequest(this.$store.state.user.username, bookId, expert).then((res) => alert('Отправлено'))

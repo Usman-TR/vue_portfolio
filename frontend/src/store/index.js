@@ -10,7 +10,7 @@ export default createStore({
     storage: window.sessionStorage
   })],
   state: {
-    user: { username: 'user', authentificated: false, is_expert: false },
+    user: { username: 'user', authentificated: false, expert: false },
     token: localStorage.getItem('token') || '',
     authStatus: 'default'
   },
@@ -22,7 +22,7 @@ export default createStore({
   },
   mutations: {
     setUser (state, user) {
-      console.log('login setUser in store', user)
+      console.log('setUser in store', user)
       state.user = Object.assign(state.user, user)
     },
     setToken (state, token) {
@@ -60,9 +60,12 @@ export default createStore({
             api.defaults.headers.common.token = result.key || ''
             data.authentificated = true
             const authUser = { username: data.username, authentificated: true }
+            // login form data console.log(data)
+
             commit('setToken', result.key, { root: true })
             commit('setUser', authUser, { root: true })
             commit('authStatusSuccess', { root: true })
+            this.dispatch('getUser')
           } else {
             console.log('login in store key len <= 1')
             commit('authStatusError')
@@ -75,7 +78,7 @@ export default createStore({
     },
     logout ({ commit }, data) {
       localStorage.clear()
-      const emptyUser = { username: 'user', authentificated: false, is_expert: false }
+      const emptyUser = { username: 'user', authentificated: false, expert: false }
       commit('setUser', emptyUser, { root: true })
     },
     register ({ commit }, data) {

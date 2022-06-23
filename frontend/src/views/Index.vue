@@ -1,12 +1,19 @@
 <template>
   <div class="home">
     <div>
-       <input v-model.lazy="searchSeq" placeholder='Поисковой запрос'>
-       <button v-on:click="search_books({ text: searchSeq })">Найти</button>
+      <div class="search_container">
+        <div class="search_icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.25 12.5C10.1495 12.5 12.5 10.1495 12.5 7.25C12.5 4.35051 10.1495 2 7.25 2C4.35051 2 2 4.35051 2 7.25C2 10.1495 4.35051 12.5 7.25 12.5Z" stroke="#B195EB" stroke-width="1.28" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10.9622 10.9625L13.9997 14.0001" stroke="#B195EB" stroke-width="1.28" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        </div>
+       <input v-model="searchSeq" placeholder='Название или автор' @input="search_books({ text: searchSeq })">
+       </div>
        <BookListParser v-bind:books=searchedBooks
-          v-bind:list_title=searchTitle
+          v-bind:list_title=searchTitle v-bind:list_id="'searchedListID6452'"
           />
-       <BookListDB v-bind:books=profileBooks
+       <BookListDB v-if="profileBooks.length > 0" v-bind:books=profileBooks
           v-bind:list_title="'Специализация'" v-bind:list_id="'popularListID546'"
           />
         <BookListDB v-bind:books=recomendationBooks
@@ -57,7 +64,7 @@ export default {
       if (this.searchSeq === '') {
         return ''
       } else {
-        return 'Результаты поиска по запросу "' + this.searchSeq + '"'
+        return 'Поиск:"' + this.searchSeq + '"'
       }
     }
   },
@@ -81,11 +88,13 @@ export default {
       }
     },
     async loadProfileBooks () {
-      const profileId = this.$store.state.user.profile[0].id
-      bookService.getProfileBooks(profileId)
-        .then((res) => {
-          this.profileBooks = res.data.books
-        })
+      if (this.$store.state.user.authentificated) {
+        const profileId = this.$store.state.user.profile[0].id
+        bookService.getProfileBooks(profileId)
+          .then((res) => {
+            this.profileBooks = res.data.books
+          })
+      }
     },
     async loadRecomendationBooks () {
       bookService.getRecomendationBooks()
@@ -103,3 +112,28 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.search_container, input {
+ background-color: #F5F0FF;
+ outline: none;
+ border: none;
+ border-radius: 6px;
+}
+.search_container input {
+  border-radius: 60px;
+  color: #b295eb;
+}
+.search_container {
+  margin: 20px 12px;
+  display: flex;
+  padding: 6px 12px;
+}
+.search_container ::placeholder {
+  color: #b295ebb1;
+}
+.search_icon {
+  position: relative;
+  right: 3px;
+}
+</style>

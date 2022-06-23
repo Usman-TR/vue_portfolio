@@ -6,7 +6,7 @@
           <p class="list_toogle" v-on:click="this.show_full = !this.show_full"><span v-if="!this.show_full">Показать все</span><span v-else>Показать меньше</span> </p>
         </div>
         <div v-if="show_full" class="cards-container">
-              <MDBCard style="width: 18rem" v-for="book in limitItems(books)" :key="book.title">
+              <MDBCard style="width: 18rem" v-for="book in limitItems(books)" :key="book.title" v-on:click="showBookPage(book)">
                 <MDBCardImg v-if="book.preview" top v-bind:src=book.preview class="img-fluid" />
                 <img v-else top alt="Vue logo" src="../assets/default-book.png">
                 <MDBCardBody>
@@ -33,7 +33,12 @@
     <button type="button" :data-bs-target="'#' + list_id" :data-bs-slide-to="idx" aria-label="" v-for="(book, idx) in limitItems(books)" :key="book.title" :class="{ active: idx==0 }"></button>
   </div>
   <div class="carousel-inner">
-    <div class="carousel-item" data-bs-interval="5000" v-for="(book, idx) in limitItems(books)" :key="book.title" :class="{ active: idx==0 }">
+    <div class="carousel-item" data-bs-interval="5000"
+      v-on:click="showBookPage(book)"
+      v-for="(book, idx) in limitItems(books)"
+      :key="book.title"
+      :class="{ active: idx==0 }"
+      >
       <img v-if="book.preview" top v-bind:src=book.preview class="img-fluid" />
       <img v-else top alt="Vue logo" src="../assets/default-book.png">
       <div class="carousel-caption-custom">
@@ -51,12 +56,14 @@
     <span class="visually-hidden">Next</span>
   </button>
 </div>
+<BookPage :book="active_book" v-if="BookPageActive" @hideBookPage="hideBookPage()"/>
     </div>
 </template>
 
 <script>
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardLink, MDBCardImg, MDBCardFooter } from 'mdb-vue-ui-kit'
 import bookService from '@/services/bookService.js'
+import BookPage from '@/components/BookPage.vue'
 
 export default {
   name: 'BookList',
@@ -69,7 +76,9 @@ export default {
   },
   data: function () {
     return {
-      show_full: false
+      show_full: false,
+      active_book: {},
+      BookPageActive: false
     }
   },
   components: {
@@ -79,7 +88,8 @@ export default {
     MDBCardText,
     MDBCardLink,
     MDBCardImg,
-    MDBCardFooter
+    MDBCardFooter,
+    BookPage
   },
   methods: {
     limitItems (items, maxNum = 15) {
@@ -91,6 +101,15 @@ export default {
     },
     getImage (path) {
       return path
+    },
+    showBookPage (book) {
+      this.active_book = book
+      console.log(book)
+      this.BookPageActive = true
+    },
+    hideBookPage () {
+      this.active_book = {}
+      this.BookPageActive = false
     },
     formateAuthors (authors) {
       return authors.replaceAll('[', '').replaceAll(']', '').replaceAll('\'', '')

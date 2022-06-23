@@ -2,7 +2,7 @@
   <div class="about">
     <LoginForm />
     test@mail.com<br>
-    testpass12345
+    newTestUserPassword12345
   </div>
 </template>
 
