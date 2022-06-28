@@ -21,12 +21,18 @@
                   {{  book.authors.join(", ")  }}
                   </span>
                   </MDBCardText>
-                <MDBCardFooter class="text-muted">
-                  <MDBCardLink v-bind:href=book.previewLink>Перейти</MDBCardLink>
-                  <MDBCardLink v-on:click="addBook(getBookSaveData(book))">Добавить</MDBCardLink>
-                  <MDBCardLink v-on:click="checkKnowledge(getBookSaveData(book).GoogleId)">Получить оценку</MDBCardLink>
-                </MDBCardFooter>
+                <!-- <MDBCardFooter class="text-muted"> -->
+                  <!-- <MDBCardLink v-bind:href=book.previewLink>Перейти</MDBCardLink> -->
+                  <!-- <MDBCardLink v-on:click="addBook(getBookSaveData(book))">Добавить {{getBookSaveData(book).GoogleId}}</MDBCardLink> -->
+                  <!-- <MDBCardLink v-on:click="checkKnowledge(getBookSaveData(book).GoogleId)">Получить оценку</MDBCardLink> -->
+                <!-- </MDBCardFooter> -->
             </MDBCard>
+            <div class="pagination_parser">
+              <span v-if="page > 1" v-on:click="this.changePage(0)">в начало</span>
+              <span v-if="page > 0" v-on:click="this.changePage(page - 1)">назад</span>
+              <span>{{page + 1}}</span>
+              <span v-if="books.length > maxBooksPerPage" v-on:click="this.changePage(page+1)">вперед</span>
+            </div>
         </div>
         <div :id="list_id" v-if="!show_full" class="carousel carousel-dark slide" data-bs-ride="carousel">
   <div class="carousel-indicators">
@@ -61,7 +67,7 @@
 </template>
 
 <script>
-import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardLink, MDBCardImg, MDBCardFooter } from 'mdb-vue-ui-kit'
+import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImg } from 'mdb-vue-ui-kit'
 import bookService from '@/services/bookService.js'
 import BookPage from '@/components/BookPage.vue'
 
@@ -71,16 +77,16 @@ export default {
     books: Object,
     list_title: String,
     add_books_button: Boolean,
-    list_id: String
+    list_id: String,
+    maxBooksPerPage: Number,
+    page: Number
   },
   components: {
     MDBCard,
     MDBCardBody,
     MDBCardTitle,
     MDBCardText,
-    MDBCardLink,
     MDBCardImg,
-    MDBCardFooter,
     BookPage
   },
   data: function () {
@@ -91,17 +97,23 @@ export default {
     }
   },
   methods: {
+    changePage (page) {
+      console.log('changePage', page)
+      this.$emit('changePage', { page: page })
+    },
     prepBookForPage (bookParsed) {
       console.log('***', bookParsed)
       const book = {
         authors: bookParsed.authors,
         description: bookParsed.description,
         title: bookParsed.title,
-        preview: bookParsed.imageLink
+        preview: bookParsed.imageLink,
+        GoogleId: this.getBookSaveData(bookParsed).GoogleId
       }
       return book
     },
     limitItems (items, maxNum = 15) {
+      console.log(items)
       return items.slice(0, maxNum)
     },
     showBookPage (book) {
@@ -206,4 +218,19 @@ export default {
   height: 250px;
   max-height: 300px;
 }
+.pagination_parser {
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+}
+.pagination_parser span {
+
+}
+
+.card {
+  border: none !important;
+  filter: drop-shadow(0px 4px 8px rgba(176, 65, 118, 0.26));
+
+}
+
 </style>

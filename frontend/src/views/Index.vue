@@ -8,10 +8,11 @@
           <path d="M10.9622 10.9625L13.9997 14.0001" stroke="#B195EB" stroke-width="1.28" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         </div>
-       <input v-model="searchSeq" placeholder='Название или автор' @input="search_books({ text: searchSeq })">
+       <input v-model="searchSeq" placeholder='Название или автор' @input="search_books({ text: searchSeq, page: searchPage })">
        </div>
        <BookListParser v-bind:books=searchedBooks
-          v-bind:list_title=searchTitle v-bind:list_id="'searchedListID6452'"
+          v-bind:list_title=searchTitle v-bind:list_id="'searchedListID6452'" v-bind:page=searchPage v-bind:maxBooksPerPage=15
+          @changePage="(e) => { changePage(e.page)}"
           />
        <BookListDB v-if="profileBooks.length > 0" v-bind:books=profileBooks
           v-bind:list_title="'Специализация'" v-bind:list_id="'popularListID546'"
@@ -41,6 +42,7 @@ export default {
     return {
       books: this.$store.getters.books,
       searchSeq: '',
+      searchPage: 0,
       searchedBooks: [],
       profileBooks: [],
       recomendationBooks: [],
@@ -69,10 +71,14 @@ export default {
     }
   },
   methods: {
+    changePage (page) {
+      this.searchPage = page
+      this.search_books({ text: this.searchSeq, page: this.searchPage })
+    },
     async search_books (obj) {
       const text = obj.text
       const url = 'https://www.googleapis.com/books/v1/volumes?q='
-      const params = '&maxResults=12&startIndex=1'
+      const params = `&maxResults=25&startIndex=${obj.page * 15}`
       if (text) {
         const searchSeq = String(text).replaceAll('  ', ' ').replaceAll(' ', '+')
         const response = await fetch(url + searchSeq + params)
@@ -80,10 +86,11 @@ export default {
           const json = await response.json()
           const volume = json.items
           const exportBooks = bookService.parse_volume(volume)
+          console.log('exportBooks', exportBooks.length, exportBooks)
           this.searchedBooks = exportBooks
           // return exportBooks
         } else {
-          console.log('Ошибка HTTP: ' + response.status)
+          console.log(response)
         }
       }
     },
@@ -136,4 +143,5 @@ export default {
   position: relative;
   right: 3px;
 }
+
 </style>

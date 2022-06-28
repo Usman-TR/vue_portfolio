@@ -6,7 +6,7 @@
           <p class="list_toogle" v-on:click="this.show_full = !this.show_full"><span v-if="!this.show_full">Показать все</span><span v-else>Показать меньше</span> </p>
         </div>
         <div v-if="show_full" class="cards-container">
-              <MDBCard style="width: 18rem" v-for="book in limitItems(books)" :key="book.title" v-on:click="showBookPage(book)">
+              <MDBCard style="width: 18rem" v-for="book in books" :key="book.title" v-on:click="showBookPage(book)">
                 <MDBCardImg v-if="book.preview" top v-bind:src=book.preview class="img-fluid" />
                 <img v-else top alt="Vue logo" src="../assets/default-book.png">
                 <MDBCardBody>
@@ -22,10 +22,10 @@
                   {{  formateAuthors(book.authors)  }}
                   </span>
                   </MDBCardText>
-                <MDBCardFooter class="text-muted text-muted-DB">
-                  <MDBCardLink v-bind:href=createPreviewLink(book.GoogleId)>Перейти</MDBCardLink>
-                  <MDBCardLink v-on:click="addBook(getBookSaveData(book))">Добавить</MDBCardLink>
-                </MDBCardFooter>
+                <!-- <MDBCardFooter class="text-muted text-muted-DB"> -->
+                  <!-- <MDBCardLink v-bind:href=createPreviewLink(book.GoogleId)>Перейти</MDBCardLink> -->
+                  <!-- <MDBCardLink v-on:click="addBook(getBookSaveData(book))">Добавить</MDBCardLink> -->
+                <!-- </MDBCardFooter> -->
             </MDBCard>
         </div>
         <div :id="list_id" v-if="!show_full" class="carousel carousel-dark slide" data-bs-ride="carousel">
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardLink, MDBCardImg, MDBCardFooter } from 'mdb-vue-ui-kit'
+import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImg } from 'mdb-vue-ui-kit'
 import bookService from '@/services/bookService.js'
 import BookPage from '@/components/BookPage.vue'
 
@@ -86,9 +86,7 @@ export default {
     MDBCardBody,
     MDBCardTitle,
     MDBCardText,
-    MDBCardLink,
     MDBCardImg,
-    MDBCardFooter,
     BookPage
   },
   methods: {
@@ -303,6 +301,9 @@ export default {
   border-radius: 10px;
   padding: 8px 16px;
   text-decoration: none;
-
+}
+.card {
+  border: none !important;
+  filter: drop-shadow(0px 4px 8px rgba(176, 65, 118, 0.26));
 }
 </style>
