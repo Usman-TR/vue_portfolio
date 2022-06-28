@@ -10,8 +10,8 @@
         </div>
        <input v-model="searchSeq" placeholder='Название или автор' @input="search_books({ text: searchSeq, page: searchPage })">
        </div>
-       <BookListParser v-bind:books=searchedBooks
-          v-bind:list_title=searchTitle v-bind:list_id="'searchedListID6452'" v-bind:page=searchPage v-bind:maxBooksPerPage=15
+       <BookListParser v-if="searchTitle" v-bind:books=searchedBooks
+          v-bind:list_title=searchTitle v-bind:list_id="'searchedListID6452'" v-bind:page=searchPage v-bind:maxBooksPerPage=12
           @changePage="(e) => { changePage(e.page)}"
           />
        <BookListDB v-if="profileBooks.length > 0" v-bind:books=profileBooks

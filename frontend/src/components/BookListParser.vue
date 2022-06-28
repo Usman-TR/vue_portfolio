@@ -28,10 +28,27 @@
                 <!-- </MDBCardFooter> -->
             </MDBCard>
             <div class="pagination_parser">
-              <span v-if="page > 1" v-on:click="this.changePage(0)">в начало</span>
-              <span v-if="page > 0" v-on:click="this.changePage(page - 1)">назад</span>
+              <span v-if="page > 1" v-on:click="this.changePage(0)">
+                <svg width="12" height="22" viewBox="0 0 12 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11 21L1 11L11 1" stroke="#835ED2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<svg width="12" height="22" viewBox="0 0 12 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11 21L1 11L11 1" stroke="#835ED2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+              </span>
+              <span v-if="page > 0" v-on:click="this.changePage(page - 1)">
+                <svg width="12" height="22" viewBox="0 0 12 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11 21L1 11L11 1" stroke="#835ED2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+              </span>
               <span>{{page + 1}}</span>
-              <span v-if="books.length > maxBooksPerPage" v-on:click="this.changePage(page+1)">вперед</span>
+              <span v-if="books.length > maxBooksPerPage" v-on:click="this.changePage(page+1)">
+                <svg width="12" height="22" viewBox="0 0 12 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 1L11 11L1 21" stroke="#835ED2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+              </span>
             </div>
         </div>
         <div :id="list_id" v-if="!show_full" class="carousel carousel-dark slide" data-bs-ride="carousel">
@@ -224,7 +241,7 @@ export default {
   justify-content: space-around;
 }
 .pagination_parser span {
-
+  margin: 0px 10px;
 }
 
 .card {

@@ -183,7 +183,6 @@ export default {
   font-weight: 500;
   font-size: 16px;
   line-height: 20px;
-  display: flex;
   align-items: center;
   text-align: center;
   letter-spacing: 0.44px;
