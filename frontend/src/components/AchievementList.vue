@@ -19,15 +19,13 @@
                     {{book.title}}
                   </p>
                   </MDBCardText>
-                <MDBCardFooter class="text-muted">
-                </MDBCardFooter>
             </MDBCard>
         </div>
     </div>
 </template>
 
 <script>
-import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImg, MDBCardFooter } from 'mdb-vue-ui-kit'
+import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImg } from 'mdb-vue-ui-kit'
 
 export default {
   name: 'AchievementList',
@@ -39,8 +37,7 @@ export default {
     MDBCardBody,
     MDBCardTitle,
     MDBCardText,
-    MDBCardImg,
-    MDBCardFooter
+    MDBCardImg
   },
   methods: {
     getImage (path) {
@@ -69,5 +66,8 @@ export default {
   width: 100%;
   height: 250px;
   max-height: 300px;
+}
+.card {
+  padding-bottom: 16px;
 }
 </style>

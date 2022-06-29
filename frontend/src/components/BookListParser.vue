@@ -79,7 +79,7 @@
     <span class="visually-hidden">Next</span>
   </button>
 </div>
-<BookPage :book="active_book" v-if="BookPageActive" @hideBookPage="hideBookPage()"/>
+<BookPage :book="active_book" v-if="BookPageActive" @hideBookPage="hideBookPage()" :isInUserBooks="userBookIds.includes(active_book.GoogleId)"/>
     </div>
 </template>
 
@@ -96,7 +96,8 @@ export default {
     add_books_button: Boolean,
     list_id: String,
     maxBooksPerPage: Number,
-    page: Number
+    page: Number,
+    userBookIds: Object
   },
   components: {
     MDBCard,
@@ -247,6 +248,7 @@ export default {
 .card {
   border: none !important;
   filter: drop-shadow(0px 4px 8px rgba(176, 65, 118, 0.26));
+  padding-bottom: 16px;
 
 }
 

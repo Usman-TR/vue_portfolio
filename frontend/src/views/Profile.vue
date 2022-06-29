@@ -76,7 +76,7 @@ export default {
   computed: mapState({
     user: state => state.user,
     usernames_list: () => 'Ваша коллекция',
-    marked_list_title: () => 'Подтвержденная коллекция',
+    marked_list_title: () => 'Подтверждено',
     books: state => state.user.books,
     auth_status: state => state.authStatus
   }),
@@ -85,7 +85,7 @@ export default {
     this.$store.dispatch('userbooks/getBooks')
   },
   mounted () {
-    this.updateUserBooks(this.exportBooks)
+    this.updateUserBooks()
     this.get_progress()
     this.getUserAchievements()
   },
@@ -139,7 +139,7 @@ export default {
       })
       return markedBookList
     },
-    updateUserBooks: async function (books) {
+    updateUserBooks: async function () {
       // this.$store.dispatch('userbooks/getBooks')
       userService.getUserBooks(this.$store.state.user.username)
         .then((resp) => {

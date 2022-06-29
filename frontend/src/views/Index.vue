@@ -10,17 +10,17 @@
         </div>
        <input v-model="searchSeq" placeholder='Название или автор' @input="search_books({ text: searchSeq, page: searchPage })">
        </div>
-       <BookListParser v-if="searchTitle" v-bind:books=searchedBooks
+       <BookListParser v-if="searchTitle" v-bind:books=searchedBooks v-bind:userBookIds=userBookIds
           v-bind:list_title=searchTitle v-bind:list_id="'searchedListID6452'" v-bind:page=searchPage v-bind:maxBooksPerPage=12
           @changePage="(e) => { changePage(e.page)}"
           />
-       <BookListDB v-if="profileBooks.length > 0" v-bind:books=profileBooks
+       <BookListDB v-if="profileBooks.length > 0" v-bind:books=profileBooks v-bind:userBookIds=userBookIds
           v-bind:list_title="'Специализация'" v-bind:list_id="'popularListID546'"
           />
-        <BookListDB v-bind:books=recomendationBooks
+        <BookListDB v-bind:books=recomendationBooks v-bind:userBookIds=userBookIds
           v-bind:list_title="'Рекомендации'" v-bind:sub_title="recomendationTitle" v-bind:list_id="'recomendationListID854'"
           />
-        <BookListDB v-bind:books=popularBooks
+        <BookListDB v-bind:books=popularBooks v-bind:userBookIds=userBookIds
           v-bind:list_title="'Популярные'" v-bind:list_id="'popularListID239'"
           />
      </div>
@@ -31,6 +31,7 @@
 import BookListParser from '@/components/BookListParser.vue'
 import BookListDB from '@/components/BookListDB.vue'
 import bookService from '@/services/bookService.js'
+import userService from '@/services/userService.js'
 
 export default {
   name: 'Index',
@@ -47,7 +48,8 @@ export default {
       profileBooks: [],
       recomendationBooks: [],
       popularBooks: [],
-      recomendationTitle: ''
+      recomendationTitle: '',
+      userBookIds: []
     }
   },
   beforeCreate: function () {
@@ -57,6 +59,7 @@ export default {
     this.loadProfileBooks()
     this.loadRecomendationBooks()
     this.loadPopularBooks()
+    this.updateUserBookIds()
   },
   computed: {
     usernames_list () {
@@ -66,11 +69,20 @@ export default {
       if (this.searchSeq === '') {
         return ''
       } else {
-        return 'Поиск:"' + this.searchSeq + '"'
+        return 'Поиск: "' + this.searchSeq + '"'
       }
     }
   },
   methods: {
+    updateUserBookIds: async function () {
+      userService.getUserBooks(this.$store.state.user.username)
+        .then((resp) => {
+          resp.books.forEach(element => {
+            console.log(element.GoogleId)
+            this.userBookIds.push(element.GoogleId)
+          })
+        })
+    },
     changePage (page) {
       this.searchPage = page
       this.search_books({ text: this.searchSeq, page: this.searchPage })

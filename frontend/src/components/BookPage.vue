@@ -5,7 +5,13 @@
       <path d="M19 26L9 16L19 6" stroke="#835ED2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
-    <div class="addBook" v-on:click="addBook(getBookSaveData(book))">
+
+    <div class="addBook" v-if="isInUserBooks || added" v-on:click="popup_message('Уже добавлено')">
+    <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15.5 0.4375H2.5C2.06915 0.437926 1.65608 0.609267 1.35142 0.913922C1.04677 1.21858 0.875426 1.63165 0.875001 2.0625V20.75C0.87484 20.8916 0.91171 21.0308 0.981954 21.1537C1.0522 21.2767 1.15337 21.3792 1.27544 21.4509C1.3975 21.5227 1.53622 21.5613 1.67782 21.5629C1.81941 21.5646 1.95897 21.5291 2.08264 21.4601L9 17.6166L15.9174 21.4601C16.041 21.5291 16.1806 21.5646 16.3222 21.5629C16.4638 21.5613 16.6025 21.5227 16.7246 21.4509C16.8466 21.3792 16.9478 21.2767 17.018 21.1537C17.0883 21.0308 17.1252 20.8916 17.125 20.75V2.0625C17.1246 1.63165 16.9532 1.21858 16.6486 0.913921C16.3439 0.609267 15.9308 0.437925 15.5 0.4375Z" fill="#FFCC00"/>
+    </svg>
+    </div>
+    <div class="addBook" v-else v-on:click="addBook(getBookSaveData(book))">
       <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M16.3125 20.75L8.99925 16.6875L1.6875 20.75V2.0625C1.6875 1.84701 1.7731 1.64035 1.92548 1.48798C2.07785 1.3356 2.28451 1.25 2.5 1.25H15.5C15.7155 1.25 15.9222 1.3356 16.0745 1.48798C16.2269 1.64035 16.3125 1.84701 16.3125 2.0625V20.75Z" stroke="#FFCC00" stroke-width="1.625" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -34,7 +40,8 @@ import bookService from '@/services/bookService.js'
 export default {
   name: 'BookPage',
   props: {
-    book: Object
+    book: Object,
+    isInUserBooks: Boolean
   },
   data () {
     return {
@@ -68,6 +75,7 @@ export default {
       bookService.addBook(username, data).then((result) => {
         if (result.status === 200) {
           this.popup_message('Добавлено')
+          this.added = true
         } else {
           this.popup_message('Ошибка, повторите попытку позже')
           console.log(result)
