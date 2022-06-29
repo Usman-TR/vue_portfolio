@@ -38,8 +38,8 @@
         <div class="progress_numbers">{{total_graded}}/{{total_profile_books}} ({{progress}}%)</div>
       </div>
       <AchievementList v-bind:achievements=userAchievements v-if="!editIsActive" />
-      <BookListParser v-bind:books=getMarkedBookList() v-bind:list_title='marked_list_title' v-if="!editIsActive"/>
-      <BookListParser v-bind:books=getUnMarkedBookList() v-bind:list_title=usernames_list v-if="!editIsActive"/>
+      <BookListParser v-bind:books=getMarkedBookList() v-bind:list_title='marked_list_title' v-if="!editIsActive" v-bind:userBookIds=userBookIds />
+      <BookListParser v-bind:books=getUnMarkedBookList() v-bind:list_title=usernames_list v-if="!editIsActive" v-bind:userBookIds=userBookIds />
     </span>
     <span v-else>
       <h1>Авторизуйтесь для доступа</h1>
@@ -70,7 +70,8 @@ export default {
       ungraded: 0,
       userAchievements: [],
       total_profile_books: 0,
-      total_graded: 0
+      total_graded: 0,
+      userBookIds: []
     }
   },
   computed: mapState({
@@ -152,6 +153,7 @@ export default {
               pb = pb[0]
               console.log(pb)
               this.exportBooks.push(pb)
+              this.userBookIds.push(element.GoogleId)
             })
           })
         })

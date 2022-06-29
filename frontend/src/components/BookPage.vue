@@ -21,11 +21,22 @@
         {{formateAuthors(book.authors)}}
         </div>
       <h4 class="book_page_title">{{book.title}}</h4>
+      <p class="book_page_expert" v-if="userBooksDict[book.GoogleId]">
+            <span v-if="userBooksDict[book.GoogleId].marked">Подтвердил <span class="book_page_expert_label">{{userBooksDict[book.GoogleId].expert}}</span>
+            <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.625 3.37524L5.375 8.62501L2.75 6.00024" stroke="#835ED2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            </span>
+      </p>
       <div class="toogle_sections_container">
           <p>Описание</p>
+          <p v-if="isMarked(book)"></p>
           <p class="book_page_description">{{book.description}}</p>
           <p><a target="_blank" v-bind:href=createPreviewLink(book.GoogleId)>Ссылка на книгу</a></p>
         </div>
+      <!-- <div class="send_button" v-if="!isMarked(book)" v-on:click="checkKnowledge(book.GoogleId)">
+        Отправить
+      </div> -->
       <div v-if="popup_is_active" class="alert d-flex align-items-center" role="alert">
         <transition name="fade">
           <p>{{popup_msg}}</p>
@@ -36,6 +47,7 @@
 
 <script>
 import bookService from '@/services/bookService.js'
+import userService from '@/services/userService.js'
 
 export default {
   name: 'BookPage',
@@ -47,11 +59,46 @@ export default {
     return {
       added: false,
       popup_is_active: false,
-      popup_msg: ''
-
+      popup_msg: '',
+      userBooksDict: {}
     }
   },
+  mounted () {
+    this.getUserBooks()
+  },
   methods: {
+    isMarked (book) {
+      try {
+        return this.userBooksDict[book.GoogleId].marked
+      } catch (err) {
+        console.log(err)
+        return false
+      }
+    },
+    getBookById (id) {
+      return this.userBooksDict[id]
+    },
+    getUserBooks: async function () {
+      userService.getUserBooks(this.$store.state.user.username)
+        .then((resp) => {
+          resp.books.forEach(element => {
+            console.log(element.GoogleId)
+            this.userBooksDict[element.GoogleId] = element
+          })
+        })
+    },
+    isEmpty (obj) {
+      try {
+        return Object.keys(obj).length === 0
+      } catch (err) {
+        console.log(err)
+        return false
+      }
+    },
+    checkKnowledge (bookId) {
+      const expert = prompt('Введите логин эксперта')
+      bookService.addMarkRequest(this.$store.state.user.username, bookId, expert).then((res) => alert('Отправлено'))
+    },
     formateAuthors (authors) {
       if (authors) {
         return authors.toString().replaceAll('[', '').replaceAll(']', '').replaceAll('\'', '')
@@ -222,5 +269,21 @@ margin: 25px 19px;
 .book_page a {
   color: #835ED2;
   text-decoration: none;
+}
+.book_page_expert {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0.4px;
+  color: rgba(60, 60, 67, 0.3);
+}
+.book_page_expert_label {
+  color: #835ED2;
+}
+
+.book_page_expert svg {
+  position: relative;
+  left: -2px;
+  top: -1px;
 }
 </style>
