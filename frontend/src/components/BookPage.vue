@@ -27,20 +27,28 @@
             <path d="M10.625 3.37524L5.375 8.62501L2.75 6.00024" stroke="#835ED2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             </span>
+            <span class="book_page_send_button" v-else-if="!checkSend" v-on:click="showExpertMenu(book.GoogleId)">
+             На подтверждение
+            </span>
       </p>
       <div class="toogle_sections_container">
           <p>Описание</p>
-          <p v-if="isMarked(book)"></p>
           <p class="book_page_description">{{book.description}}</p>
           <p><a target="_blank" v-bind:href=createPreviewLink(book.GoogleId)>Ссылка на книгу</a></p>
         </div>
-      <!-- <div class="send_button" v-if="!isMarked(book)" v-on:click="checkKnowledge(book.GoogleId)">
-        Отправить
-      </div> -->
       <div v-if="popup_is_active" class="alert d-flex align-items-center" role="alert">
         <transition name="fade">
           <p>{{popup_msg}}</p>
         </transition>
+      </div>
+      <div class="select_expert_container" v-if="show_expert_container">
+        <div class="select_expert_container_form">
+          <select class="form-select" aria-label="Default select example" v-model="selectedExpert">
+            <option selected>Выберите эксперта</option>
+            <option  v-for="expert in experts" :key="expert.id" :value="expert.username">{{expert.first_name}} {{expert.last_name}} - {{expert.profile}}</option>
+          </select>
+          <span v-on:click="checkKnowledge(selectedExpert, book.GoogleId)">Отправить</span>
+        </div>
       </div>
   </div>
 </template>
@@ -60,20 +68,22 @@ export default {
       added: false,
       popup_is_active: false,
       popup_msg: '',
-      userBooksDict: {}
+      userBooksDict: {},
+      show_expert_container: false,
+      experts: [],
+      selectedExpert: '',
+      checkSend: false
     }
   },
   mounted () {
     this.getUserBooks()
   },
   methods: {
-    isMarked (book) {
-      try {
-        return this.userBooksDict[book.GoogleId].marked
-      } catch (err) {
-        console.log(err)
-        return false
-      }
+    getExperts () {
+      bookService.getExperts()
+        .then((res) => {
+          this.experts = res.data.experts
+        })
     },
     getBookById (id) {
       return this.userBooksDict[id]
@@ -95,9 +105,23 @@ export default {
         return false
       }
     },
-    checkKnowledge (bookId) {
-      const expert = prompt('Введите логин эксперта')
-      bookService.addMarkRequest(this.$store.state.user.username, bookId, expert).then((res) => alert('Отправлено'))
+    showExpertMenu (bookId) {
+      this.show_expert_container = true
+      this.getExperts()
+    },
+    hideExpertMenu () {
+      this.show_expert_container = false
+    },
+    checkKnowledge (expert, bookId) {
+      bookService.addMarkRequest(this.$store.state.user.username, bookId, expert)
+        .then((res) => {
+          this.popup_message('ОТПРАВЛЕНО')
+          this.checkSend = true
+        })
+        .catch(() => {
+          this.popup_message('Ошибка, вопторите позже')
+        })
+      this.hideExpertMenu()
     },
     formateAuthors (authors) {
       if (authors) {
@@ -285,5 +309,47 @@ margin: 25px 19px;
   position: relative;
   left: -2px;
   top: -1px;
+}
+.book_page_send_button {
+  position: fixed;
+  padding: 19px 60px;
+  width: 90vw;
+  height: 54px;
+  left: 5vw;
+  bottom: 34px;
+  background: #835ED2;
+box-shadow: 0px 24px 32px rgba(131, 94, 210, 0.24);
+border-radius: 10px;
+
+font-weight: 500;
+font-size: 14px;
+line-height: 16px;
+letter-spacing: 0.75px;
+text-transform: uppercase;
+text-align: center;
+color: #F2F2F7;
+}
+.select_expert_container {
+  top: 0;
+  bottom:0;
+  right: 0;
+  left: 0;
+  position:fixed;
+  overflow-y:scroll;
+  overflow-x:hidden;
+  background-color: #fff;
+  z-index: 110;
+  background: #00000099;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.select_expert_container_form {
+  min-width: 100px;
+  min-height: 100px;
+  background: #fff;
+  padding: 16px 12px;
+  border-radius: 10px;
+
 }
 </style>
