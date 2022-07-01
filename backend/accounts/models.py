@@ -11,6 +11,8 @@ class CustomUser(AbstractUser):
     books = models.ManyToManyField('core.Book')
     achivements = models.ManyToManyField('core.Achivement', blank=True)
     expert = models.BooleanField(default=False)
+    image = models.ImageField(upload_to='profiles', blank=True)
+
 
 
 

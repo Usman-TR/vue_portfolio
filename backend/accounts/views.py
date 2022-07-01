@@ -231,14 +231,32 @@ def request_mark(request, username, expert, book):
 
 def get_request_marks(request, username):
     expert_id = CustomUser.objects.filter(username=username).first().id
-    user_requests = MarkRequest.objects.filter(expert=expert_id, closed=False)
+    user_requests = MarkRequest.objects.filter(expert=expert_id, closed=False).order_by('user')
+    # print('***', username, user_requests[2].book.title, len(user_requests))
+
+    def value_or_def(object, property, default):
+        try:
+            return getattr(object, property)
+        except Exception as e:
+            return default
+
+
     return JsonResponse(
         {
             "requests": [
                 {
                     "id": req.id,
                     "username": req.user.username,
-					"book": str(req.book.GoogleId)
+                    "firstName": req.user.first_name,
+                    "lastName": req.user.last_name,
+                    "image": json.dumps(str(req.user.image)),
+					"GoogleId": str(req.book.GoogleId),
+                    "boolTitle": str(req.book.title),
+                    "bookImage": str(req.book.preview),
+                    "bookAuthors": str(req.book.authors),
+                    "GoogleId": str(req.book.GoogleId),
+                    'profile': value_or_def(req.user.profile.first(), 'title', 'нет'),
+                    'university': value_or_def(req.user.university, 'title', 'нет')
                 }
                 for req in user_requests
             ]
