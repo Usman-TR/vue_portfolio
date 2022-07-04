@@ -53,6 +53,8 @@ export default {
 <style scoped>
 .register {
   padding-top: 7vh;
+  max-width: 375px;
+  margin-inline: auto;
 }
 .register__btn {
   display: grid;
