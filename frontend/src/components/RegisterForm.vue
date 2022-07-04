@@ -1,26 +1,24 @@
 <template>
-  <div>
-      <h4>Register</h4>
-      <form @submit.prevent="register">
-        <label for="name">Name</label>
-        <div>
-            <input id="name" type="text" v-model="name" required autofocus>
-        </div>
-        <label for="email" >E-Mail Address</label>
-        <div>
-            <input id="email" type="email" v-model="email" required>
-        </div>
-        <label for="password">Password</label>
-        <div>
-            <input id="password" type="password" v-model="password" required>
-        </div>
-        <label for="password-confirm">Confirm Password</label>
-        <div>
-            <input id="password-confirm" type="password" v-model="password_confirmation" required>
-        </div>
-        <div>
-            <button type="submit">Register</button>
-        </div>
+  <div class="register">
+      <h4>Регистрация</h4>
+      <form class="form" @submit.prevent="register">
+      <fieldset class="form-field">
+        <label for="name">Имя</label>
+            <input class="register__input" id="name" type="text" v-model="name" required autofocus>
+      </fieldset>
+      <fieldset class="form-field">
+        <label for="email" >Адрес электронной почты</label>
+            <input class="register__input" id="email" type="email" v-model="email" required>
+      </fieldset>
+      <fieldset class="form-field">
+        <label for="password">Пароль</label>
+            <input class="register__input" id="password" type="password" v-model="password" required>
+      </fieldset>
+      <fieldset class="form-field">
+        <label for="password-confirm">Подтвердить пароль</label>
+            <input class="register__input" id="password-confirm" type="password" v-model="password_confirmation" required>
+      </fieldset>
+            <button class="register__btn" type="submit">Зарегистрироваться</button>
       </form>
         <p>newTestUser <br> newTestUser@mail.com<br> newTestUserPassword12345</p>
     </div>
@@ -52,3 +50,67 @@ export default {
   }
 }
 </script>
+<style scoped>
+.register {
+  padding-top: 7vh;
+}
+.register__btn {
+  display: grid;
+  place-content: center;
+  color: #fff;
+  background-color: #835ED2;
+  border-radius: 6px;
+  border: none;
+  width: 100%;
+  height: 2.6rem;
+  margin-top: 1.5rem;
+}
+.register__btn:hover {
+  color: #835ED2;
+  background-color: #EEE7FF;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+  width: 100%;
+  padding-inline: 1rem;
+}
+.form-field {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 4px;
+  width: 100%;
+}
+.form-field label {
+  font-weight: 700;
+}
+.register__input {
+  padding: 8px;
+  font-size: 1rem;
+  color: #000;
+  border: 0.5px solid #DACAFC;
+  border-radius: 6px;
+  background: #FAF7FF;
+  width: 100%;
+}
+.register__input:hover {
+  border-color: #ae8cf7;
+    background-color: #fff;
+}
+.register__input::placeholder {
+    color: #9788B8;
+    opacity: 1;
+}
+.register__input:focus {
+  outline: 1px solid #835ED2;
+    background-color: #fff;
+}
+.register__input:focus::placeholder {
+  color: #9788B8;
+  opacity: .4;
+}
+</style>
