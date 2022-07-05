@@ -221,13 +221,29 @@ def request_mark(request, username, expert, book):
     if not b:
         return JsonResponse({"status": 'error'})
 
-    existing_marks_check = MarkRequest.objects.filter(book=b).all()
+    existing_marks_check = MarkRequest.objects.filter(book=b, user=user).all()
     if len(existing_marks_check) > 0:
         return JsonResponse({"status": 'exists'})
 
     mark_request = MarkRequest(book=b, user=user, expert=expert_user)
     mark_request.save()
     return JsonResponse({"status": 'done'})
+
+def cancel_mark_request(request, username, expert, book):
+    user = CustomUser.objects.filter(username=username).first()
+    expert_user = CustomUser.objects.filter(username=expert).first()
+    b = Book.objects.filter(GoogleId=book).first()
+    print('***',user, expert_user, b, book)
+    if not b:
+        return JsonResponse({"status": 'error'})
+
+    existing_marks_check = MarkRequest.objects.filter(book=b, user=user).all()
+    if len(existing_marks_check) == 0:
+        return JsonResponse({"status": 'not exists'})
+
+    MarkRequest.objects.filter(book=b, user=user).all().delete()
+    return JsonResponse({"status": 'done'})
+
 
 def get_request_marks(request, username):
     expert_id = CustomUser.objects.filter(username=username).first().id
@@ -251,7 +267,7 @@ def get_request_marks(request, username):
                     "lastName": req.user.last_name,
                     "image": json.dumps(str(req.user.image)),
 					"GoogleId": str(req.book.GoogleId),
-                    "boolTitle": str(req.book.title),
+                    "bookTitle": str(req.book.title),
                     "bookImage": str(req.book.preview),
                     "bookAuthors": str(req.book.authors),
                     "GoogleId": str(req.book.GoogleId),
@@ -448,3 +464,4 @@ def evaluate_knowledge(request, expert, request_id, rating):
 	mark_request.closed = True
 	mark_request.save()
 	return JsonResponse({"status": 'done'})
+
