@@ -5,17 +5,15 @@
         <h1 class="login__title">Авторизация</h1>
         <p v-if="message">{{  message  }}</p>
         <fieldset class="login-field">
-          <input class="login__input" required v-model="username" type="text" placeholder="Логин" />
-          <input class="login__input" required v-model="password" type="password" placeholder="Пароль" />
+          <input :class="{'input-error': v$.username.$errors.length && username.length}" class="login__input" required v-model="username" type="text" placeholder="Логин" />
+          <input :class="{'input-error': v$.password.$errors.length && username.length}" class="login__input" required v-model="password" type="password" placeholder="Пароль" />
+          <div v-if="v$.password.$errors.length || v$.password.$errors.length || auth_status === 'error'" class="error">Неправильный логин или пароль</div>
           <a class="tip" href="#">Забыли пароль?</a>
         </fieldset>
         <button class="login__btn" type="submit">Войти</button>
         <p>Ещё нет аккаунта? <router-link to="/registration">Зарегистрируйтесь</router-link></p>
       <br>
         auth_status: {{  auth_status  }}<br>
-        <div class="error" v-if="loginTries > 0 && auth_status === 'error'">
-          <p>Неправильный email или пароль</p>
-        </div>
         {{loginTries}}
       </form>
     </template>
@@ -26,8 +24,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
+import { mapGetters } from 'vuex'
+import useVuelidate from '@vuelidate/core'
+import { required, minLength, or, email, alpha, alphaNum } from '@vuelidate/validators'
 export default {
   name: 'LoginForm',
   data () {
@@ -38,21 +37,33 @@ export default {
       loginTries: 0
     }
   },
-  computed: mapState({
-    auth_status: state => state.auth_status
+  computed: mapGetters({
+    auth_status: 'authStatus'
   }),
   methods: {
-    login: function () {
+    async login () {
       this.loginTries += 1
       const username = this.username
       const password = this.password
-      this.$store.dispatch('login', { username, password })
-        .then(() => {
-          this.$router.push('/')
-        })
-        .catch(err => console.log(err))
+      const isFormCorrect = await this.v$.$validate()
+      if (!isFormCorrect) return
+      await this.$store.dispatch('login', { username, password })
     },
-    getAuthStatus: function () { return this.$store.getters.user.authentificated }
+    getAuthStatus () {
+      if (this.$store.getters.user.authentificated) this.$router.push('/')
+      return this.$store.getters.user.authentificated
+    }
+  },
+  validations () {
+    return {
+      username: { required, or: or(email, alpha), min: minLength(4) },
+      password: { required, min: minLength(8), alphaNum }
+    }
+  },
+  setup () {
+    return {
+      v$: useVuelidate()
+    }
   }
 }
 </script>
@@ -125,5 +136,11 @@ export default {
 }
 .login p {
   font-size: 0.875rem;
+}
+.input-error, .input-error:focus {
+  outline: 1.4px solid red;
+}
+.error {
+  color: red
 }
 </style>
