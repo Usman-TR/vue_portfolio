@@ -1,24 +1,29 @@
 <template>
     <div class="achievement-list-container">
+      <div class="list_header">
         <h3>Достижения</h3>
-        <div class="cards-container">
-              <MDBCard style="width: 18rem" v-for="achievement in achievements" :key="achievement.title">
+          <p class="list_toogle" @click="showFull = !showFull"><span v-if="!showFull">Показать все</span><span v-else>Показать меньше</span> </p>
+        </div>
+        <div class="cards-container" :class="{'cards-container-row': !showFull}">
+              <MDBCard :class="{'card-row': !showFull}" v-for="achievement in achievements" :key="achievement.title">
                 <MDBCardImg v-if="achievement.image" top v-bind:src=achievement.image class="img-fluid" />
                 <img v-else top alt="Vue logo" src="../assets/default-book.png">
                 <MDBCardBody>
-                <MDBCardTitle>{{  achievement.title  }}</MDBCardTitle>
-                <MDBCardText>
-                  <span>
-                    {{  achievement.description }}
-                  </span>
-                </MDBCardText>
+                  <MDBCardTitle class="card__title">{{  achievement.title  }}</MDBCardTitle>
+                  <template v-if="showFull">
+                      <MDBCardText>
+                      <span>
+                        {{  achievement.description }}
+                      </span>
+                    </MDBCardText>
+                    <MDBCardText>
+                    <p>Книги</p>
+                    <p v-for="book in achievement.books" :key="book.id">
+                      {{book.title}}
+                    </p>
+                    </MDBCardText>
+                  </template>
                 </MDBCardBody>
-                <MDBCardText>
-                  <p>Книги</p>
-                  <p v-for="book in achievement.books" :key="book.id">
-                    {{book.title}}
-                  </p>
-                  </MDBCardText>
             </MDBCard>
         </div>
     </div>
@@ -39,6 +44,11 @@ export default {
     MDBCardText,
     MDBCardImg
   },
+  data () {
+    return {
+      showFull: false
+    }
+  },
   methods: {
     getImage (path) {
       return path
@@ -58,16 +68,36 @@ export default {
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
-    gap: 40px;
-    margin: 20px 30px;
+    gap: 40px 10px;
+    margin: 20px 0;
+    padding-inline: 30px;
+}
+.cards-container-row {
+  flex-flow: row wrap;
+  overflow-y: hidden;
+  padding: 10px 0 20px;
+  max-height: 230px;
+}
+.card-row {
+  max-width: 160px;
+  padding-bottom: 0;
+}
+.card-row .img-fluid {
+  max-width: 160px;
+  max-height: 160px;
+}
+.card-row .card-body {
+  padding: 0;
+}
+.card-row .card__title {
+  font-size: 1rem;
+  margin-bottom: 0;
+  padding: 0.5rem 0;
 }
 .cards-container img{
   object-fit: cover;
   width: 100%;
   height: 250px;
   max-height: 300px;
-}
-.card {
-  padding-bottom: 16px;
 }
 </style>
