@@ -4,19 +4,19 @@
       <form class="form" @submit.prevent="register">
       <fieldset class="form-field">
         <label for="name">Имя</label>
-            <input class="register__input" id="name" type="text" v-model="name" required autofocus>
+            <input :class="{'input-error': v$.name.$errors.length}" class="register__input" id="name" type="text" v-model="name" required autofocus>
       </fieldset>
       <fieldset class="form-field">
         <label for="email" >Адрес электронной почты</label>
-            <input class="register__input" id="email" type="email" v-model="email" required>
+            <input :class="{'input-error': v$.email.$errors.length}" class="register__input" id="email" type="email" v-model="email" required>
       </fieldset>
       <fieldset class="form-field">
         <label for="password">Пароль</label>
-            <input class="register__input" id="password" type="password" v-model="password" required>
+            <input :class="{'input-error': v$.password.$errors.length}" class="register__input" id="password" type="password" v-model="password" required>
       </fieldset>
       <fieldset class="form-field">
         <label for="password-confirm">Подтвердить пароль</label>
-            <input class="register__input" id="password-confirm" type="password" v-model="password_confirmation" required>
+            <input :class="{'input-error': v$.password_confirmation.$errors.length}" class="register__input" id="password-confirm" type="password" v-model="password_confirmation" required>
       </fieldset>
             <button class="register__btn" type="submit">Зарегистрироваться</button>
       </form>
@@ -25,6 +25,8 @@
 </template>
 
 <script>
+import useVuelidate from '@vuelidate/core'
+import { required, minLength, email, alpha, alphaNum, sameAs } from '@vuelidate/validators'
 export default {
   name: 'LoginForm',
   data () {
@@ -35,20 +37,35 @@ export default {
       password_confirmation: ''
     }
   },
+  validations () {
+    return {
+      name: { required, alpha },
+      email: { required, email },
+      password: { required, alphaNum, min: minLength(8) },
+      password_confirmation: { required, sameAs: sameAs(this.password) }
+    }
+  },
   methods: {
-    register: function () {
+    async register () {
       const data = {
         username: this.name,
         email: this.email,
         password1: this.password,
         password2: this.password_confirmation
       }
+      const isFormCorrect = await this.v$.$validate()
+      if (!isFormCorrect) return
       this.$store.dispatch('register', data)
         .then((res) => {
           console.log(res)
           this.$router.push('/login')
         })
         .catch(err => console.log(err))
+    }
+  },
+  setup () {
+    return {
+      v$: useVuelidate()
     }
   }
 }
@@ -117,5 +134,8 @@ export default {
 .register__input:focus::placeholder {
   color: #9788B8;
   opacity: .4;
+}
+.input-error, .input-error:focus {
+  outline: 1.4px solid red;
 }
 </style>
