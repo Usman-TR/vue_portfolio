@@ -3,12 +3,12 @@ import userbooks from './modules/userbooks'
 import api from '../services/api'
 import userService from '../services/userService'
 // import bookService from '../services/bookService'
-import createPersistedState from 'vuex-persistedstate'
+// import createPersistedState from 'vuex-persistedstate'
 
 export default createStore({
-  plugins: [createPersistedState({
-    storage: window.sessionStorage
-  })],
+  // plugins: [createPersistedState({
+  //   storage: window.sessionStorage
+  // })],
   state: {
     user: { username: 'user', authentificated: false, expert: false },
     token: localStorage.getItem('token') || '',
@@ -30,15 +30,15 @@ export default createStore({
     },
     authStatusLoading (state) {
       console.log('auth_status = loading')
-      state.auth_status = 'loading'
+      state.authStatus = 'loading'
     },
     authStatusSuccess (state) {
       console.log('auth_status = success')
-      state.auth_status = 'success'
+      state.authStatus = 'success'
     },
     authStatusError (state) {
       console.log('auth_status = error')
-      state.auth_status = 'error'
+      state.authStatus = 'error'
     }
   },
   actions: {
