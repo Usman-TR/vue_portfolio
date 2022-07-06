@@ -64,6 +64,9 @@ export default {
   addMarkRequest (username, GoogleId, expert) {
     return api.get(`/api/v1/users//${username}/request/${expert}/${GoogleId}`)
   },
+  cancelMarkRequest (username, GoogleId, expert) {
+    return api.get(`/api/v1/users//${username}/cancelrequest/${expert}/${GoogleId}`)
+  },
   setMark (requestId, username, rating) {
     return api.get(`/api/v1/users/${username}/evaluate/${requestId}/${rating}`)
   },

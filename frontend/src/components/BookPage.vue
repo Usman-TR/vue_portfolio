@@ -47,7 +47,10 @@
           <select class="form-select" aria-label="Default select example" v-model="selectedExpert">
             <option  v-for="expert in experts" :key="expert.id" :value="expert.username">{{expert.first_name}} {{expert.last_name}} - {{expert.profile}}</option>
           </select>
-          <span class="select_expert_container_form_button" v-on:click="checkKnowledge(selectedExpert, book.GoogleId)">Отправить</span>
+          <div class="select_expert_container_form_buttons">
+            <span class="select_expert_container_form_button_cancel" v-on:click="hideExpertMenu()">Отмена</span>
+            <span class="select_expert_container_form_button" v-on:click="checkKnowledge(selectedExpert, book.GoogleId)">Отправить</span>
+          </div>
         </div>
       </div>
   </div>
@@ -351,30 +354,34 @@ color: #F2F2F7;
   padding: 16px 12px;
   border-radius: 10px;
 }
-.select_expert_container_form_button {
-  padding: 6px 10px;
-width: 86px;
-height: 28px;
-
-background: #835ED2;
-border-radius: 6px;
-font-size: 10px;
-line-height: 16px;
-/* identical to box height, or 160% */
-
-display: flex;
-align-items: center;
-letter-spacing: 0.4px;
-
-/* System/White */
-
-color: #FFFFFF;
-text-align: center;
-display: flex;
-justify-content: center;
-margin-top: 20px;
-margin: 20px auto 0px auto;
+.select_expert_container_form_buttons {
+  display: flex;
+  justify-content: center;
 }
+.select_expert_container_form_button, .select_expert_container_form_button_cancel {
+  padding: 6px 10px;
+  width: 86px;
+  height: 28px;
+  background: #835ED2;
+  border-radius: 6px;
+  font-size: 10px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.4px;
+  color: #FFFFFF;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin: 20px auto 0px auto;
+}
+
+.select_expert_container_form_button_cancel {
+  background: #EEE7FF;
+  color: #835ED2;
+}
+
 .select_expert_container_form_label {
   font-size: 16px;
 line-height: 24px;

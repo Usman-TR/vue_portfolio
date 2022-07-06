@@ -44,7 +44,10 @@ export default {
         password2: this.password_confirmation
       }
       this.$store.dispatch('register', data)
-        .then(() => this.$router.push('/login'))
+        .then((res) => {
+          console.log(res)
+          this.$router.push('/login')
+        })
         .catch(err => console.log(err))
     }
   }
