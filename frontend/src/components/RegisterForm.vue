@@ -9,14 +9,17 @@
       <fieldset class="form-field">
         <label for="email" >Адрес электронной почты</label>
             <input :class="{'input-error': v$.email.$errors.length}" class="register__input" id="email" type="email" v-model="email" required>
+            <div class="error" v-if="v$.email.$errors.length">Проверьте правильность введённого адреса электронной почты</div>
       </fieldset>
       <fieldset class="form-field">
         <label for="password">Пароль</label>
             <input :class="{'input-error': v$.password.$errors.length}" class="register__input" id="password" type="password" v-model="password" required>
+            <div class="error" v-if="v$.password.$errors.length">Длина пароля не может быть меньше 8 символов</div>
       </fieldset>
       <fieldset class="form-field">
         <label for="password-confirm">Подтвердить пароль</label>
             <input :class="{'input-error': v$.password_confirmation.$errors.length}" class="register__input" id="password-confirm" type="password" v-model="password_confirmation" required>
+            <div class="error" v-if="v$.password_confirmation.$errors.length">Введенные пароли не совпадают</div>
       </fieldset>
             <button class="register__btn" type="submit">Зарегистрироваться</button>
       </form>
@@ -141,6 +144,12 @@ export default {
   opacity: .4;
 }
 .input-error, .input-error:focus {
-  outline: 1.4px solid red;
+  outline: 1.4px solid #ee3f58;
+}
+.error {
+  color: #ee3f58;
+  font-size: 0.875rem;
+  line-height: 20px;
+  text-align: start;
 }
 </style>
