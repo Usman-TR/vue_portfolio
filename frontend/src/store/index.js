@@ -30,15 +30,18 @@ export default createStore({
     },
     authStatusLoading (state) {
       console.log('auth_status = loading')
-      state.auth_status = 'loading'
+      state.authStatus = 'loading'
     },
     authStatusSuccess (state) {
       console.log('auth_status = success')
-      state.auth_status = 'success'
+      state.authStatus = 'success'
     },
     authStatusError (state) {
       console.log('auth_status = error')
-      state.auth_status = 'error'
+      state.authStatus = 'error'
+    },
+    setAuthStatusDefault (state) {
+      state.authStatus = 'default'
     }
   },
   actions: {
@@ -86,6 +89,9 @@ export default createStore({
         .then(result => {
           console.log('register in store', result)
         })
+    },
+    resetAuthStatus ({ commit }) {
+      commit('setAuthStatusDefault')
     }
   },
   modules: {

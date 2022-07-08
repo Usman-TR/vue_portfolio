@@ -4,19 +4,22 @@
       <form class="form" @submit.prevent="register">
       <fieldset class="form-field">
         <label for="name">Имя</label>
-            <input class="register__input" id="name" type="text" v-model="name" required autofocus>
+            <input :class="{'input-error': v$.name.$errors.length}" class="register__input" id="name" type="text" v-model="name" required autofocus>
       </fieldset>
       <fieldset class="form-field">
         <label for="email" >Адрес электронной почты</label>
-            <input class="register__input" id="email" type="email" v-model="email" required>
+            <input :class="{'input-error': v$.email.$errors.length}" class="register__input" id="email" type="email" v-model="email" required>
+            <div class="error" v-if="v$.email.$errors.length">Проверьте правильность введённого адреса электронной почты</div>
       </fieldset>
       <fieldset class="form-field">
         <label for="password">Пароль</label>
-            <input class="register__input" id="password" type="password" v-model="password" required>
+            <input :class="{'input-error': v$.password.$errors.length}" class="register__input" id="password" type="password" v-model="password" required>
+            <div class="error" v-if="v$.password.$errors.length">Длина пароля не может быть меньше 8 символов</div>
       </fieldset>
       <fieldset class="form-field">
         <label for="password-confirm">Подтвердить пароль</label>
-            <input class="register__input" id="password-confirm" type="password" v-model="password_confirmation" required>
+            <input :class="{'input-error': v$.password_confirmation.$errors.length}" class="register__input" id="password-confirm" type="password" v-model="password_confirmation" required>
+            <div class="error" v-if="v$.password_confirmation.$errors.length">Введенные пароли не совпадают</div>
       </fieldset>
             <button class="register__btn" type="submit">Зарегистрироваться</button>
       </form>
@@ -25,6 +28,8 @@
 </template>
 
 <script>
+import useVuelidate from '@vuelidate/core'
+import { required, minLength, email, alphaNum, sameAs } from '@vuelidate/validators'
 export default {
   name: 'LoginForm',
   data () {
@@ -35,20 +40,40 @@ export default {
       password_confirmation: ''
     }
   },
+  validations () {
+    return {
+      name: {
+        required,
+        username (value) {
+          return /^[A-z]+[0-9]*/.test(value)
+        }
+      },
+      email: { required, email },
+      password: { required, alphaNum, min: minLength(8) },
+      password_confirmation: { required, sameAs: sameAs(this.password) }
+    }
+  },
   methods: {
-    register: function () {
+    async register () {
       const data = {
         username: this.name,
         email: this.email,
         password1: this.password,
         password2: this.password_confirmation
       }
+      const isFormCorrect = await this.v$.$validate()
+      if (!isFormCorrect) return
       this.$store.dispatch('register', data)
         .then((res) => {
           console.log(res)
           this.$router.push('/login')
         })
         .catch(err => console.log(err))
+    }
+  },
+  setup () {
+    return {
+      v$: useVuelidate()
     }
   }
 }
@@ -117,5 +142,14 @@ export default {
 .register__input:focus::placeholder {
   color: #9788B8;
   opacity: .4;
+}
+.input-error, .input-error:focus {
+  outline: 1.4px solid #ee3f58;
+}
+.error {
+  color: #ee3f58;
+  font-size: 0.875rem;
+  line-height: 20px;
+  text-align: start;
 }
 </style>
