@@ -26,7 +26,7 @@
 
 <script>
 import useVuelidate from '@vuelidate/core'
-import { required, minLength, email, alpha, alphaNum, sameAs } from '@vuelidate/validators'
+import { required, minLength, email, alphaNum, sameAs } from '@vuelidate/validators'
 export default {
   name: 'LoginForm',
   data () {
@@ -39,7 +39,12 @@ export default {
   },
   validations () {
     return {
-      name: { required, alpha },
+      name: {
+        required,
+        username (value) {
+          return /^[A-z]+[0-9]*/.test(value)
+        }
+      },
       email: { required, email },
       password: { required, alphaNum, min: minLength(8) },
       password_confirmation: { required, sameAs: sameAs(this.password) }

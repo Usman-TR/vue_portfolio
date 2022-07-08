@@ -26,7 +26,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import useVuelidate from '@vuelidate/core'
-import { required, minLength, or, email, alpha, alphaNum } from '@vuelidate/validators'
+import { required, minLength, alphaNum } from '@vuelidate/validators'
 export default {
   name: 'LoginForm',
   data () {
@@ -56,7 +56,12 @@ export default {
   },
   validations () {
     return {
-      username: { required, or: or(email, alpha), min: minLength(4) },
+      username: {
+        required,
+        name (value) {
+          return /^[A-z]+[0-9]*/.test(value)
+        }
+      },
       password: { required, min: minLength(8), alphaNum }
     }
   },
@@ -64,6 +69,9 @@ export default {
     return {
       v$: useVuelidate()
     }
+  },
+  created () {
+    this.$store.dispatch('resetAuthStatus')
   }
 }
 </script>
@@ -138,7 +146,7 @@ export default {
   font-size: 0.875rem;
 }
 .input-error, .input-error:focus {
-  outline: 1.4px solid red;
+  outline: 1.35px solid red;
 }
 .error {
   color: red
