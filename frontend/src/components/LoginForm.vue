@@ -146,9 +146,11 @@ export default {
   font-size: 0.875rem;
 }
 .input-error, .input-error:focus {
-  outline: 1.35px solid red;
+  outline: 1.35px solid #ee3f58;
 }
 .error {
-  color: red
+  color: #ee3f58;
+  font-size: 1rem;
+  line-height: 20px;
 }
 </style>
