@@ -32,8 +32,25 @@
             </span>
       </p>
       <div class="toogle_sections_container">
-          <p>Описание</p>
-          <p class="book_page_description">{{book.description}}</p>
+          <div class="tabs">
+            <div class="tab" @click="setActiveTab('desc')" :class="{'tab_active': activeTab === 'desc'}">Аннотация</div>
+            <div class="tab" @click="setActiveTab('about')" :class="{'tab_active': activeTab === 'about'}">О книге</div>
+          </div>
+          <p class="book_page_description tab-content" v-show="activeTab === 'desc'">{{book.description}}</p>
+          <div class="tab-content" v-show="activeTab === 'about'">
+            <div class="about-row">
+              <div class="about__title">Издательство</div>
+              <div class="about__subtitle">Питер</div>
+            </div>
+            <div class="about-row">
+              <div class="about__title">Год выпуска</div>
+              <div class="about__subtitle">2017 г.</div>
+            </div>
+            <div class="about-row">
+              <div class="about__title">Язык</div>
+              <div class="about__subtitle">Русский</div>
+            </div>
+          </div>
           <p><a target="_blank" v-bind:href=createPreviewLink(book.GoogleId)>Ссылка на книгу</a></p>
         </div>
       <div v-if="popup_is_active" class="alert d-flex align-items-center" role="alert">
@@ -75,7 +92,8 @@ export default {
       show_expert_container: false,
       experts: [],
       selectedExpert: '',
-      checkSend: false
+      checkSend: false,
+      activeTab: 'desc'
     }
   },
   mounted () {
@@ -161,7 +179,6 @@ export default {
       const ISBN = this.getISBN(book.industryIdentifiers)
 
       // etag
-      console.log(book)
       console.log(book.preview)
       const GoogleId = this.getUrlVars(book.preview).id
       // title
@@ -172,7 +189,7 @@ export default {
       const preview = book.imageLink
       console.log(GoogleId, ISBN, title)
 
-      return { GoogleId: GoogleId, ISBN: ISBN, title: title, preview: preview, description: description, authors: authors }
+      return { GoogleId, ISBN, title, preview, description, authors }
     },
     getISBN (arr) {
       try {
@@ -193,6 +210,9 @@ export default {
     },
     delay (time) {
       return new Promise(resolve => setTimeout(resolve, time))
+    },
+    setActiveTab (value) {
+      this.activeTab = value
     }
   }
 }
@@ -274,7 +294,8 @@ export default {
   color: #000000;
 }
 .toogle_sections_container {
-  border-top: 1px solid #E5E5EA;;
+  border-top: 1px solid #E5E5EA;
+  padding: 10px 19px;
 }
 .book_page_description {
   font-weight: 400;
@@ -290,7 +311,6 @@ letter-spacing: 0.25px;
 
 color: rgba(60, 60, 67, 0.6);
 text-align: left;
-margin: 25px 19px;
 }
 
 .book_page a {
@@ -385,12 +405,41 @@ color: #F2F2F7;
 .select_expert_container_form_label {
   font-size: 16px;
 line-height: 24px;
-/* identical to box height, or 150% */
-
 display: flex;
 align-items: center;
 letter-spacing: 0.44px;
-
 color: #000000;
+}
+.tabs {
+  display: flex;
+}
+.tab {
+  letter-spacing: 0.15px;
+  color: rgba(60, 60, 67, 0.18);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+  cursor: pointer;
+  margin-right: 30px;
+}
+.tab_active {
+  color: #2C2C2E;
+  border-bottom: 1px solid #B195EB;
+}
+.tab-content {
+  margin: 25px 0;
+}
+.about-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.about__title {
+  font-size: 14px;
+  color: rgba(60, 60, 67, 0.6);
+}
+.about__subtitle {
+  font-size: 14px;
+  color: #48484A;
 }
 </style>
