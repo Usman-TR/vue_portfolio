@@ -1,3 +1,4 @@
+from statistics import mode
 from turtle import title
 from django.db import models
 from django.db.models.fields import URLField
@@ -8,6 +9,9 @@ class Book(models.Model):
     ISBN = models.CharField(max_length=50)
     GoogleId = models.CharField(max_length=150, default='')
     numberVoters = models.FloatField(default=0)
+    language = models.CharField(default="no language", max_length=14)
+    publisher = models.CharField(default="no publisher",max_length=70)
+    publishedDate = models.CharField(default="no date",max_length=15)
     title = models.CharField(default='no title', max_length=150)
     authors = models.CharField(default='no authors', max_length=300)
     description = models.CharField(default='no description', max_length=4000)

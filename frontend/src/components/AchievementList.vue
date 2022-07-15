@@ -75,7 +75,8 @@ export default {
 .cards-container-row {
   flex-flow: row wrap;
   overflow-y: hidden;
-  padding: 10px 0 20px;
+  padding-top: 10px;
+  padding-bottom: 20px;
   max-height: 230px;
 }
 .card-row {

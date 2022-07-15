@@ -21,6 +21,7 @@ export default {
       const authors = element.volumeInfo.authors
       const description = element.volumeInfo.description
       const publishedDate = element.volumeInfo.publishedDate
+      const publisher = element.volumeInfo.publisher
       const previewLink = element.volumeInfo.previewLink
       const language = element.volumeInfo.language
       const canonicalVolumeLink = element.volumeInfo.canonicalVolumeLink
@@ -34,15 +35,16 @@ export default {
         }
       }
       exportBooks.push({
-        title: title,
-        authors: authors,
-        description: description,
-        publishedDate: publishedDate,
-        previewLink: previewLink,
-        language: language,
-        canonicalVolumeLink: canonicalVolumeLink,
-        imageLink: imageLink,
-        industryIdentifiers: industryIdentifiers
+        title,
+        authors,
+        description,
+        publishedDate,
+        publisher,
+        previewLink,
+        language,
+        canonicalVolumeLink,
+        imageLink,
+        industryIdentifiers
       })
     })
     return exportBooks
@@ -58,7 +60,10 @@ export default {
       title: data.title,
       authors: data.authors,
       description: data.description,
-      preview: data.preview
+      preview: data.preview,
+      language: data.language,
+      publisher: data.publisher,
+      publishedDate: data.publishedDate
     })
   },
   addMarkRequest (username, GoogleId, expert) {
