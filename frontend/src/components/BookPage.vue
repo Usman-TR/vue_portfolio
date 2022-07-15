@@ -40,15 +40,15 @@
           <div class="tab-content" v-show="activeTab === 'about'">
             <div class="about-row">
               <div class="about__title">Издательство</div>
-              <div class="about__subtitle">Питер</div>
+              <div class="about__subtitle">{{book.publisher ? book.publisher : 'Неизвестно'}}</div>
             </div>
             <div class="about-row">
               <div class="about__title">Год выпуска</div>
-              <div class="about__subtitle">2017 г.</div>
+              <div class="about__subtitle">{{ book.publishedDate ? book.publishedDate + 'г.' : 'Неизвестно' }} </div>
             </div>
             <div class="about-row">
               <div class="about__title">Язык</div>
-              <div class="about__subtitle">Русский</div>
+              <div class="about__subtitle">{{ book.language ? book.language : 'Неизвестно' }}</div>
             </div>
           </div>
           <p><a target="_blank" v-bind:href=createPreviewLink(book.GoogleId)>Ссылка на книгу</a></p>
@@ -187,9 +187,12 @@ export default {
       const description = book.description
       const authors = book.authors
       const preview = book.imageLink
+      const language = book.language
+      const publishedDate = book.publishedDate.slice(0, 4)
+      const publisher = book.publisher
       console.log(GoogleId, ISBN, title)
 
-      return { GoogleId, ISBN, title, preview, description, authors }
+      return { GoogleId, ISBN, title, preview, description, authors, language, publishedDate, publisher }
     },
     getISBN (arr) {
       try {

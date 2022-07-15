@@ -60,7 +60,10 @@ export default {
       title: data.title,
       authors: data.authors,
       description: data.description,
-      preview: data.preview
+      preview: data.preview,
+      language: data.language,
+      publisher: data.publisher,
+      publishedDate: data.publishedDate
     })
   },
   addMarkRequest (username, GoogleId, expert) {
