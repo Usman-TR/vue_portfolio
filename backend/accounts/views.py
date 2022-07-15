@@ -198,6 +198,9 @@ def add_book(request, username):
     authors = data.get('authors', '')
     description = data.get('description', '')
     preview = data.get('preview', '')
+    language = data.get('language', '')
+    publisher = data.get('publisher', '')
+    publishedDate = data.get('publishedDate', '')
 
 
     print('*'*5, GoogleId, ISBN, title)
@@ -205,7 +208,7 @@ def add_book(request, username):
     user = CustomUser.objects.filter(username=username).first()
     b = Book.objects.filter(GoogleId=GoogleId).first()
     if b is None:
-        b = Book(GoogleId=GoogleId, ISBN=ISBN, title=title, authors=authors, description=description, preview=preview)
+        b = Book(GoogleId=GoogleId, ISBN=ISBN, title=title, authors=authors, description=description, preview=preview, language=language, publishedDate=publishedDate, publisher=publisher)
         b.save()
         user.books.add(b)
         user.save()
@@ -386,7 +389,10 @@ def get_popular_books(request):
                     "title": book.title,
                     "description": book.description,
                     "authors": book.authors,
-                    "preview": book.preview
+                    "preview": book.preview,
+                    "language": book.language,
+                    "publisher": book.publisher,
+                    "publishedDate": book.publishedDate
                 }
                 for book in popular_books
             ]
@@ -409,7 +415,10 @@ def get_recomendation_books(request):
                     "title": book.title,
                     "description": book.description,
                     "authors": book.authors,
-                    "preview": book.preview
+                    "preview": book.preview,
+                    "language": book.language,
+                    "publisher": book.publisher,
+                    "publishedDate": book.publishedDate
                 }
                 for book in recomendation.books.all()
             ]
