@@ -126,6 +126,9 @@ export default {
         description: bookParsed.description,
         title: bookParsed.title,
         preview: bookParsed.imageLink,
+        language: bookParsed.language,
+        publishedDate: bookParsed.publishedDate.slice(0, 4),
+        publisher: bookParsed.publisher,
         GoogleId: this.getBookSaveData(bookParsed).GoogleId
       }
       return book
@@ -181,7 +184,6 @@ export default {
       const description = book.description
       const authors = book.authors
       const preview = book.imageLink
-
       return { GoogleId: GoogleId, ISBN: ISBN, title: title, preview: preview, description: description, authors: authors }
     },
     addBook (data) {
