@@ -1,35 +1,41 @@
 <template>
   <div class="register">
-      <h4>Регистрация</h4>
-      <form class="form" @submit.prevent="register">
+    <h4>Регистрация</h4>
+    <form class="form" @submit.prevent="register">
       <fieldset class="form-field">
         <label for="name">Имя</label>
-            <input :class="{'input-error': v$.name.$errors.length}" class="register__input" id="name" type="text" v-model="name" required autofocus>
+        <input :class="{ 'input-error': v$.name.$errors.length }" class="register__input" id="name" type="text"
+          v-model="name" required autofocus>
       </fieldset>
       <fieldset class="form-field">
-        <label for="email" >Адрес электронной почты</label>
-            <input :class="{'input-error': v$.email.$errors.length}" class="register__input" id="email" type="email" v-model="email" required>
-            <div class="error" v-if="v$.email.$errors.length">Проверьте правильность введённого адреса электронной почты</div>
+        <label for="email">Адрес электронной почты</label>
+        <input :class="{ 'input-error': v$.email.$errors.length }" class="register__input" id="email" type="email"
+          v-model="email" required>
+        <div class="error" v-if="v$.email.$errors.length">Проверьте правильность введённого адреса электронной почты
+        </div>
       </fieldset>
       <fieldset class="form-field">
         <label for="password">Пароль</label>
-            <input :class="{'input-error': v$.password.$errors.length}" class="register__input" id="password" type="password" v-model="password" required>
-            <div class="error" v-if="v$.password.$errors.length">Длина пароля не может быть меньше 8 символов</div>
+        <input :class="{ 'input-error': v$.password.$errors.length }" class="register__input" id="password"
+          type="password" v-model="password" required>
+        <div class="error" v-if="v$.password.$errors.length">Длина пароля не может быть меньше 8 символов</div>
       </fieldset>
       <fieldset class="form-field">
         <label for="password-confirm">Подтвердить пароль</label>
-            <input :class="{'input-error': v$.password_confirmation.$errors.length}" class="register__input" id="password-confirm" type="password" v-model="password_confirmation" required>
-            <div class="error" v-if="v$.password_confirmation.$errors.length">Введенные пароли не совпадают</div>
+        <input :class="{ 'input-error': v$.password_confirmation.$errors.length }" class="register__input"
+          id="password-confirm" type="password" v-model="password_confirmation" required>
+        <div class="error" v-if="v$.password_confirmation.$errors.length">Введенные пароли не совпадают</div>
       </fieldset>
-            <button class="register__btn" type="submit">Зарегистрироваться</button>
-      </form>
-        <p>newTestUser <br> newTestUser@mail.com<br> newTestUserPassword12345</p>
-    </div>
+      <button class="register__btn" type="submit">Зарегистрироваться</button>
+    </form>
+    <p>newTestUser <br> newTestUser@mail.com<br> newTestUserPassword12345</p>
+  </div>
 </template>
 
 <script>
 import useVuelidate from '@vuelidate/core'
 import { required, minLength, email, alphaNum, sameAs } from '@vuelidate/validators'
+import userService from '../services/userService'
 export default {
   name: 'LoginForm',
   data () {
@@ -63,12 +69,12 @@ export default {
       }
       const isFormCorrect = await this.v$.$validate()
       if (!isFormCorrect) return
-      this.$store.dispatch('register', data)
-        .then((res) => {
-          console.log(res)
-          this.$router.push('/login')
-        })
-        .catch(err => console.log(err))
+      userService.register(data).then((res) => {
+        console.log(res)
+        this.$router.push('/login')
+      }).catch((err) => {
+        console.error(err)
+      })
     }
   },
   setup () {
@@ -84,6 +90,7 @@ export default {
   max-width: 375px;
   margin-inline: auto;
 }
+
 .register__btn {
   display: grid;
   place-content: center;
@@ -95,10 +102,12 @@ export default {
   height: 2.6rem;
   margin-top: 1.5rem;
 }
+
 .register__btn:hover {
   color: #835ED2;
   background-color: #EEE7FF;
 }
+
 .form {
   display: flex;
   flex-direction: column;
@@ -108,6 +117,7 @@ export default {
   width: 100%;
   padding-inline: 1rem;
 }
+
 .form-field {
   display: flex;
   flex-direction: column;
@@ -115,9 +125,11 @@ export default {
   gap: 4px;
   width: 100%;
 }
+
 .form-field label {
   font-weight: 700;
 }
+
 .register__input {
   padding: 8px;
   font-size: 1rem;
@@ -127,25 +139,32 @@ export default {
   background: #FAF7FF;
   width: 100%;
 }
+
 .register__input:hover {
   border-color: #ae8cf7;
-    background-color: #fff;
+  background-color: #fff;
 }
+
 .register__input::placeholder {
-    color: #9788B8;
-    opacity: 1;
+  color: #9788B8;
+  opacity: 1;
 }
+
 .register__input:focus {
   outline: 1px solid #835ED2;
-    background-color: #fff;
+  background-color: #fff;
 }
+
 .register__input:focus::placeholder {
   color: #9788B8;
   opacity: .4;
 }
-.input-error, .input-error:focus {
+
+.input-error,
+.input-error:focus {
   outline: 1.4px solid #ee3f58;
 }
+
 .error {
   color: #ee3f58;
   font-size: 0.875rem;
