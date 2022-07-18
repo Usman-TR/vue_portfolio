@@ -1,63 +1,62 @@
 <template>
-    <div class="book-list-container">
-        <div class="list_header">
-          <h3>{{  list_title  }}</h3>
-          <h4 class="sub_title" v-if="sub_title">{{  sub_title  }}</h4>
-          <p class="list_toogle" v-on:click="this.show_full = !this.show_full"><span v-if="!this.show_full">Показать все</span><span v-else>Показать меньше</span> </p>
-        </div>
-        <div v-if="show_full" class="cards-container">
-              <MDBCard style="width: 18rem" v-for="book in books" :key="book.title" v-on:click="showBookPage(book)">
-                <MDBCardImg v-if="book.preview" top v-bind:src=book.preview class="img-fluid" />
-                <img v-else top alt="Vue logo" src="../assets/default-book.png">
-                <MDBCardBody>
-                <MDBCardTitle>{{  cutText(book.title)  }}</MDBCardTitle>
-                <MDBCardText>
-                  <span v-if="book.description">
-                    {{  cutText(book.description)  }}
-                  </span>
-                </MDBCardText>
-                </MDBCardBody>
-                <MDBCardText>
-                  <span v-if="book.authors">
-                  {{  formateAuthors(book.authors)  }}
-                  </span>
-                  </MDBCardText>
-                <!-- <MDBCardFooter class="text-muted text-muted-DB"> -->
-                  <!-- <MDBCardLink v-bind:href=createPreviewLink(book.GoogleId)>Перейти</MDBCardLink> -->
-                  <!-- <MDBCardLink v-on:click="addBook(getBookSaveData(book))">Добавить</MDBCardLink> -->
-                <!-- </MDBCardFooter> -->
-            </MDBCard>
-        </div>
-        <div :id="list_id" v-if="!show_full" class="carousel carousel-dark slide" data-bs-ride="carousel">
-  <div class="carousel-indicators">
-    <button type="button" :data-bs-target="'#' + list_id" :data-bs-slide-to="idx" aria-label="" v-for="(book, idx) in limitItems(books)" :key="book.title" :class="{ active: idx==0 }"></button>
-  </div>
-  <div class="carousel-inner">
-    <div class="carousel-item" data-bs-interval="5000"
-      v-on:click="showBookPage(book)"
-      v-for="(book, idx) in limitItems(books)"
-      :key="book.title"
-      :class="{ active: idx==0 }"
-      >
-      <img v-if="book.preview" top v-bind:src=book.preview class="img-fluid" />
-      <img v-else top alt="Vue logo" src="../assets/default-book.png">
-      <div class="carousel-caption-custom">
-        <h5>{{cutText(book.title)}}</h5>
-        <p v-if="book.description">{{  cutText(book.description)  }}</p>
+  <div class="book-list-container">
+    <div class="list_header">
+      <h3>{{ list_title }}</h3>
+      <h4 class="sub_title" v-if="sub_title">{{ sub_title }}</h4>
+      <p class="list_toogle" v-on:click="this.show_full = !this.show_full"><span v-if="!this.show_full">Показать
+          все</span><span v-else>Показать меньше</span> </p>
+    </div>
+    <div v-if="show_full" class="cards-container">
+      <MDBCard style="width: 18rem" v-for="book in books" :key="book.title" v-on:click="showBookPage(book)">
+        <MDBCardImg v-if="book.preview" top v-bind:src=book.preview class="img-fluid" />
+        <img v-else top alt="Vue logo" src="../assets/default-book.png">
+        <MDBCardBody>
+          <MDBCardTitle>{{ cutText(book.title) }}</MDBCardTitle>
+          <MDBCardText>
+            <span v-if="book.description">
+              {{ cutText(book.description) }}
+            </span>
+          </MDBCardText>
+        </MDBCardBody>
+        <MDBCardText>
+          <span v-if="book.authors">
+            {{ formateAuthors(book.authors) }}
+          </span>
+        </MDBCardText>
+        <!-- <MDBCardFooter class="text-muted text-muted-DB"> -->
+        <!-- <MDBCardLink v-bind:href=createPreviewLink(book.GoogleId)>Перейти</MDBCardLink> -->
+        <!-- <MDBCardLink v-on:click="addBook(getBookSaveData(book))">Добавить</MDBCardLink> -->
+        <!-- </MDBCardFooter> -->
+      </MDBCard>
+    </div>
+    <div :id="list_id" v-if="!show_full" class="carousel carousel-dark slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button type="button" :data-bs-target="'#' + list_id" :data-bs-slide-to="idx" aria-label=""
+          v-for="(book, idx) in limitItems(books)" :key="book.title" :class="{ active: idx == 0 }"></button>
       </div>
+      <div class="carousel-inner">
+        <div class="carousel-item" data-bs-interval="5000" v-on:click="showBookPage(book)"
+          v-for="(book, idx) in limitItems(books)" :key="book.title" :class="{ active: idx == 0 }">
+          <img v-if="book.preview" top v-bind:src=book.preview class="img-fluid" />
+          <img v-else top alt="Vue logo" src="../assets/default-book.png">
+          <div class="carousel-caption-custom">
+            <h5>{{ cutText(book.title) }}</h5>
+            <p v-if="book.description">{{ cutText(book.description) }}</p>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" :data-bs-target="'#' + list_id" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" :data-bs-target="'#' + list_id" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
     </div>
+    <BookPage :book="active_book" v-if="BookPageActive" @hideBookPage="hideBookPage()"
+      :isInUserBooks="userBookIds.includes(active_book.GoogleId)" />
   </div>
-  <button class="carousel-control-prev" type="button" :data-bs-target="'#' + list_id" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" :data-bs-target="'#' + list_id" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-</div>
-<BookPage :book="active_book" v-if="BookPageActive" @hideBookPage="hideBookPage()" :isInUserBooks="userBookIds.includes(active_book.GoogleId)" />
-    </div>
 </template>
 
 <script>
@@ -190,43 +189,50 @@ export default {
 </script>
 
 <style>
-.book-list-container{
-    width: 100%;
-    position: relative;
+.book-list-container {
+  width: 100%;
+  position: relative;
 }
-.book-item{
-    text-align: center;
+
+.book-item {
+  text-align: center;
 }
-.cards-container{
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    gap: 40px;
-    margin: 20px 30px;
+
+.cards-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 40px;
+  margin: 20px 30px;
 }
-.cards-container img{
+
+.cards-container img {
   object-fit: cover;
   width: 100%;
   height: 250px;
   max-height: 300px;
 }
+
 .carousel-item {
   height: 200px;
 }
-.carousel-item img{
+
+.carousel-item img {
   height: 150px;
   position: absolute;
   top: 10px;
   left: 10px;
-  max-width: 40%;
+  max-width: 35%;
 }
+
 .carousel-caption-custom {
   display: block;
   position: absolute;
   top: 10px;
   left: 40%;
 }
-.carousel-caption-custom h5{
+
+.carousel-caption-custom h5 {
   font-weight: 500;
   font-size: 14px;
   line-height: 18px;
@@ -236,6 +242,7 @@ export default {
   text-align: left;
 
 }
+
 .carousel-caption-custom p {
   font-weight: 400;
   font-size: 12px;
@@ -246,6 +253,7 @@ export default {
   color: rgba(60, 60, 67, 0.6);
   text-align: left;
 }
+
 .list_toogle {
   position: relative;
   top: 8px;
@@ -259,9 +267,11 @@ export default {
   letter-spacing: 0.4px;
   color: #835ED2;
 }
+
 .list_header h3 {
   padding-left: 10px;
 }
+
 .list_header {
   display: flex;
   justify-content: space-between;
@@ -289,7 +299,8 @@ export default {
   justify-content: space-around;
   background: #fff !important;
 }
-.text-muted-DB > *{
+
+.text-muted-DB>* {
   font-weight: 500;
   font-size: 11px;
   line-height: 11px;
@@ -306,6 +317,7 @@ export default {
   padding: 8px 16px;
   text-decoration: none;
 }
+
 .card {
   border: none !important;
   filter: drop-shadow(0px 4px 8px rgba(176, 65, 118, 0.26));
