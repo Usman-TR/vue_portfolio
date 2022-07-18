@@ -318,6 +318,49 @@ def get_progress(request, username):
 
     return JsonResponse({"progress": progress, 'ungraded': len(my_books)/total_profile_books, 'total': total_profile_books, 'total_graded': progress_counter})
 
+def get_progress_all(request, username):
+    print('****', username)
+    user = CustomUser.objects.filter(username=username).first()
+    profiles = Profile.objects.all()
+    marks = Ratings.objects.filter(user=user).all()
+
+    marked_list = [] # list of marked book ids
+    my_books = {} # dict of lists
+    all_profile_books = {}
+    progress_counter = {}
+
+    for profile in profiles:
+        my_books[profile.id] = []
+        all_profile_books[profile.id] = profile.books.all()
+        progress_counter[profile.id] = []
+        for profile_book in profile.books.all():
+            if profile_book in user.books.all():
+                my_books[profile.id].append(profile_book)
+
+    for m in marks:
+        marked_list.append(m.book.id)
+
+    marked_set = set(marked_list)
+
+    for key in all_profile_books:
+        for b in all_profile_books[key]:
+            if b.id in marked_set:
+                progress_counter[key] += 1
+
+    return JsonResponse(
+        {
+            "progress": [
+                {
+                    'id': key,
+                    'name': profiles.filter(id=key).first().title,
+                    'currentPage0': len(my_books[key]),
+                    'allPages': len(all_profile_books[key])
+                }
+                for key in my_books
+            ]
+        }
+    )
+
 
 def get_achivements(request, username):
     achivements = CustomUser.objects.filter(username=username).first().achivements.all()
