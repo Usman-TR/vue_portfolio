@@ -28,5 +28,9 @@ export default {
   deleteBook (username, bookId) {
     return api.delete(`/users/${username}/${bookId}`)
       .then(response => response.data)
+  },
+  getUserStatistics (username) {
+    return api.get(`/api/v1/users/${username}/statistics`)
+      .then(res => res.data)
   }
 }

@@ -13,6 +13,7 @@
 
 <script>
 import StaticItem from '../components/StaticItem.vue'
+// import userService from '../services/userService'
 export default {
   components: { StaticItem },
   data () {
@@ -22,61 +23,67 @@ export default {
           id: 1,
           title: 'Информационные технологии',
           status: 'Прочитано',
-          progress: 25,
-          pages: '54/300'
+          currentPage: 54,
+          allPages: 300
         },
         {
           id: 2,
           title: 'Машинное обучение',
           status: 'Читаю',
-          progress: 48,
-          pages: '222/224'
+          currentPage: 222,
+          allPages: 224
         },
         {
           id: 3,
           title: 'Промышленные технологии',
           status: 'Прочитано',
-          progress: 100,
-          pages: '59/152'
+          currentPage: 59,
+          allPages: 152
         },
         {
           id: 4,
           title: 'Информационные технологии',
           status: 'Прочитано',
-          progress: 90,
-          pages: '54/300'
+          currentPage: 54,
+          allPages: 300
         },
         {
           id: 5,
           title: 'Машинное обучение',
           status: 'Читаю',
-          progress: 12,
-          pages: '222/224'
+          currentPage: 222,
+          allPages: 224
         },
         {
           id: 6,
           title: 'Промышленные технологии',
           status: 'Прочитано',
-          progress: 33,
-          pages: '59/152'
+          currentPage: 59,
+          allPages: 152
         },
         {
           id: 51,
           title: 'Машинное обучение',
           status: 'Читаю',
-          progress: 65,
-          pages: '222/224'
+          currentPage: 222,
+          allPages: 224
         },
         {
           id: 62,
           title: 'Промышленные технологии',
           status: 'Прочитано',
-          progress: 75,
-          pages: '59/152'
+          currentPage: 59,
+          allPages: 152
         }
       ]
     }
   }
+  // created () {
+  //   userService.getUserStatistics
+  //     .then(data => {
+  //       this.staticItems = data
+  //     })
+  // }
 }
 </script>
 

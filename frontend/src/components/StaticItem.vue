@@ -3,10 +3,10 @@
     <div class="static-item__title">{{staticItem.title}}</div>
     <div class="static-item-content">
       <div class="progressbar">
-        <div class="progressbar__value" :style="{width: staticItem.progress + '%'}"></div>
+        <div class="progressbar__value" :style="{width: staticProgress}"></div>
       </div>
       <div class="static-item__label">{{staticItem.status}}</div>
-      <div class="static-item__label">{{staticItem.pages}}</div>
+      <div class="static-item__label">{{`${staticItem.currentPage}/${staticItem.allPages}`}}</div>
     </div>
   </div>
 </template>
@@ -17,6 +17,11 @@ export default {
     staticItem: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    staticProgress () {
+      return ((this.staticItem.currentPage / this.staticItem.allPages) * 100) + '%'
     }
   }
 }
