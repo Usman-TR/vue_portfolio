@@ -13,77 +13,21 @@
 
 <script>
 import StaticItem from '../components/StaticItem.vue'
-// import userService from '../services/userService'
+import userService from '../services/userService'
 export default {
   components: { StaticItem },
   data () {
     return {
-      staticItems: [
-        {
-          id: 1,
-          title: 'Информационные технологии',
-          status: 'Прочитано',
-          currentPage: 54,
-          allPages: 300
-        },
-        {
-          id: 2,
-          title: 'Машинное обучение',
-          status: 'Читаю',
-          currentPage: 222,
-          allPages: 224
-        },
-        {
-          id: 3,
-          title: 'Промышленные технологии',
-          status: 'Прочитано',
-          currentPage: 59,
-          allPages: 152
-        },
-        {
-          id: 4,
-          title: 'Информационные технологии',
-          status: 'Прочитано',
-          currentPage: 54,
-          allPages: 300
-        },
-        {
-          id: 5,
-          title: 'Машинное обучение',
-          status: 'Читаю',
-          currentPage: 222,
-          allPages: 224
-        },
-        {
-          id: 6,
-          title: 'Промышленные технологии',
-          status: 'Прочитано',
-          currentPage: 59,
-          allPages: 152
-        },
-        {
-          id: 51,
-          title: 'Машинное обучение',
-          status: 'Читаю',
-          currentPage: 222,
-          allPages: 224
-        },
-        {
-          id: 62,
-          title: 'Промышленные технологии',
-          status: 'Прочитано',
-          currentPage: 59,
-          allPages: 152
-        }
-      ]
+      staticItems: []
     }
+  },
+  created () {
+    this.staticItems = userService.getUserStatistics(this.$store.state.user.username)
+      .then(data => {
+        this.staticItems = data.progress
+      })
   }
-  // created () {
-  //   userService.getUserStatistics
-  //     .then(data => {
-  //       this.staticItems = data
-  //     })
-  // }
+
 }
 </script>
 
