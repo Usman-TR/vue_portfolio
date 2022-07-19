@@ -42,11 +42,13 @@
         <div v-if="this.experts.length != 0">{{this.experts}}</div>
       </div> -->
       <div class="profressBarFull" v-if="!editIsActive">
-        <p :class="'profressBar'" v-bind:style="{ width: progress + '%' }"><span class="progressLabel">{{ progress
-        }}%</span></p>
+        <p :class="'profressBar'" v-bind:style="{ width: progress + '%' }"><span v-if="progress > 0"
+            class="progressLabel">{{ progress
+            }}%</span></p>
         <p :class="'profressBarUngraded'" v-bind:style="{ width: ungraded + '%' }"></p>
         <div class="progress_year">{{ new Date().getFullYear() }}</div>
-        <div class="progress_numbers">{{ total_graded }}/{{ total_profile_books }} ({{ progress }}%)</div>
+        <div class="progress_numbers">{{ total_graded }}/{{ total_profile_books }} ({{ progress }}%)
+        </div>
       </div>
       <AchievementList v-bind:achievements=userAchievements v-if="!editIsActive" />
       <BookListParser list_id="markedListID124" v-bind:books=getMarkedBookList() v-bind:list_title='marked_list_title'
