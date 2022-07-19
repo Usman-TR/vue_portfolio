@@ -50,11 +50,11 @@
         <div class="progress_numbers">{{ total_graded }}/{{ total_profile_books }} ({{ progress }}%)
         </div>
       </div>
-      <AchievementList v-bind:achievements=userAchievements v-if="!editIsActive" />
+      <AchievementList v-bind:achievements=userAchievements v-if="!editIsActive && userAchievements.length" />
       <BookListParser list_id="markedListID124" v-bind:books=getMarkedBookList() v-bind:list_title='marked_list_title'
-        v-if="!editIsActive" v-bind:userBookIds=userBookIds />
+        v-if="!editIsActive && getMarkedBookList().length" v-bind:userBookIds=userBookIds />
       <BookListParser list_id="unMarkedListID224" v-bind:books=getUnMarkedBookList() v-bind:list_title=usernames_list
-        v-if="!editIsActive" v-bind:userBookIds=userBookIds />
+        v-if="!editIsActive && getUnMarkedBookList().length" v-bind:userBookIds=userBookIds />
     </span>
     <span v-else>
       <h1>Авторизуйтесь для доступа</h1>
