@@ -60,7 +60,8 @@
     <div :id="list_id" v-if="!show_full" class="carousel carousel-dark slide" data-bs-ride="carousel">
       <div class="carousel-indicators">
         <button type="button" :data-bs-target="'#' + list_id" :data-bs-slide-to="idx" aria-label=""
-          v-for="(book, idx) in limitItems(books)" :key="'slider' + book.title" :class="{ active: idx == 0 }"></button>
+          v-for="(book, idx) in limitItems(books, 6)" :key="'slider' + book.title"
+          :class="{ active: idx == 0 }"></button>
       </div>
       <div class="carousel-inner">
         <div class="carousel-item" data-bs-interval="5000" v-on:click="showBookPage(book)"
