@@ -40,22 +40,28 @@
     </p>
     <div class="toogle_sections_container">
       <div class="tabs">
-        <div class="tab" @click="setActiveTab('desc')" :class="{ 'tab_active': activeTab === 'desc' }">Аннотация</div>
-        <div class="tab" @click="setActiveTab('about')" :class="{ 'tab_active': activeTab === 'about' }">О книге</div>
+        <div class="tab" @click="setActiveTab('desc')" :class="{ 'tab_active': activeTab === 'desc' }">Описание</div>
+        <div class="tab" @click="setActiveTab('about')" :class="{ 'tab_active': activeTab === 'about' }"
+          v-if="isAboutActive(book)">О книге</div>
       </div>
       <p class="book_page_description tab-content" v-show="activeTab === 'desc'">{{ book.description }}</p>
       <div class="tab-content" v-show="activeTab === 'about'">
-        <div class="about-row">
+        <div class="about-row" v-if="isPublisherExists()">
           <div class="about__title">Издательство</div>
-          <div class="about__subtitle">{{ book.publisher ? book.publisher : 'Неизвестно' }}</div>
+          <div class="about__subtitle">{{ isPublisherExists() ? (book.publisher.length > 28 ? book.publisher.slice(0,
+              29) +
+              '...' : book.publisher) : 'Неизвестно'
+          }}</div>
         </div>
-        <div class="about-row">
+        <div class="about-row" v-if="isPublishedDateExists()">
           <div class="about__title">Год выпуска</div>
-          <div class="about__subtitle">{{ book.publishedDate ? book.publishedDate + 'г.' : 'Неизвестно' }} </div>
+          <div class="about__subtitle">{{ isPublishedDateExists() ? book.publishedDate +
+              'г.' : 'Неизвестно'
+          }} </div>
         </div>
-        <div class="about-row">
+        <div class="about-row" v-if="isLanguageExists()">
           <div class="about__title">Язык</div>
-          <div class="about__subtitle">{{ book.language ? book.language : 'Неизвестно' }}</div>
+          <div class="about__subtitle">{{ isLanguageExists() ? book.language : 'Неизвестно' }}</div>
         </div>
       </div>
       <p><a target="_blank" v-bind:href=createPreviewLink(book.GoogleId)>Ссылка на книгу</a></p>
@@ -229,6 +235,19 @@ export default {
     },
     setActiveTab (value) {
       this.activeTab = value
+    },
+    isAboutActive () {
+      return !!(this.isLanguageExists() && this.isPublishedDateExists() && this.isPublisherExists())
+    },
+    isPublishedDateExists () {
+      console.log(this.book.publishedDate)
+      return !!(this.book.publishedDate && this.book.publishedDate !== 'no date')
+    },
+    isPublisherExists () {
+      return !!(this.book.publisher && this.book.publisher !== 'no publisher')
+    },
+    isLanguageExists () {
+      return !!(this.book.language && this.book.language !== 'no language')
     }
   }
 }
