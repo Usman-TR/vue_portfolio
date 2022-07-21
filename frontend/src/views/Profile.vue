@@ -1,7 +1,7 @@
 <template>
   <div class="Profile">
     <span v-if="this.$store.state.user.authentificated">
-      <div class="btn-group" v-if="!editIsActive">
+      <div class="btn-group" v-if="!(editIsActive || addAchievementIsActive || addSpecIsActive)">
         <button class="btn btn-sm button_menu" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           ...
         </button>
@@ -15,6 +15,31 @@
                 stroke-linejoin="round" />
             </svg>
             <span class="edit">Редактировать</span>
+          </li>
+          <li @click="addSpecIsActive = true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0.75 9L12 3L23.25 9L12 15L0.75 9Z" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M17.625 22.5V12L12 9" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path
+                d="M20.625 10.4V15.5114C20.6253 15.6731 20.573 15.8307 20.476 15.9601C19.8444 16.8005 17.18 19.875 12 19.875C6.82004 19.875 4.15558 16.8005 3.52402 15.9601C3.42699 15.8307 3.37469 15.6731 3.375 15.5114V10.4"
+                stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span class="spec">Добавить специализацию</span>
+          </li>
+          <li @click="addAchievementIsActive = true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M11.9995 16.5C16.1416 16.5 19.4995 13.1421 19.4995 9C19.4995 4.85786 16.1416 1.5 11.9995 1.5C7.85732 1.5 4.49945 4.85786 4.49945 9C4.49945 13.1421 7.85732 16.5 11.9995 16.5Z"
+                stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path
+                d="M11.9995 13.5C14.4847 13.5 16.4995 11.4853 16.4995 9C16.4995 6.51472 14.4847 4.5 11.9995 4.5C9.51417 4.5 7.49945 6.51472 7.49945 9C7.49945 11.4853 9.51417 13.5 11.9995 13.5Z"
+                stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M16.5 14.9995V22.5L11.9993 20.25L7.5 22.5V15.0002" stroke="black" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span class="achievement">Добавить достижения</span>
           </li>
           <li @click="logout">
             <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -30,18 +55,20 @@
                 d="M19.35 15.3827C19.1015 15.7141 18.6314 15.7813 18.3 15.5327C17.9686 15.2842 17.9015 14.8141 18.15 14.4827L19.35 15.3827ZM20.4 11.4827C20.6485 11.1514 21.1186 11.0842 21.45 11.3327C21.7814 11.5813 21.8485 12.0514 21.6 12.3827L20.4 11.4827ZM18.15 14.4827L20.4 11.4827L21.6 12.3827L19.35 15.3827L18.15 14.4827Z"
                 fill="black" />
             </svg>
-
             <span class="logout">Выйти</span>
           </li>
         </ul>
       </div>
-      <ProfileContainer v-bind:user=user v-if="!editIsActive" />
-      <EditProfileContainer v-bind:user=user v-else @closeEdit="this.editIsActive = false" />
+      <ProfileContainer v-bind:user=user v-if="!(editIsActive || addAchievementIsActive || addSpecIsActive)" />
+      <EditProfileContainer v-bind:user=user v-else-if="editIsActive" @closeEdit="this.editIsActive = false" />
+      <AchievementForm v-else-if="addAchievementIsActive" @close-achievement-form="addAchievementIsActive = false" />
+      <SpecForm v-else-if="addSpecIsActive" @close-spec-form="addSpecIsActive = false"
+        @switch-to-achievement-form="switchToAchievement" />
       <!-- <div>
         <button v-on:click="getExperts()">Все эксперты</button>
         <div v-if="this.experts.length != 0">{{this.experts}}</div>
       </div> -->
-      <div class="profressBarFull" v-if="!editIsActive">
+      <div class="profressBarFull" v-if="!(editIsActive || addAchievementIsActive || addSpecIsActive)">
         <p :class="'profressBar'" v-bind:style="{ width: progress + '%' }"><span v-if="progress > 0"
             class="progressLabel">{{ progress
             }}%</span></p>
@@ -50,11 +77,14 @@
         <div class="progress_numbers">{{ total_graded }}/{{ total_profile_books }} ({{ progress }}%)
         </div>
       </div>
-      <AchievementList v-bind:achievements=userAchievements v-if="!editIsActive && userAchievements.length" />
+      <AchievementList v-bind:achievements=userAchievements
+        v-if="!(editIsActive || addAchievementIsActive || addSpecIsActive) && userAchievements.length" />
       <BookListParser list_id="markedListID124" v-bind:books=getMarkedBookList() v-bind:list_title='marked_list_title'
-        v-if="!editIsActive && getMarkedBookList().length" v-bind:userBookIds=userBookIds />
+        v-if="!(editIsActive || addAchievementIsActive || addSpecIsActive) && getMarkedBookList().length"
+        v-bind:userBookIds=userBookIds />
       <BookListParser list_id="unMarkedListID224" v-bind:books=getUnMarkedBookList() v-bind:list_title=usernames_list
-        v-if="!editIsActive && getUnMarkedBookList().length" v-bind:userBookIds=userBookIds />
+        v-if="!(editIsActive || addAchievementIsActive || addSpecIsActive) && getUnMarkedBookList().length"
+        v-bind:userBookIds=userBookIds />
     </span>
     <span v-else>
       <h1>Авторизуйтесь для доступа</h1>
@@ -73,12 +103,16 @@ import ProfileContainer from '@/components/ProfileContainer.vue'
 import EditProfileContainer from '@/components/EditProfileContainer.vue'
 import bookService from '@/services/bookService.js'
 import userService from '@/services/userService.js'
+import AchievementForm from '../components/AchievementForm.vue'
+import SpecForm from '../components/SpecForm.vue'
 
 export default {
   name: 'Profile',
   data: function () {
     return {
       editIsActive: false,
+      addAchievementIsActive: false,
+      addSpecIsActive: false,
       exportBooks: [],
       experts: [],
       progress: 0,
@@ -109,7 +143,9 @@ export default {
     BookListParser,
     ProfileContainer,
     EditProfileContainer,
-    AchievementList
+    AchievementList,
+    AchievementForm,
+    SpecForm
   },
   methods: {
     get_progress () {
@@ -179,6 +215,10 @@ export default {
           this.$router.push('/login')
         })
         .catch(err => console.log(err))
+    },
+    switchToAchievement () {
+      this.addSpecIsActive = false
+      this.addAchievementIsActive = true
     }
   }
 }
