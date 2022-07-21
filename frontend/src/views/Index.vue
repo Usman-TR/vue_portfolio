@@ -165,6 +165,10 @@ input {
 .search_icon {
   position: absolute;
   left: 12px;
-  top: 5px;
+  transform: translateY(15%);
+}
+
+.search_icon svg {
+  margin: 0;
 }
 </style>
