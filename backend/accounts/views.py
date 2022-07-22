@@ -332,7 +332,7 @@ def get_progress_all(request, username):
     for profile in profiles:
         my_books[profile.id] = []
         all_profile_books[profile.id] = profile.books.all()
-        progress_counter[profile.id] = []
+        progress_counter[profile.id] = 0
         for profile_book in profile.books.all():
             if profile_book in user.books.all():
                 my_books[profile.id].append(profile_book)
@@ -352,8 +352,8 @@ def get_progress_all(request, username):
             "progress": [
                 {
                     'id': key,
-                    'name': profiles.filter(id=key).first().title,
-                    'currentPage0': len(my_books[key]),
+                    'title': profiles.filter(id=key).first().title,
+                    'currentPage': len(my_books[key]),
                     'allPages': len(all_profile_books[key])
                 }
                 for key in my_books
