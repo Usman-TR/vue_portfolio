@@ -84,12 +84,6 @@ export default createStore({
       const emptyUser = { username: 'user', authentificated: false, expert: false }
       commit('setUser', emptyUser, { root: true })
     },
-    register ({ commit }, data) {
-      userService.register(data)
-        .then(result => {
-          console.log('register in store', result)
-        })
-    },
     resetAuthStatus ({ commit }) {
       commit('setAuthStatusDefault')
     }

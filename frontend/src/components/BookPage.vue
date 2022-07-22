@@ -2,74 +2,89 @@
   <div class="book_page">
     <div class="book_page_back" v-on:click="emitHideBookPage()">
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M19 26L9 16L19 6" stroke="#835ED2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M19 26L9 16L19 6" stroke="#835ED2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </div>
 
     <div class="addBook" v-if="isInUserBooks || added" v-on:click="popup_message('Уже добавлено')">
-    <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M15.5 0.4375H2.5C2.06915 0.437926 1.65608 0.609267 1.35142 0.913922C1.04677 1.21858 0.875426 1.63165 0.875001 2.0625V20.75C0.87484 20.8916 0.91171 21.0308 0.981954 21.1537C1.0522 21.2767 1.15337 21.3792 1.27544 21.4509C1.3975 21.5227 1.53622 21.5613 1.67782 21.5629C1.81941 21.5646 1.95897 21.5291 2.08264 21.4601L9 17.6166L15.9174 21.4601C16.041 21.5291 16.1806 21.5646 16.3222 21.5629C16.4638 21.5613 16.6025 21.5227 16.7246 21.4509C16.8466 21.3792 16.9478 21.2767 17.018 21.1537C17.0883 21.0308 17.1252 20.8916 17.125 20.75V2.0625C17.1246 1.63165 16.9532 1.21858 16.6486 0.913921C16.3439 0.609267 15.9308 0.437925 15.5 0.4375Z" fill="#FFCC00"/>
-    </svg>
+      <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M15.5 0.4375H2.5C2.06915 0.437926 1.65608 0.609267 1.35142 0.913922C1.04677 1.21858 0.875426 1.63165 0.875001 2.0625V20.75C0.87484 20.8916 0.91171 21.0308 0.981954 21.1537C1.0522 21.2767 1.15337 21.3792 1.27544 21.4509C1.3975 21.5227 1.53622 21.5613 1.67782 21.5629C1.81941 21.5646 1.95897 21.5291 2.08264 21.4601L9 17.6166L15.9174 21.4601C16.041 21.5291 16.1806 21.5646 16.3222 21.5629C16.4638 21.5613 16.6025 21.5227 16.7246 21.4509C16.8466 21.3792 16.9478 21.2767 17.018 21.1537C17.0883 21.0308 17.1252 20.8916 17.125 20.75V2.0625C17.1246 1.63165 16.9532 1.21858 16.6486 0.913921C16.3439 0.609267 15.9308 0.437925 15.5 0.4375Z"
+          fill="#FFCC00" />
+      </svg>
     </div>
     <div class="addBook" v-else v-on:click="addBook(getBookSaveData(book))">
       <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16.3125 20.75L8.99925 16.6875L1.6875 20.75V2.0625C1.6875 1.84701 1.7731 1.64035 1.92548 1.48798C2.07785 1.3356 2.28451 1.25 2.5 1.25H15.5C15.7155 1.25 15.9222 1.3356 16.0745 1.48798C16.2269 1.64035 16.3125 1.84701 16.3125 2.0625V20.75Z" stroke="#FFCC00" stroke-width="1.625" stroke-linecap="round" stroke-linejoin="round"/>
+        <path
+          d="M16.3125 20.75L8.99925 16.6875L1.6875 20.75V2.0625C1.6875 1.84701 1.7731 1.64035 1.92548 1.48798C2.07785 1.3356 2.28451 1.25 2.5 1.25H15.5C15.7155 1.25 15.9222 1.3356 16.0745 1.48798C16.2269 1.64035 16.3125 1.84701 16.3125 2.0625V20.75Z"
+          stroke="#FFCC00" stroke-width="1.625" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </div>
-      <div class="book_page_img_container"><img class="book_page_img" v-bind:src=book.preview></div>
-      <div class="book_page_authors">
-        {{formateAuthors(book.authors)}}
-        </div>
-      <h4 class="book_page_title">{{book.title}}</h4>
-      <p class="book_page_expert" v-if="userBooksDict[book.GoogleId]">
-            <span v-if="userBooksDict[book.GoogleId].marked">Подтвердил <span class="book_page_expert_label">{{userBooksDict[book.GoogleId].expert}}</span>
-            <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10.625 3.37524L5.375 8.62501L2.75 6.00024" stroke="#835ED2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            </span>
-            <span class="book_page_send_button" v-else-if="!checkSend" v-on:click="showExpertMenu(book.GoogleId)">
-             На подтверждение
-            </span>
-      </p>
-      <div class="toogle_sections_container">
-          <div class="tabs">
-            <div class="tab" @click="setActiveTab('desc')" :class="{'tab_active': activeTab === 'desc'}">Аннотация</div>
-            <div class="tab" @click="setActiveTab('about')" :class="{'tab_active': activeTab === 'about'}">О книге</div>
-          </div>
-          <p class="book_page_description tab-content" v-show="activeTab === 'desc'">{{book.description}}</p>
-          <div class="tab-content" v-show="activeTab === 'about'">
-            <div class="about-row">
-              <div class="about__title">Издательство</div>
-              <div class="about__subtitle">{{book.publisher ? book.publisher : 'Неизвестно'}}</div>
-            </div>
-            <div class="about-row">
-              <div class="about__title">Год выпуска</div>
-              <div class="about__subtitle">{{ book.publishedDate ? book.publishedDate + 'г.' : 'Неизвестно' }} </div>
-            </div>
-            <div class="about-row">
-              <div class="about__title">Язык</div>
-              <div class="about__subtitle">{{ book.language ? book.language : 'Неизвестно' }}</div>
-            </div>
-          </div>
-          <p><a target="_blank" v-bind:href=createPreviewLink(book.GoogleId)>Ссылка на книгу</a></p>
-        </div>
-      <div v-if="popup_is_active" class="alert d-flex align-items-center" role="alert">
-        <transition name="fade">
-          <p>{{popup_msg}}</p>
-        </transition>
+    <div class="book_page_img_container"><img class="book_page_img" v-bind:src=book.preview></div>
+    <div class="book_page_authors">
+      {{ formateAuthors(book.authors) }}
+    </div>
+    <h4 class="book_page_title">{{ book.title }}</h4>
+    <p class="book_page_expert" v-if="userBooksDict[book.GoogleId]">
+      <span v-if="userBooksDict[book.GoogleId].marked">Подтвердил <span class="book_page_expert_label">{{
+          userBooksDict[book.GoogleId].expert
+      }}</span>
+        <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10.625 3.37524L5.375 8.62501L2.75 6.00024" stroke="#835ED2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </span>
+      <span class="book_page_send_button" v-else-if="!checkSend" v-on:click="showExpertMenu(book.GoogleId)">
+        На подтверждение
+      </span>
+    </p>
+    <div class="toogle_sections_container">
+      <div class="tabs">
+        <div class="tab" @click="setActiveTab('desc')" :class="{ 'tab_active': activeTab === 'desc' }">Описание</div>
+        <div class="tab" @click="setActiveTab('about')" :class="{ 'tab_active': activeTab === 'about' }"
+          v-if="isAboutActive(book)">О книге</div>
       </div>
-      <div class="select_expert_container" v-if="show_expert_container">
-        <div class="select_expert_container_form">
-          <h2 class="select_expert_container_form_label">Выберите эксперта</h2>
-          <select class="form-select" aria-label="Default select example" v-model="selectedExpert">
-            <option  v-for="expert in experts" :key="expert.id" :value="expert.username">{{expert.first_name}} {{expert.last_name}} - {{expert.profile}}</option>
-          </select>
-          <div class="select_expert_container_form_buttons">
-            <span class="select_expert_container_form_button_cancel" v-on:click="hideExpertMenu()">Отмена</span>
-            <span class="select_expert_container_form_button" v-on:click="checkKnowledge(selectedExpert, book.GoogleId)">Отправить</span>
-          </div>
+      <p class="book_page_description tab-content" v-show="activeTab === 'desc'">{{ book.description }}</p>
+      <div class="tab-content" v-show="activeTab === 'about'">
+        <div class="about-row" v-if="isPublisherExists()">
+          <div class="about__title">Издательство</div>
+          <div class="about__subtitle">{{ isPublisherExists() ? (book.publisher.length > 28 ? book.publisher.slice(0,
+              29) +
+              '...' : book.publisher) : 'Неизвестно'
+          }}</div>
+        </div>
+        <div class="about-row" v-if="isPublishedDateExists()">
+          <div class="about__title">Год выпуска</div>
+          <div class="about__subtitle">{{ isPublishedDateExists() ? book.publishedDate +
+              'г.' : 'Неизвестно'
+          }} </div>
+        </div>
+        <div class="about-row" v-if="isLanguageExists()">
+          <div class="about__title">Язык</div>
+          <div class="about__subtitle">{{ isLanguageExists() ? book.language : 'Неизвестно' }}</div>
         </div>
       </div>
+      <p><a target="_blank" v-bind:href=createPreviewLink(book.GoogleId)>Ссылка на книгу</a></p>
+    </div>
+    <div v-if="popup_is_active" class="alert d-flex align-items-center" role="alert">
+      <transition name="fade">
+        <p>{{ popup_msg }}</p>
+      </transition>
+    </div>
+    <div class="select_expert_container" v-if="show_expert_container">
+      <div class="select_expert_container_form">
+        <h2 class="select_expert_container_form_label">Выберите эксперта</h2>
+        <select class="form-select" aria-label="Default select example" v-model="selectedExpert">
+          <option v-for="expert in experts" :key="expert.id" :value="expert.username">{{ expert.first_name }}
+            {{ expert.last_name }} - {{ expert.profile }}</option>
+        </select>
+        <div class="select_expert_container_form_buttons">
+          <span class="select_expert_container_form_button_cancel" v-on:click="hideExpertMenu()">Отмена</span>
+          <span class="select_expert_container_form_button"
+            v-on:click="checkKnowledge(selectedExpert, book.GoogleId)">Отправить</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -98,6 +113,10 @@ export default {
   },
   mounted () {
     this.getUserBooks()
+    document.querySelector('body').style.overflow = 'hidden'
+  },
+  unmounted () {
+    document.querySelector('body').style.overflow = 'visible'
   },
   methods: {
     getExperts () {
@@ -216,6 +235,19 @@ export default {
     },
     setActiveTab (value) {
       this.activeTab = value
+    },
+    isAboutActive () {
+      return !!(this.isLanguageExists() && this.isPublishedDateExists() && this.isPublisherExists())
+    },
+    isPublishedDateExists () {
+      console.log(this.book.publishedDate)
+      return !!(this.book.publishedDate && this.book.publishedDate !== 'no date')
+    },
+    isPublisherExists () {
+      return !!(this.book.publisher && this.book.publisher !== 'no publisher')
+    },
+    isLanguageExists () {
+      return !!(this.book.language && this.book.language !== 'no language')
     }
   }
 }
@@ -223,34 +255,39 @@ export default {
 <style scoped>
 .book_page {
   top: 0;
-  bottom:0;
-  position:fixed;
-  overflow-y:scroll;
-  overflow-x:hidden;
+  bottom: 0;
+  position: fixed;
+  overflow-y: scroll;
+  overflow-x: hidden;
   background-color: #fff;
   z-index: 100;
   padding-bottom: 100px;
 }
+
 .book_page_back {
   position: absolute;
   top: 27px;
   left: 21px;
 }
+
 .book_page_img_container {
   margin-top: 60px;
   max-height: 225px;
   width: 100vw;
 }
+
 .book_page_img {
-  max-width:100%;
-  max-height:100%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
 }
+
 .addBook {
   position: absolute;
   top: 27px;
   right: 21px;
 }
+
 .alert {
   position: absolute;
   bottom: 10px;
@@ -261,18 +298,27 @@ export default {
   border: 2px solid #835ed23a;
   border-radius: 30px;
 }
-.alert p{
+
+.alert p {
   width: 100%;
   margin: 0;
   text-align: center;
 }
-.fade-enter-active, .fade-leave-active {
+
+.fade-enter-active,
+.fade-leave-active {
   transition-property: opacity, left, top, height;
   transition-duration: 3s, 5s, 3s, 5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
+
+.fade-enter,
+.fade-leave-to
+
+/* .fade-leave-active до версии 2.1.8 */
+  {
   opacity: 0;
 }
+
 .book_page_authors {
   font-weight: 400;
   font-size: 12px;
@@ -284,6 +330,7 @@ export default {
   margin-top: 18px;
   margin-bottom: 7px;
 }
+
 .book_page_title {
   font-weight: 500;
   font-size: 16px;
@@ -296,30 +343,33 @@ export default {
 
   color: #000000;
 }
+
 .toogle_sections_container {
   border-top: 1px solid #E5E5EA;
   padding: 10px 19px;
 }
+
 .book_page_description {
   font-weight: 400;
-font-size: 14px;
-line-height: 20px;
-/* or 143% */
+  font-size: 14px;
+  line-height: 20px;
+  /* or 143% */
 
-display: flex;
-align-items: center;
-letter-spacing: 0.25px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.25px;
 
-/* Label color | Light/Secondary 60% */
+  /* Label color | Light/Secondary 60% */
 
-color: rgba(60, 60, 67, 0.6);
-text-align: left;
+  color: rgba(60, 60, 67, 0.6);
+  text-align: left;
 }
 
 .book_page a {
   color: #835ED2;
   text-decoration: none;
 }
+
 .book_page_expert {
   font-size: 12px;
   font-weight: 400;
@@ -327,6 +377,7 @@ text-align: left;
   letter-spacing: 0.4px;
   color: rgba(60, 60, 67, 0.3);
 }
+
 .book_page_expert_label {
   color: #835ED2;
 }
@@ -336,6 +387,7 @@ text-align: left;
   left: -2px;
   top: -1px;
 }
+
 .book_page_send_button {
   position: fixed;
   padding: 19px 60px;
@@ -344,25 +396,26 @@ text-align: left;
   left: 5vw;
   bottom: 34px;
   background: #835ED2;
-box-shadow: 0px 24px 32px rgba(131, 94, 210, 0.24);
-border-radius: 10px;
+  box-shadow: 0px 24px 32px rgba(131, 94, 210, 0.24);
+  border-radius: 10px;
 
-font-weight: 500;
-font-size: 14px;
-line-height: 16px;
-letter-spacing: 0.75px;
-text-transform: uppercase;
-text-align: center;
-color: #F2F2F7;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.75px;
+  text-transform: uppercase;
+  text-align: center;
+  color: #F2F2F7;
 }
+
 .select_expert_container {
   top: 0;
-  bottom:0;
+  bottom: 0;
   right: 0;
   left: 0;
-  position:fixed;
-  overflow-y:scroll;
-  overflow-x:hidden;
+  position: fixed;
+  overflow-y: scroll;
+  overflow-x: hidden;
   background-color: #fff;
   z-index: 110;
   background: #00000099;
@@ -370,6 +423,7 @@ color: #F2F2F7;
   justify-content: center;
   align-items: center;
 }
+
 .select_expert_container_form {
   min-width: 100px;
   min-height: 100px;
@@ -377,11 +431,14 @@ color: #F2F2F7;
   padding: 16px 12px;
   border-radius: 10px;
 }
+
 .select_expert_container_form_buttons {
   display: flex;
   justify-content: center;
 }
-.select_expert_container_form_button, .select_expert_container_form_button_cancel {
+
+.select_expert_container_form_button,
+.select_expert_container_form_button_cancel {
   padding: 6px 10px;
   width: 86px;
   height: 28px;
@@ -407,15 +464,17 @@ color: #F2F2F7;
 
 .select_expert_container_form_label {
   font-size: 16px;
-line-height: 24px;
-display: flex;
-align-items: center;
-letter-spacing: 0.44px;
-color: #000000;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.44px;
+  color: #000000;
 }
+
 .tabs {
   display: flex;
 }
+
 .tab {
   letter-spacing: 0.15px;
   color: rgba(60, 60, 67, 0.18);
@@ -425,22 +484,27 @@ color: #000000;
   cursor: pointer;
   margin-right: 30px;
 }
+
 .tab_active {
   color: #2C2C2E;
   border-bottom: 1px solid #B195EB;
 }
+
 .tab-content {
   margin: 25px 0;
 }
+
 .about-row {
   display: flex;
   justify-content: space-between;
   margin-bottom: 14px;
 }
+
 .about__title {
   font-size: 14px;
   color: rgba(60, 60, 67, 0.6);
 }
+
 .about__subtitle {
   font-size: 14px;
   color: #48484A;

@@ -355,8 +355,8 @@ def get_progress_all(request, username):
             "progress": [
                 {
                     'id': key,
-                    'name': profiles.filter(id=key).first().title,
-                    'currentPage0': len(my_books[key]),
+                    'title': profiles.filter(id=key).first().title,
+                    'currentPage': len(my_books[key]),
                     'allPages': len(all_profile_books[key])
                 }
                 for key in my_books
