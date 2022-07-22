@@ -321,6 +321,9 @@ def get_progress(request, username):
 def get_progress_all(request, username):
     print('****', username)
     user = CustomUser.objects.filter(username=username).first()
+
+    if user is None:
+        return JsonResponse({})
     profiles = Profile.objects.all()
     marks = Ratings.objects.filter(user=user).all()
 
@@ -332,7 +335,7 @@ def get_progress_all(request, username):
     for profile in profiles:
         my_books[profile.id] = []
         all_profile_books[profile.id] = profile.books.all()
-        progress_counter[profile.id] = []
+        progress_counter[profile.id] = 0
         for profile_book in profile.books.all():
             if profile_book in user.books.all():
                 my_books[profile.id].append(profile_book)
