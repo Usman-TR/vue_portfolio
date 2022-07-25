@@ -85,7 +85,7 @@ export default {
     return api.get(`/api/v1/users/${username}/progress`)
   },
   getAllAchievements (username) {
-    return api.get('/api/v1/users/achievements')
+    return api.get(`/api/v1/users/${username}/allachievements`)
   },
   getUserAchievements (username) {
     return api.get(`/api/v1/users/${username}/achievements`)

@@ -28,7 +28,9 @@
         </label>
         <div class="form__select">
           <div @click="isSelectOpen = !isSelectOpen" class="form__select-visible">
-            <div class="selected">{{ selected.length ? selected?.join(', ') : 'Убийца строк' }}</div>
+            <div class="selected">
+              {{ selected.length ? selected.map(item => item.title).join(', ') : '' }}
+            </div>
             <span>
               <svg :class="{ open: isSelectOpen }" width="20" height="20" viewBox="0 0 20 20" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
@@ -39,8 +41,8 @@
           </div>
           <ul class="form__select-items" :class="{ 'form__select_hidden': !isSelectOpen }">
             <li class="form__select__item" :class="{ 'form__select__item_selected': selected.includes(option) }"
-              @click="selectItem(option)" v-for="option in options" :key="option">
-              {{ option }}
+              @click="selectItem(option)" v-for="option in options" :key="option.id">
+              {{ option.title }}
             </li>
           </ul>
         </div>
@@ -62,15 +64,30 @@
 </template>
 
 <script>
+import bookService from '@/services/bookService.js'
+
 export default {
   data () {
     return {
       isSelectOpen: false,
       selected: [],
-      options: ['Убийца крок', 'Первопроходец', 'Второпроходец', 'Чел ты..']
+      options: [
+        { id: 1, title: 'Убийца крок' },
+        { id: 2, title: 'Первопроходец' },
+        { id: 3, title: 'Второпроходец' }
+      ]
     }
   },
+  mounted () {
+    this.loadOptions()
+  },
   methods: {
+    loadOptions () {
+      bookService.getAllAchievements(this.$store.state.user.username)
+        .then((res) => {
+          this.options = res.data
+        })
+    },
     closeSpecForm () {
       this.$emit('close-spec-form')
     },
