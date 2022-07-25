@@ -60,7 +60,7 @@ export default createStore({
         .then(result => {
           console.log('login in store', result)
           if (result.key.length > 1) {
-            api.defaults.headers.common.token = result.key || ''
+            api.defaults.headers.common.token = result.key
             data.authentificated = true
             const authUser = { username: data.username, authentificated: true }
             // login form data console.log(data)

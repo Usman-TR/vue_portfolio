@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-&zq@n7j5+i@si#ne+%*j=4@fjwe-d)+ykm62w47@cp+=_5iy!x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['87.249.49.72', 'localhost', 'unitrace.ru', '127.0.0.1', '0.0.0.0']
-
+ALLOWED_HOSTS = ['87.249.49.72', 'localhost', 'unitrace.ru', '127.0.0.1', '0.0.0.0', '*']
+USE_X_FORWARDED_HOST = True
 
 # Application definition
 
@@ -168,5 +168,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'portfolio.student.app@gmail.com'
-EMAIL_HOST_PASSWORD = '66ea8470a6981288a3fcf236ef356141'
+
+# EMAIL_HOST_PASSWORD = '66ea8470a6981288a3fcf236ef356141'
+EMAIL_HOST_PASSWORD = 'mmokxgoajxfdumdd'
 

@@ -4,8 +4,8 @@
         <img class="profile_img" src="@/assets/profile-avatar.svg" alt='{{ user.username }}'>
         <p class="profile_username">{{ user.username }}</p>
         <!-- <p class="isExpert" v-if="user.expert">Эксперт</p> -->
-        <p class="profile">{{  user.profile[0].title  }}</p>
-        <p class="university">{{  user.university.title  }}</p>
+        <p class="profile"><span v-if="user.profile.length">{{  user.profile[0].title  }}</span><span v-else>Нет профиля</span></p>
+        <p class="university"><span v-if="user.university">{{  user.university.title  }}</span><span v-else>Нет университета</span></p>
         <!-- <p class="about_me">О себе: {{  user.about_me  }}</p> -->
         <RatingStars :rating=user.rating />
         <!-- <p class="email">Почта: {{ user.email }}</p> -->

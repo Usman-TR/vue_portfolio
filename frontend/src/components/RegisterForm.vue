@@ -28,6 +28,9 @@
       </fieldset>
       <button class="register__btn" type="submit">Зарегистрироваться</button>
     </form>
+    <div v-if="log" class="alert alert-danger" role="alert">
+      {{log}}
+    </div>
     <p>newTestUser <br> newTestUser@mail.com<br> newTestUserPassword12345</p>
   </div>
 </template>
@@ -43,7 +46,8 @@ export default {
       name: '',
       email: '',
       password: '',
-      password_confirmation: ''
+      password_confirmation: '',
+      log: ''
     }
   },
   validations () {
@@ -67,13 +71,17 @@ export default {
         password1: this.password,
         password2: this.password_confirmation
       }
+      console.log(data)
       const isFormCorrect = await this.v$.$validate()
       if (!isFormCorrect) return
       userService.register(data).then((res) => {
+        console.log('Успешно *')
         console.log(res)
+        this.log = res
         this.$router.push('/login')
       }).catch((err) => {
         console.error(err)
+        this.log = 'Используйте другое имя пользователя или пароль'
       })
     }
   },
@@ -170,5 +178,8 @@ export default {
   font-size: 0.875rem;
   line-height: 20px;
   text-align: start;
+}
+.alert {
+  margin: 16px;
 }
 </style>

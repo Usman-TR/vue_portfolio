@@ -50,7 +50,12 @@ export default {
       await this.$store.dispatch('login', { username, password })
     },
     getAuthStatus () {
-      if (this.$store.getters.user.authentificated) this.$router.push('/')
+      if (this.$store.getters.user.authentificated) {
+        this.$router.push('/')
+          .then(() => {
+            location.reload()
+          })
+      }
       return this.$store.getters.user.authentificated
     }
   },

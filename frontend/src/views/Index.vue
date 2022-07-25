@@ -107,7 +107,7 @@ export default {
       }
     },
     async loadProfileBooks () {
-      if (this.$store.state.user.authentificated) {
+      if (this.$store.state.user.authentificated && this.$store.state.user.profile.length) {
         const profileId = this.$store.state.user.profile[0].id
         bookService.getProfileBooks(profileId)
           .then((res) => {

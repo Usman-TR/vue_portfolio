@@ -44,6 +44,9 @@ def update_user(request, username):
 
 def get_userbooks(request, username):
     user = CustomUser.objects.filter(username=username).first()
+    if user is None:
+        return JsonResponse({})
+
     books = user.books.all()
     marks = Ratings.objects.filter(user=user).all()
 
@@ -285,12 +288,12 @@ def get_request_marks(request, username):
 
 def get_progress(request, username):
     user = CustomUser.objects.filter(username=username).first()
-    profile = Profile.objects.filter(id=user.profile.first().id).first()
+    if user.profile.first() is not None:
+        profile = Profile.objects.filter(id=user.profile.first().id).first()
+    else:
+        return JsonResponse({"progress": 0, 'ungraded': 0, 'total': 0, 'total_graded': 0})
     marks = Ratings.objects.filter(user=user).all()
-
     marked_list = []
-
-
     my_books = []
 
     for profile_book in profile.books.all():
