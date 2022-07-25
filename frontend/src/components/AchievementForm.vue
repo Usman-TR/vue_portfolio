@@ -28,7 +28,8 @@
           <span class="form__label">
             Иконка
           </span>
-          <input type="file" @change="setFilename" name="" id="upload-file" required>
+          <img class="file-img" v-if="file" :src="file" alt="no img">
+          <input type="file" accept="image/png, image/jpeg" @change="setFilename" name="" id="upload-file" required>
           <label class="form__input-file" for="upload-file" v-if="filename">
             <span>
               <svg width="24" height="24" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -59,7 +60,8 @@
 export default {
   data () {
     return {
-      filename: null
+      filename: null,
+      file: null
     }
   },
   methods: {
@@ -68,8 +70,15 @@ export default {
     },
     setFilename (e) {
       const filelist = [...e.target.files]
-      console.log(filelist)
-      this.filename = filelist.pop().name
+      this.file = filelist.pop()
+      this.filename = this.file.name
+      if (this.file) {
+        const reader = new FileReader()
+        reader.readAsDataURL(this.file)
+        reader.onload = () => {
+          this.file = reader.result
+        }
+      }
     }
   }
 }
@@ -178,6 +187,12 @@ export default {
 
 input[type=file] {
   display: none;
+}
+
+.file-img {
+  width: 100%;
+  height: 100%;
+  margin: 8px 0;
 }
 
 textarea {
