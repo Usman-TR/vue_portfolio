@@ -3,10 +3,12 @@
     <div class="list_header">
       <h3>{{ list_title }}</h3>
       <h4 class="sub_title" v-if="sub_title">{{ sub_title }}</h4>
-      <p class="list_toogle" v-on:click="this.show_full = !this.show_full"><span v-if="!this.show_full">Показать
+      <p class="list_toogle" v-if="books.length" v-on:click="this.show_full = !this.show_full"><span v-if="!this.show_full">Показать
           все</span><span v-else>Показать меньше</span> </p>
     </div>
-    <div v-if="show_full" class="cards-container">
+    <p v-if="!books.length">Нет книг</p>
+
+    <div v-if="show_full && books.length" class="cards-container">
       <MDBCard style="width: 18rem" v-for="book in books" :key="book.title" v-on:click="showBookPage(book)">
         <MDBCardImg v-if="book.preview" top v-bind:src=book.preview class="img-fluid" />
         <img v-else top alt="Vue logo" src="../assets/default-book.png">
@@ -29,7 +31,7 @@
         <!-- </MDBCardFooter> -->
       </MDBCard>
     </div>
-    <div :id="list_id" v-if="!show_full" class="carousel carousel-dark slide" data-bs-ride="carousel">
+    <div :id="list_id" v-if="!show_full && books.length" class="carousel carousel-dark slide" data-bs-ride="carousel">
       <div class="carousel-indicators">
         <button type="button" :data-bs-target="'#' + list_id" :data-bs-slide-to="idx" aria-label=""
           v-for="(book, idx) in limitItems(books, 6)" :key="book.title" :class="{ active: idx == 0 }"></button>
