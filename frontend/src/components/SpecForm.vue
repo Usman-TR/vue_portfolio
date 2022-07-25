@@ -44,6 +44,7 @@
             </li>
           </ul>
         </div>
+        <div @click.stop="isSelectOpen = false" v-if="isSelectOpen" class="form__select-container"></div>
         <button @click="$emit('switch-to-achievement-form')" type="button" class="form__btn">
           Добавить достижение
           <span>
@@ -196,6 +197,14 @@ export default {
 
     &_hidden {
       display: none;
+    }
+
+    &-container {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
     }
 
     & .selected {
