@@ -321,6 +321,9 @@ def get_progress(request, username):
 def get_progress_all(request, username):
     print('****', username)
     user = CustomUser.objects.filter(username=username).first()
+
+    if user is None:
+        return JsonResponse({})
     profiles = Profile.objects.all()
     marks = Ratings.objects.filter(user=user).all()
 

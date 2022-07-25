@@ -2,10 +2,13 @@
   <div class="book-list-container">
     <div class="list_header">
       <h3>{{ list_title }}</h3>
-      <p class="list_toogle" v-on:click="this.show_full = !this.show_full"><span v-if="!this.show_full">Показать
+      <p class="list_toogle" v-if="books.length" v-on:click="this.show_full = !this.show_full"><span
+          v-if="!this.show_full">Показать
           все</span><span v-else>Показать меньше</span> </p>
     </div>
-    <div v-if="show_full" class="cards-container">
+
+    <div v-if="show_full && books.length" class="cards-container">
+      <p v-if="!books.length">Нет книг</p>
       <MDBCard style="width: 18rem" v-for="(book, idx) in books" :key="'card' + idx + book.title"
         v-on:click="showBookPage(book)">
         <MDBCardImg v-if="book.imageLink" top v-bind:src=getImage(book.imageLink) class="img-fluid" />
@@ -57,7 +60,7 @@
         </span>
       </div>
     </div>
-    <div :id="list_id" v-if="!show_full" class="carousel carousel-dark slide" data-bs-ride="carousel">
+    <div :id="list_id" v-if="!show_full && books.length" class="carousel carousel-dark slide" data-bs-ride="carousel">
       <div class="carousel-indicators">
         <button type="button" :data-bs-target="'#' + list_id" :data-bs-slide-to="idx" aria-label=""
           v-for="(book, idx) in limitItems(books)" :key="'slider' + book.title" :class="{ active: idx == 0 }"></button>
