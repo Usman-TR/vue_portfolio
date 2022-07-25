@@ -28,7 +28,7 @@
         </label>
         <div class="form__select">
           <div @click="isSelectOpen = !isSelectOpen" class="form__select-visible">
-            <div class="selected">{{ selected }}</div>
+            <div class="selected">{{ selected.length ? selected?.join(', ') : 'Убийца строк' }}</div>
             <span>
               <svg :class="{ open: isSelectOpen }" width="20" height="20" viewBox="0 0 20 20" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
@@ -38,10 +38,13 @@
             </span>
           </div>
           <ul class="form__select-items" :class="{ 'form__select_hidden': !isSelectOpen }">
-            <li class="form__select__item" @click="selectItem(option)" v-for="option in options" :key="option">{{ option
-            }}</li>
+            <li class="form__select__item" :class="{ 'form__select__item_selected': selected.includes(option) }"
+              @click="selectItem(option)" v-for="option in options" :key="option">
+              {{ option }}
+            </li>
           </ul>
         </div>
+        <div @click.stop="isSelectOpen = false" v-if="isSelectOpen" class="form__select-container"></div>
         <button @click="$emit('switch-to-achievement-form')" type="button" class="form__btn">
           Добавить достижение
           <span>
@@ -63,7 +66,7 @@ export default {
   data () {
     return {
       isSelectOpen: false,
-      selected: 'Убийца строк',
+      selected: [],
       options: ['Убийца крок', 'Первопроходец', 'Второпроходец', 'Чел ты..']
     }
   },
@@ -72,7 +75,11 @@ export default {
       this.$emit('close-spec-form')
     },
     selectItem (selected) {
-      this.selected = selected
+      if (this.selected.includes(selected)) {
+        this.selected.splice(this.selected.indexOf(selected), 1)
+      } else {
+        this.selected.push(selected)
+      }
       this.isSelectOpen = false
     }
   }
@@ -192,6 +199,14 @@ export default {
       display: none;
     }
 
+    &-container {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+    }
+
     & .selected {
       color: #000;
       font-size: 1rem;
@@ -200,12 +215,13 @@ export default {
     &-items {
       padding: 0;
       margin: 0;
+      margin-top: 7px;
       list-style: none;
       position: absolute;
-      left: 0;
-      right: 0;
+      left: -1px;
+      right: -0.5px;
       z-index: 2;
-      background-color: #FAF7FF;
+      background-color: #fcfafa;
       border-radius: 0 0 6px 6px;
       border-bottom: 0.5px solid #DACAFC;
       border-left: 0.5px solid #DACAFC;
@@ -218,7 +234,16 @@ export default {
       padding: 8px 12px;
 
       &:hover {
-        background-color: #d7c3fa;
+        background-color: #EBE8E8;
+      }
+
+      &_selected {
+        background-color: #BDBBBB;
+        opacity: .7;
+
+        &:hover {
+          background-color: #BDBBBB;
+        }
       }
     }
   }
