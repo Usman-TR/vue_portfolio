@@ -101,8 +101,14 @@ def get_userbook(request, username, pk):
     )
 
 
-def get_achievements(request):
-    achivements = Achivement.objects.all()
+def get_all_achievements(request, username):
+    # user = CustomUser.objects.filter(username=username).first()
+    # if user is None:
+    #     return JsonResponse({})
+    # university = user.university
+    # print('****', university)
+    # achivements = Achivement.objects.filter(university=university).all()
+    achivements = Achivement.objects.filter().all()
     achivements_books = []
 
     for achivement in achivements:
@@ -219,6 +225,38 @@ def add_book(request, username):
     user.books.add(b)
     user.save()
     return JsonResponse({"status": 'done'})
+
+
+def add_profile(request):
+    data = json.loads(request.body)
+    title = data.get('title', '')
+    description = data.get('description', '')
+    achievements = data.get('achievements', [])
+    print(title)
+
+    if title == '':
+        return JsonResponse({"status": 'empty'})
+
+    if Profile.objects.filter(title=title).first():
+        return JsonResponse({"status": 'exists'})
+
+    new_profile = Profile(title = title, description=description)
+    new_profile.save()
+
+    for item in achievements:
+        try:
+            achievement = Achivement.objects.filter(pk=item['id']).first()
+            for book in achievement.books.all():
+                new_profile.books.add(book)
+        except Exception as e:
+            print(e)
+
+    if len(new_profile.books.all()) > 0:
+        new_profile.save()
+        return JsonResponse({"status": 'done'})
+
+    return JsonResponse({"status": 'error'})
+
 
 def request_mark(request, username, expert, book):
     user = CustomUser.objects.filter(username=username).first()
@@ -368,7 +406,7 @@ def get_progress_all(request, username):
     )
 
 
-def get_achivements(request, username):
+def get_achievements(request, username):
     achivements = CustomUser.objects.filter(username=username).first().achivements.all()
     return JsonResponse(
         {

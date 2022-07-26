@@ -6,11 +6,18 @@
         <path d="M11 21L1 11L11 1" stroke="#835ED2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
       <div class="spec__title">Добавить специализацию</div>
-      <div class="spec__subtitle">Готово</div>
+      <!-- <div class="spec__subtitle" v-on:click="sendForm">Готово</div> -->
+      <div class="spec__subtitle"></div>
     </div>
-    <form class="form" action="#">
+    <div v-if="popup_is_active" class="alert d-flex align-items-center" role="alert">
+      <transition name="fade">
+        <p>{{ popup_msg }}</p>
+      </transition>
+    </div>
+    <form class="form" @submit.prevent="sendForm">
       <fieldset class="form-fieldset">
-        <input class="form__input" placeholder="Автоматизация ИС" type="text" name="name" id="name">
+        <!-- <input class="form__input" v-model="title" placeholder="Автоматизация ИС" type="text" name="name" id="name"> -->
+        <input :class="{'input-error': v$.title.$errors.length && title.length}" class="form__input" required v-model="title" type="text" placeholder="Название" />
         <label for="name" class="form__label-small">
           Название
         </label>
@@ -19,7 +26,7 @@
         <label class="form__label" for="description">
           Краткое описание
         </label>
-        <textarea class="form__input" placeholder="Надпись более длинная по содержанию, чем обычная короткая запись"
+        <textarea v-model="description" :class="{'input-error': v$.description.$errors.length && description.length}" class="form__input" required placeholder="Описание"
           name="description" id="description" rows="3" cols="30"></textarea>
       </fieldset>
       <fieldset class="form-fieldset">
@@ -59,16 +66,23 @@
           </span>
         </button>
       </fieldset>
+      <button class="form__btn_submit" type="submit">Добавить</button>
     </form>
   </div>
 </template>
 
 <script>
 import bookService from '@/services/bookService.js'
+import useVuelidate from '@vuelidate/core'
+import { required, minLength } from '@vuelidate/validators'
 
 export default {
   data () {
     return {
+      popup_is_active: false,
+      popup_msg: '',
+      title: '',
+      description: '',
       isSelectOpen: false,
       selected: [],
       options: [
@@ -78,10 +92,58 @@ export default {
       ]
     }
   },
+  validations () {
+    return {
+      title: { required },
+      options: { required },
+      description: { required, min: minLength(40) }
+    }
+  },
+  setup () {
+    return {
+      v$: useVuelidate()
+    }
+  },
   mounted () {
     this.loadOptions()
   },
   methods: {
+    popup_message (msg) {
+      this.popup_msg = msg
+      this.popup_is_active = true
+      this.delay(2000).then(() => { this.popup_is_active = false })
+    },
+    delay (time) {
+      return new Promise(resolve => setTimeout(resolve, time))
+    },
+    async sendForm () {
+      const isFormCorrect = await this.v$.$validate()
+
+      console.log('sendForm', isFormCorrect)
+
+      if (!isFormCorrect) return
+
+      bookService.addAchievemnt(
+        {
+          title: this.title,
+          description: this.description,
+          achievements: this.selected
+        })
+        .then((res) => {
+          console.log('sendForm', res)
+          if (res.data.status === 'exists') {
+            this.popup_message('Уже существует')
+          } else if (res.data.status === 'done') {
+            this.popup_message('Добавлено')
+          } else {
+            console.log(res)
+            this.popup_message('Ошибка', res.data)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
     loadOptions () {
       bookService.getAllAchievements(this.$store.state.user.username)
         .then((res) => {
@@ -162,6 +224,27 @@ export default {
     color: #9788B8;
     width: 100%;
     background-color: #fff;
+
+  }
+
+  &__btn_submit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #FF2D55;
+    padding: 16px;
+    font-size: 1rem;
+    color: #F2F2F7;
+    width: 100%;
+    background-color: #FF2D55;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    box-shadow: 0px 24px 32px rgba(255, 45, 85, 0.24);
+    border-radius: 10px;
 
   }
 

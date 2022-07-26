@@ -1,8 +1,8 @@
 from django.urls import  path, include
-from .views import UserView, get_userbooks, get_userbook, get_achivements, \
+from .views import UserView, get_userbooks, get_userbook, get_achievements, \
     evaluate_knowledge, add_book, request_mark, get_request_marks, get_experts, get_profiles, update_user, get_universities, \
     get_profile_books, get_progress, get_achievements, get_user_achievements, get_popular_books, get_recomendation_books, \
-    cancel_mark_request, get_progress_all
+    cancel_mark_request, get_progress_all, get_all_achievements, add_profile
 
 
 urlpatterns = [
@@ -17,9 +17,11 @@ urlpatterns = [
     path('<str:username>/request/<str:expert>/<str:book>', request_mark, name='request_mark'),
     path('<str:username>/cancelrequest/<str:expert>/<str:book>', cancel_mark_request, name='cancel_mark_request'),
     path('<str:username>/requests', get_request_marks, name='get_request_marks'),
-    path('<str:username>/achivements/', get_achivements, name='get_achivements'),
+    path('<str:username>/achivements/', get_achievements, name='get_achivements'),
+    path('<str:username>/allachievements/', get_all_achievements, name='get_all_achievements'),
     path('experts', get_experts, name='get_experts'),
     path('profiles', get_profiles, name='get_profiles'),
+    path('profiles/add', add_profile, name='add_profile'),
     path('universities', get_universities, name='get_universities'),
     path('<str:username>/update', update_user, name='update_user'),
     path('<str:username>/progress', get_progress, name='get_progress'),

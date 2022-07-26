@@ -60,7 +60,7 @@
         </ul>
       </div>
       <ProfileContainer v-bind:user=user v-if="!(editIsActive || addAchievementIsActive || addSpecIsActive)" />
-      <EditProfileContainer v-bind:user=user v-else-if="editIsActive" @closeEdit="this.editIsActive = false" />
+      <EditProfileContainer v-bind:user=user v-else-if="editIsActive" @closeEdit="close_profile_edit" />
       <AchievementForm v-else-if="addAchievementIsActive" @close-achievement-form="addAchievementIsActive = false" />
       <SpecForm v-else-if="addSpecIsActive" @close-spec-form="addSpecIsActive = false"
         @switch-to-achievement-form="switchToAchievement" />
@@ -148,6 +148,10 @@ export default {
     SpecForm
   },
   methods: {
+    close_profile_edit() {
+      this.$store.dispatch('getUser')
+      this.editIsActive = false
+    },
     get_progress () {
       bookService.getProgress(this.$store.state.user.username)
         .then((res) => {
@@ -202,7 +206,7 @@ export default {
               pb[0].expert = element.expert
               pb[0].rating = element.rating
               pb = pb[0]
-              console.log(pb)
+              // console.log(pb)
               this.exportBooks.push(pb)
               this.userBookIds.push(element.GoogleId)
             })

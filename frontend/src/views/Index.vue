@@ -82,6 +82,9 @@ export default {
             this.userBookIds.push(element.GoogleId)
           })
         })
+        .catch((err) => {
+          console.log('cant load user books')
+        })
     },
     changePage (page) {
       this.searchPage = page

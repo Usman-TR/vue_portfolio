@@ -66,6 +66,13 @@ export default {
       publishedDate: data.publishedDate
     })
   },
+  addAchievemnt (data) {
+    return api.post('api/v1/users/profiles/add', {
+      title: data.title,
+      description: data.description,
+      achievements: data.achievements
+    })
+  },
   addMarkRequest (username, GoogleId, expert) {
     return api.get(`/api/v1/users//${username}/request/${expert}/${GoogleId}`)
   },

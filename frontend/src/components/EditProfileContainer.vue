@@ -12,8 +12,10 @@
           <span class="validation_label" v-if="!validators.first_name && btn_pressed">Укажите имя</span>
           <input type="text" class="form-control" placeholder="Имя" aria-label="Имя" v-model="this.first_name">
         </p>
-        <p class="last_name edit_profile_input_wrapper"><span class="validation_label" v-if="!validators.last_name && btn_pressed">Укажите фамилию</span><input type="text" class="form-control" placeholder="Фамилия" aria-label="Фамилия" v-model="this.last_name"></p>
-        <p class="middle_name edit_profile_input_wrapper"><input type="text" class="form-control" placeholder="Отчество" aria-label="Отчество" v-model="this.middle_name"></p>
+        <p class="last_name edit_profile_input_wrapper"><span class="validation_label" v-if="!validators.last_name && btn_pressed">Укажите фамилию</span>
+          <input type="text" class="form-control" placeholder="Фамилия" aria-label="Фамилия" v-model="this.last_name"></p>
+        <p class="middle_name edit_profile_input_wrapper">
+          <input type="text" class="form-control" placeholder="Отчество" aria-label="Отчество" v-model="this.middle_name"></p>
         <p class="edit_profile_label">Выберите ВУЗ и специальность</p>
         <p class="university_container">
           <span class="validation_label" v-if="!validators.university && btn_pressed">Укажите университет</span>
@@ -52,7 +54,7 @@ export default {
       middle_name: '',
       first_name: '',
       last_name: '',
-      profile: 'def',
+      profile: '',
       university: '',
       about_me: '',
       profiles: [],
@@ -73,6 +75,38 @@ export default {
     this.setDefData()
   },
   methods: {
+    validate () {
+
+      console.log('validationg...')
+
+      if (this.first_name.length) {
+        this.validators.first_name = true
+      } else {
+        this.validators.first_name = false
+      }
+
+      if (this.last_name.length) {
+        this.validators.last_name = true
+      } else {
+        this.validators.last_name = false
+      }
+
+      if (!isNaN(this.university)) {
+        this.validators.university = true
+      } else {
+        this.validators.university = false
+      }
+
+      if (!isNaN(this.profile)) {
+        this.validators.profile = true
+      } else {
+        this.validators.profile = false
+      }
+
+      return Object.values(this.validators).every(
+        value => value
+      );
+    },
     getProfiles: function () {
       formService.getProfiles()
         .then((res) => {
@@ -80,29 +114,33 @@ export default {
         })
     },
     getUniversities: function () {
-      console.log('getUniversities')
       formService.getUniversities()
         .then((res) => {
-          console.log('getUniversities', res.data.universities)
           this.universities = res.data.universities
         })
     },
     setDefData: function () {
-      console.log('setDefData')
       const user = this.$store.state.user
-      this.name = user.first_name
-      this.surname = user.last_name
-      this.middleName = user.middleName
-      this.profile = user.profile
-      this.university = user.university
+
+      this.first_name = user.first_name
+      this.last_name = user.last_name
+      this.middle_name = user.middleName
+      this.profile_obj = user.profile
+      this.university_obj = user.university
       this.aboutMe = user.aboutMe
 
       this.btn_pressed = false
 
-      console.log('setDefData', this.first_name, this.surname, this.middleName, this.profile, this.university, this.aboutMe)
-
       this.getProfiles()
       this.getUniversities()
+
+      if (this.profile_obj.length) {
+        this.profile = this.profile_obj[0].id
+      }
+
+      if (this.university_obj) {
+        this.university = user.university.id
+      }
     },
     updateProfile: function () {
       this.btn_pressed = true
@@ -110,11 +148,13 @@ export default {
         about_me: this.about_me,
         first_name: this.first_name,
         last_name: this.last_name,
-        middle_name: this.middle_name,
         profile: this.profile,
         university: this.university
       }
       console.log(form)
+
+      if (!this.validate()) return -1
+
       formService.updateProfile(this.$store.state.user.username, form)
         .then(() => this.$emit('closeEdit'))
     },
