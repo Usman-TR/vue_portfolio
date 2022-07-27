@@ -215,6 +215,7 @@ def get_user_achievements(request, username):
     # if all ach id's is in userbooks => give ach
 
     achivements_books = []
+    user_achievements = []
     for achivement in achivements:
         temp_books = []
         for book in achivement.books.all():
@@ -236,7 +237,7 @@ def get_user_achievements(request, username):
                     }
         achivements_books.append(ach_decriptor)
 
-        user_achievements = []
+
         for achivement_books in achivements_books:
             ach_counter = len(achivement_books['books'])
             for book in achivement_books['books']:
