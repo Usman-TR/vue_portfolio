@@ -1,15 +1,15 @@
 # coding: utf8
-from fileinput import close
-import profile
-# from backend.core.models import RecomendationBooks
+from django.http import JsonResponse
+import json
 from core.models import University
+from core.models import Ratings, Book, MarkRequest, Profile, Achivement, RecomendationBooks
+
 from rest_framework import generics
 from .models import CustomUser
 from .serializers import UserSerializer
-from django.http import JsonResponse
-from core.models import Ratings, Book, MarkRequest, Profile, Achivement, RecomendationBooks
-import json
+
 from django.core.exceptions import BadRequest
+from django.contrib.auth.decorators import login_required
 
 
 class UserView(generics.RetrieveAPIView):
@@ -17,6 +17,7 @@ class UserView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     lookup_field = 'username'
 
+@login_required
 def update_user(request, username):
     try:
         user = CustomUser.objects.filter(username=username).first()
@@ -24,14 +25,14 @@ def update_user(request, username):
 
         profile_id = data.get('profile', '')
         university_obj = data.get('university', '')
-        print('*'*3, profile_id, university_obj)
+        # print('*'*3, profile_id, university_obj)
 
         if profile_id is not '':
             profile = Profile.objects.filter(id=profile_id)
             user.profile.set(profile)
         if university_obj is not '':
             university = University.objects.filter(id=university_obj).first()
-            print('*/'*4, university)
+            # print('*/'*4, university)
             user.university = university
         user.about_me = data.get('about_me', '')
         user.first_name = data.get('first_name', '')
@@ -42,6 +43,7 @@ def update_user(request, username):
     except Exception as e:
         raise BadRequest('Invalid request: ' + str(e))
 
+@login_required
 def get_userbooks(request, username):
     user = CustomUser.objects.filter(username=username).first()
     if user is None:
@@ -85,6 +87,7 @@ def get_userbooks(request, username):
     )
 
 
+@login_required
 def get_userbook(request, username, pk):
     book = CustomUser.objects.filter(username=username).first().books.filter(id=pk).first()
     return JsonResponse(
@@ -99,6 +102,55 @@ def get_userbook(request, username, pk):
                 }
         }
     )
+
+@login_required
+def add_achievement(request):
+    data = request.POST
+
+    new_achievement = Achivement.objects.filter(title=data.get('title')).first()
+    if new_achievement and not request.method == 'PUT':
+        return JsonResponse({ 'status': 'exists' })
+
+    new_achievement = Achivement(
+        title= data.get('title'),
+        description= data.get('description'),
+    )
+
+    new_achievement.save()
+
+    books = json.loads(data.get('books'))
+
+    if len(books) == 0:
+        new_achievement.delete()
+        return JsonResponse({ 'status': 'no books' })
+
+    for book in books:
+        current_book = Book.objects.filter(GoogleId=book['GoogleId']).first()
+        try:
+            if not current_book:
+                      current_book = Book(
+                      title=book['title'],
+                      description=book['description'] if book['description'] else '',
+                      GoogleId=book['GoogleId'],
+                      ISBN=book['ISBN'],
+                      publishedDate=book['publishedDate'],
+                      authors=book['authors'],
+                      preview=book['preview'],
+                      language=book['language']
+                    )
+            current_book.save()
+            new_achievement.books.add(current_book)
+            new_achievement.save()
+        except Exception as e:
+            print(e)
+
+    image = request.FILES['file']
+    if image:
+        new_achievement.image = image
+
+    new_achievement.save()
+
+    return JsonResponse({'status': 'done'})
 
 
 def get_all_achievements(request, username):
@@ -137,6 +189,7 @@ def get_all_achievements(request, username):
     # return JsonResponse({"status": 'done'})
 
 
+@login_required
 def get_user_achievements(request, username):
     user = CustomUser.objects.filter(username=username).first()
 
@@ -188,7 +241,7 @@ def get_user_achievements(request, username):
             ach_counter = len(achivement_books['books'])
             for book in achivement_books['books']:
                 for user_book in user_books:
-                    print(book['id'], user_book['id'])
+                    # print(book['id'], user_book['id'])
                     if book['id'] == user_book['id']:
                         ach_counter -= 1
                     if ach_counter <= 0:
@@ -198,6 +251,7 @@ def get_user_achievements(request, username):
     return JsonResponse(user_achievements, safe=False)
 
 
+@login_required
 def add_book(request, username):
 
     data = json.loads(request.body)
@@ -212,7 +266,7 @@ def add_book(request, username):
     publishedDate = data.get('publishedDate', '')
 
 
-    print('*'*5, GoogleId, ISBN, title)
+    # print('*'*5, GoogleId, ISBN, title)
 
     user = CustomUser.objects.filter(username=username).first()
     b = Book.objects.filter(GoogleId=GoogleId).first()
@@ -227,12 +281,13 @@ def add_book(request, username):
     return JsonResponse({"status": 'done'})
 
 
+@login_required
 def add_profile(request):
     data = json.loads(request.body)
     title = data.get('title', '')
     description = data.get('description', '')
     achievements = data.get('achievements', [])
-    print(title)
+    # print(title)
 
     if title == '':
         return JsonResponse({"status": 'empty'})
@@ -258,6 +313,7 @@ def add_profile(request):
     return JsonResponse({"status": 'error'})
 
 
+@login_required
 def request_mark(request, username, expert, book):
     user = CustomUser.objects.filter(username=username).first()
     expert_user = CustomUser.objects.filter(username=expert).first()
@@ -273,11 +329,13 @@ def request_mark(request, username, expert, book):
     mark_request.save()
     return JsonResponse({"status": 'done'})
 
+
+@login_required
 def cancel_mark_request(request, username, expert, book):
     user = CustomUser.objects.filter(username=username).first()
     expert_user = CustomUser.objects.filter(username=expert).first()
     b = Book.objects.filter(GoogleId=book).first()
-    print('***',user, expert_user, b, book)
+    # print('***',user, expert_user, b, book)
     if not b:
         return JsonResponse({"status": 'error'})
 
@@ -289,6 +347,7 @@ def cancel_mark_request(request, username, expert, book):
     return JsonResponse({"status": 'done'})
 
 
+@login_required
 def get_request_marks(request, username):
     expert_id = CustomUser.objects.filter(username=username).first().id
     user_requests = MarkRequest.objects.filter(expert=expert_id, closed=False).order_by('user')
@@ -324,6 +383,7 @@ def get_request_marks(request, username):
     )
 
 
+@login_required
 def get_progress(request, username):
     user = CustomUser.objects.filter(username=username).first()
     if user.profile.first() is not None:
@@ -359,8 +419,10 @@ def get_progress(request, username):
 
     return JsonResponse({"progress": progress, 'ungraded': len(my_books)/total_profile_books, 'total': total_profile_books, 'total_graded': progress_counter})
 
+
+@login_required
 def get_progress_all(request, username):
-    print('****', username)
+    # print('****', username)
     user = CustomUser.objects.filter(username=username).first()
 
     if user is None:
@@ -406,6 +468,7 @@ def get_progress_all(request, username):
     )
 
 
+@login_required
 def get_achievements(request, username):
     achivements = CustomUser.objects.filter(username=username).first().achivements.all()
     return JsonResponse(
@@ -422,6 +485,7 @@ def get_achievements(request, username):
         }
     )
 
+
 def get_profiles(request):
     profiles = Profile.objects.all()
     return JsonResponse(
@@ -436,6 +500,7 @@ def get_profiles(request):
             ]
         }
     )
+
 
 def get_profile_books(request, profile_id):
     # data = json.loads(request.body)
@@ -488,7 +553,7 @@ def get_popular_books(request):
 
 def get_recomendation_books(request):
     recomendation = RecomendationBooks.objects.order_by('?')[0]
-    print('******', len(recomendation.books.all()), recomendation.books.all())
+    # print('******', len(recomendation.books.all()), recomendation.books.all())
     return JsonResponse(
         {
             'title': recomendation.title,
@@ -514,7 +579,6 @@ def get_recomendation_books(request):
 
 
 
-
 def get_universities(request):
     universities = University.objects.all()
     return JsonResponse(
@@ -531,6 +595,7 @@ def get_universities(request):
         }
     )
 
+@login_required
 def get_experts(request):
     experts = CustomUser.objects.filter(expert=True).all()
     return JsonResponse(
@@ -548,6 +613,7 @@ def get_experts(request):
         }
     )
 
+@login_required
 def evaluate_knowledge(request, expert, request_id, rating):
     # rating book user expert
 	# update with mark_request object

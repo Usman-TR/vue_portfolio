@@ -16,7 +16,7 @@
             </svg>
             <span class="edit">Редактировать</span>
           </li>
-          <li @click="addSpecIsActive = true">
+          <li @click="addSpecIsActive = true" v-if="this.$store.state.user.admin">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0.75 9L12 3L23.25 9L12 15L0.75 9Z" stroke="black" stroke-width="1.5" stroke-linecap="round"
                 stroke-linejoin="round" />
@@ -28,7 +28,7 @@
             </svg>
             <span class="spec">Добавить специализацию</span>
           </li>
-          <li @click="addAchievementIsActive = true">
+          <li @click="addAchievementIsActive = true" v-if="this.$store.state.user.admin">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M11.9995 16.5C16.1416 16.5 19.4995 13.1421 19.4995 9C19.4995 4.85786 16.1416 1.5 11.9995 1.5C7.85732 1.5 4.49945 4.85786 4.49945 9C4.49945 13.1421 7.85732 16.5 11.9995 16.5Z"
@@ -148,7 +148,7 @@ export default {
     SpecForm
   },
   methods: {
-    close_profile_edit() {
+    close_profile_edit () {
       this.$store.dispatch('getUser')
       this.editIsActive = false
     },

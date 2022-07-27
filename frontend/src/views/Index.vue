@@ -83,7 +83,7 @@ export default {
           })
         })
         .catch((err) => {
-          console.log('cant load user books')
+          console.log('cant load user books', err)
         })
     },
     changePage (page) {

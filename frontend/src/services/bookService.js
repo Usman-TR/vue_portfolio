@@ -66,11 +66,24 @@ export default {
       publishedDate: data.publishedDate
     })
   },
-  addAchievemnt (data) {
+  addProfile (data) {
     return api.post('api/v1/users/profiles/add', {
       title: data.title,
       description: data.description,
       achievements: data.achievements
+    })
+  },
+  addAchievement (data) {
+    const formData = new FormData()
+    formData.append('file', data.file)
+    formData.append('title', data.title)
+    formData.append('description', data.description)
+    formData.append('books', JSON.stringify(data.books))
+
+    return api.post('api/v1/users/achievements/add', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     })
   },
   addMarkRequest (username, GoogleId, expert) {

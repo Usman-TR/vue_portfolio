@@ -76,9 +76,6 @@ export default {
   },
   methods: {
     validate () {
-
-      console.log('validationg...')
-
       if (this.first_name.length) {
         this.validators.first_name = true
       } else {
@@ -105,7 +102,7 @@ export default {
 
       return Object.values(this.validators).every(
         value => value
-      );
+      )
     },
     getProfiles: function () {
       formService.getProfiles()
@@ -124,7 +121,7 @@ export default {
 
       this.first_name = user.first_name
       this.last_name = user.last_name
-      this.middle_name = user.middleName
+      this.middle_name = user.middle_name
       this.profile_obj = user.profile
       this.university_obj = user.university
       this.aboutMe = user.aboutMe
@@ -148,6 +145,7 @@ export default {
         about_me: this.about_me,
         first_name: this.first_name,
         last_name: this.last_name,
+        middle_name: this.middle_name,
         profile: this.profile,
         university: this.university
       }

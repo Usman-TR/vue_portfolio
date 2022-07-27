@@ -9,7 +9,7 @@
       <!-- <div class="spec__subtitle" v-on:click="sendForm">Готово</div> -->
       <div class="spec__subtitle"></div>
     </div>
-    <div v-if="popup_is_active" class="alert d-flex align-items-center" role="alert">
+    <div v-if="popup_is_active" class="alert d-flex align-items-center popup" role="alert">
       <transition name="fade">
         <p>{{ popup_msg }}</p>
       </transition>
@@ -74,7 +74,7 @@
 <script>
 import bookService from '@/services/bookService.js'
 import useVuelidate from '@vuelidate/core'
-import { required, minLength } from '@vuelidate/validators'
+import { required } from '@vuelidate/validators'
 
 export default {
   data () {
@@ -96,7 +96,8 @@ export default {
     return {
       title: { required },
       options: { required },
-      description: { required, min: minLength(40) }
+      description: { required },
+      selected: { required }
     }
   },
   setup () {
@@ -123,7 +124,7 @@ export default {
 
       if (!isFormCorrect) return
 
-      bookService.addAchievemnt(
+      bookService.addProfile(
         {
           title: this.title,
           description: this.description,
@@ -137,11 +138,12 @@ export default {
             this.popup_message('Добавлено')
           } else {
             console.log(res)
-            this.popup_message('Ошибка', res.data)
+            this.popup_message('Ошибка')
           }
         })
         .catch((err) => {
           console.log(err)
+          this.popup_message('Ошибка')
         })
     },
     loadOptions () {
@@ -351,5 +353,23 @@ export default {
 
 .open {
   transform: rotate(180deg);
+}
+
+.popup {
+  border: 0.5px solid #FF2D55;
+  background: #ff2d5390;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  position: fixed;
+  top: 10vh;
+  left: 4vw;
+  width: 92vw;
+}
+.popup * {
+  margin: 0;
+  padding: 0;
 }
 </style>

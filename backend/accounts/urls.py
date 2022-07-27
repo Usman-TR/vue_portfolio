@@ -2,7 +2,7 @@ from django.urls import  path, include
 from .views import UserView, get_userbooks, get_userbook, get_achievements, \
     evaluate_knowledge, add_book, request_mark, get_request_marks, get_experts, get_profiles, update_user, get_universities, \
     get_profile_books, get_progress, get_achievements, get_user_achievements, get_popular_books, get_recomendation_books, \
-    cancel_mark_request, get_progress_all, get_all_achievements, add_profile
+    cancel_mark_request, get_progress_all, get_all_achievements, add_profile, add_achievement
 
 
 urlpatterns = [
@@ -30,5 +30,6 @@ urlpatterns = [
     path('popular', get_popular_books, name='get_popular_books'),
     path('recomendation', get_recomendation_books, name='get_recomendation_books'),
     path('achievements', get_achievements, name='get_achievements'),
+    path('achievements/add', add_achievement, name='add_achievement'),
     path('<str:username>/achievements', get_user_achievements, name='get_user_achievements')
 ]
