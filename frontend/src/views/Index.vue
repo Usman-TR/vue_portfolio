@@ -53,7 +53,9 @@ export default {
     }
   },
   beforeCreate: function () {
-    this.$store.dispatch('userbooks/getBooks', this.$store.state.user.username)
+    if (this.$store.state.user.authentificated) {
+      this.$store.dispatch('userbooks/getBooks', this.$store.state.user.username)
+    }
   },
   mounted () {
     this.loadProfileBooks()
@@ -110,12 +112,14 @@ export default {
       }
     },
     async loadProfileBooks () {
-      if (this.$store.state.user.authentificated && this.$store.state.user.profile.length) {
-        const profileId = this.$store.state.user.profile[0].id
-        bookService.getProfileBooks(profileId)
-          .then((res) => {
-            this.profileBooks = res.data.books
-          })
+      if (this.$store.state.user.authentificated && this.$store.state.user.profile) {
+        if (this.$store.state.user.profile.length) {
+          const profileId = this.$store.state.user.profile[0].id
+          bookService.getProfileBooks(profileId)
+            .then((res) => {
+              this.profileBooks = res.data.books
+            })
+        }
       }
     },
     async loadRecomendationBooks () {

@@ -5,8 +5,8 @@
         <h1 class="login__title">Авторизация</h1>
         <p v-if="message">{{  message  }}</p>
         <fieldset class="login-field">
-          <input :class="{'input-error': v$.username.$errors.length && username.length}" class="login__input" required v-model="username" type="text" placeholder="Логин" />
-          <input :class="{'input-error': v$.password.$errors.length && username.length}" class="login__input" required v-model="password" type="password" placeholder="Пароль" />
+          <input :class="{'input-error': v$.username.$errors.length && username.length}" class="login__input" required v-model="username" type="text" placeholder="Логин" autocomplete="on"/>
+          <input :class="{'input-error': v$.password.$errors.length && username.length}" class="login__input" required v-model="password" type="password" placeholder="Пароль" autocomplete="on"/>
           <div v-if="v$.password.$errors.length || v$.password.$errors.length || auth_status === 'error'" class="error">Неправильный логин или пароль</div>
           <a class="tip" href="#">Забыли пароль?</a>
         </fieldset>

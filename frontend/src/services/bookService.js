@@ -17,35 +17,39 @@ export default {
     // console.log('parse_volume', volume)
     const exportBooks = []
     volume.forEach(element => {
-      const title = element.volumeInfo.title
-      const authors = element.volumeInfo.authors
-      const description = element.volumeInfo.description
-      const publishedDate = element.volumeInfo.publishedDate
-      const publisher = element.volumeInfo.publisher
-      const previewLink = element.volumeInfo.previewLink
-      const language = element.volumeInfo.language
-      const canonicalVolumeLink = element.volumeInfo.canonicalVolumeLink
-      const industryIdentifiers = element.volumeInfo.industryIdentifiers
-      let imageLink = false
-      if (typeof (element.volumeInfo.imageLinks) === 'object') {
-        if (typeof (element.volumeInfo.imageLinks.thumbnail) === 'string') {
-          imageLink = element.volumeInfo.imageLinks.thumbnail
-        } else if (typeof (element.volumeInfo.imageLinks.smallThumbnail) === 'string') {
-          imageLink = element.volumeInfo.imageLinks.smallThumbnail
+      try {
+        const title = element.volumeInfo.title
+        const authors = element.volumeInfo.authors
+        const description = element.volumeInfo.description
+        const publishedDate = element.volumeInfo.publishedDate
+        const publisher = element.volumeInfo.publisher
+        const previewLink = element.volumeInfo.previewLink
+        const language = element.volumeInfo.language
+        const canonicalVolumeLink = element.volumeInfo.canonicalVolumeLink
+        const industryIdentifiers = element.volumeInfo.industryIdentifiers
+        let imageLink = false
+        if (typeof (element.volumeInfo.imageLinks) === 'object') {
+          if (typeof (element.volumeInfo.imageLinks.thumbnail) === 'string') {
+            imageLink = element.volumeInfo.imageLinks.thumbnail
+          } else if (typeof (element.volumeInfo.imageLinks.smallThumbnail) === 'string') {
+            imageLink = element.volumeInfo.imageLinks.smallThumbnail
+          }
         }
+        exportBooks.push({
+          title,
+          authors,
+          description,
+          publishedDate,
+          publisher,
+          previewLink,
+          language,
+          canonicalVolumeLink,
+          imageLink,
+          industryIdentifiers
+        })
+      } catch (error) {
+        console.log('cant load book')
       }
-      exportBooks.push({
-        title,
-        authors,
-        description,
-        publishedDate,
-        publisher,
-        previewLink,
-        language,
-        canonicalVolumeLink,
-        imageLink,
-        industryIdentifiers
-      })
     })
     return exportBooks
   },

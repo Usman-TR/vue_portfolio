@@ -132,7 +132,9 @@ export default {
   }),
   beforeCreate: function () {
     this.$store.dispatch('getUser')
-    this.$store.dispatch('userbooks/getBooks')
+    if (this.$store.state.user.authentificated) {
+      this.$store.dispatch('userbooks/getBooks')
+    }
   },
   mounted () {
     this.updateUserBooks()
@@ -201,14 +203,18 @@ export default {
         .then((resp) => {
           resp.books.forEach(element => {
             bookService.parseGoogleId(element.GoogleId).then((pb) => {
-              pb[0].marked = element.marked
-              pb[0].mark = element.mark
-              pb[0].expert = element.expert
-              pb[0].rating = element.rating
-              pb = pb[0]
-              // console.log(pb)
-              this.exportBooks.push(pb)
-              this.userBookIds.push(element.GoogleId)
+              try {
+                pb[0].marked = element.marked
+                pb[0].mark = element.mark
+                pb[0].expert = element.expert
+                pb[0].rating = element.rating
+                pb = pb[0]
+                // console.log(pb)
+                this.exportBooks.push(pb)
+                this.userBookIds.push(element.GoogleId)
+              } catch (error) {
+                console.log('cant load book')
+              }
             })
           })
         })

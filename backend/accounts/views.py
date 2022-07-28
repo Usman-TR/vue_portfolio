@@ -17,7 +17,7 @@ class UserView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     lookup_field = 'username'
 
-@login_required
+#@login_required
 def update_user(request, username):
     try:
         user = CustomUser.objects.filter(username=username).first()
@@ -43,7 +43,7 @@ def update_user(request, username):
     except Exception as e:
         raise BadRequest('Invalid request: ' + str(e))
 
-@login_required
+#@login_required
 def get_userbooks(request, username):
     user = CustomUser.objects.filter(username=username).first()
     if user is None:
@@ -87,7 +87,7 @@ def get_userbooks(request, username):
     )
 
 
-@login_required
+#@login_required
 def get_userbook(request, username, pk):
     book = CustomUser.objects.filter(username=username).first().books.filter(id=pk).first()
     return JsonResponse(
@@ -103,7 +103,7 @@ def get_userbook(request, username, pk):
         }
     )
 
-@login_required
+#@login_required
 def add_achievement(request):
     data = request.POST
 
@@ -189,7 +189,7 @@ def get_all_achievements(request, username):
     # return JsonResponse({"status": 'done'})
 
 
-@login_required
+#@login_required
 def get_user_achievements(request, username):
     user = CustomUser.objects.filter(username=username).first()
 
@@ -252,7 +252,7 @@ def get_user_achievements(request, username):
     return JsonResponse(user_achievements, safe=False)
 
 
-@login_required
+#@login_required
 def add_book(request, username):
 
     data = json.loads(request.body)
@@ -282,7 +282,7 @@ def add_book(request, username):
     return JsonResponse({"status": 'done'})
 
 
-@login_required
+#@login_required
 def add_profile(request):
     data = json.loads(request.body)
     title = data.get('title', '')
@@ -314,7 +314,7 @@ def add_profile(request):
     return JsonResponse({"status": 'error'})
 
 
-@login_required
+#@login_required
 def request_mark(request, username, expert, book):
     user = CustomUser.objects.filter(username=username).first()
     expert_user = CustomUser.objects.filter(username=expert).first()
@@ -331,7 +331,7 @@ def request_mark(request, username, expert, book):
     return JsonResponse({"status": 'done'})
 
 
-@login_required
+#@login_required
 def cancel_mark_request(request, username, expert, book):
     user = CustomUser.objects.filter(username=username).first()
     expert_user = CustomUser.objects.filter(username=expert).first()
@@ -348,7 +348,7 @@ def cancel_mark_request(request, username, expert, book):
     return JsonResponse({"status": 'done'})
 
 
-@login_required
+#@login_required
 def get_request_marks(request, username):
     expert_id = CustomUser.objects.filter(username=username).first().id
     user_requests = MarkRequest.objects.filter(expert=expert_id, closed=False).order_by('user')
@@ -384,7 +384,7 @@ def get_request_marks(request, username):
     )
 
 
-@login_required
+#@login_required
 def get_progress(request, username):
     user = CustomUser.objects.filter(username=username).first()
     if user.profile.first() is not None:
@@ -421,7 +421,7 @@ def get_progress(request, username):
     return JsonResponse({"progress": progress, 'ungraded': len(my_books)/total_profile_books, 'total': total_profile_books, 'total_graded': progress_counter})
 
 
-@login_required
+#@login_required
 def get_progress_all(request, username):
     # print('****', username)
     user = CustomUser.objects.filter(username=username).first()
@@ -469,7 +469,7 @@ def get_progress_all(request, username):
     )
 
 
-@login_required
+#@login_required
 def get_achievements(request, username):
     achivements = CustomUser.objects.filter(username=username).first().achivements.all()
     return JsonResponse(
@@ -596,7 +596,7 @@ def get_universities(request):
         }
     )
 
-@login_required
+#@login_required
 def get_experts(request):
     experts = CustomUser.objects.filter(expert=True).all()
     return JsonResponse(
@@ -614,7 +614,7 @@ def get_experts(request):
         }
     )
 
-@login_required
+#@login_required
 def evaluate_knowledge(request, expert, request_id, rating):
     # rating book user expert
 	# update with mark_request object
