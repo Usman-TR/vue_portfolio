@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 
 export default {
   fetchUser (username) {
-    return api.get(`/api/v1/users//${username}`)
+    return api.get(`/api/v1/users/${username}/`)
       .then(response => response.data)
   },
   login (user) {

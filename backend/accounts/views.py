@@ -9,7 +9,7 @@ from .models import CustomUser
 from .serializers import UserSerializer
 
 from django.core.exceptions import BadRequest
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
 
 
 class UserView(generics.RetrieveAPIView):
@@ -45,6 +45,8 @@ def update_user(request, username):
 
 #@login_required
 def get_userbooks(request, username):
+    print('_______request.headers', request.headers)
+
     user = CustomUser.objects.filter(username=username).first()
     if user is None:
         return JsonResponse({})
@@ -506,7 +508,8 @@ def get_profiles(request):
 def get_profile_books(request, profile_id):
     # data = json.loads(request.body)
     # profile_id = data.get('profile', '')
-    if profile_id == '':
+    print('************** profile_id', profile_id)
+    if profile_id == '' or profile_id is None or not str(profile_id).isnumeric():
         raise BadRequest('Profile does not exists')
     profile = Profile.objects.filter(id=profile_id).first()
     return JsonResponse(

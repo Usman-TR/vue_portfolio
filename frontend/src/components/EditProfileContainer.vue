@@ -131,8 +131,8 @@ export default {
       this.getProfiles()
       this.getUniversities()
 
-      if (this.profile_obj.length) {
-        this.profile = this.profile_obj[0].id
+      if (this.profile_obj) {
+        this.profile = this.profile_obj.id
       }
 
       if (this.university_obj) {
