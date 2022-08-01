@@ -45,7 +45,6 @@ def update_user(request, username):
 
 #@login_required
 def get_userbooks(request, username):
-    print('_______request.headers', request.headers)
 
     user = CustomUser.objects.filter(username=username).first()
     if user is None:

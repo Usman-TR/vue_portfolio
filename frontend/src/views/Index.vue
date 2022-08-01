@@ -62,6 +62,7 @@ export default {
     this.loadRecomendationBooks()
     this.loadPopularBooks()
     this.updateUserBookIds()
+    document.title = 'Главная - Portfolio'
   },
   computed: {
     usernames_list () {

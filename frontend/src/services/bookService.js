@@ -48,7 +48,7 @@ export default {
           industryIdentifiers
         })
       } catch (error) {
-        console.log('cant load book')
+        console.log('cant load book', error)
       }
     })
     return exportBooks

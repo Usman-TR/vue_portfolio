@@ -74,7 +74,7 @@
             }}%</span></p>
         <p :class="'profressBarUngraded'" v-bind:style="{ width: ungraded + '%' }"></p>
         <div class="progress_year">{{ new Date().getFullYear() }}</div>
-        <div class="progress_numbers">{{ total_graded }}/{{ total_profile_books }} ({{ progress }}%)
+        <div class="progress_numbers"> {{ total_graded }}/{{ total_profile_books }} ({{ progress }}%)
         </div>
       </div>
       <AchievementList v-bind:achievements=userAchievements
@@ -140,6 +140,7 @@ export default {
     this.updateUserBooks()
     this.get_progress()
     this.getUserAchievements()
+    document.title = 'Профиль - Portfolio'
   },
   components: {
     BookListParser,
@@ -157,7 +158,7 @@ export default {
     get_progress () {
       bookService.getProgress(this.$store.state.user.username)
         .then((res) => {
-          this.progress = res.data.progress * 100
+          this.progress = (res.data.progress * 100).toFixed(0)
           this.ungraded = res.data.ungraded * 100
           this.total_profile_books = res.data.total
           this.total_graded = res.data.total_graded
@@ -213,7 +214,7 @@ export default {
                 this.exportBooks.push(pb)
                 this.userBookIds.push(element.GoogleId)
               } catch (error) {
-                console.log('cant load book')
+                console.log('cant load book', error)
               }
             })
           })
@@ -259,7 +260,7 @@ export default {
 
 .progressLabel {
   position: relative;
-  left: -10px;
+  left: -5px;
   top: -2px;
 }
 

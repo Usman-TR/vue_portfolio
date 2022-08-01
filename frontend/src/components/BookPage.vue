@@ -205,13 +205,13 @@ export default {
 
       const description = book.description
       const authors = book.authors
-      const preview = book.imageLink
+      // const preview = book.imageLink
       const language = book.language
-      const publishedDate = book.publishedDate.slice(0, 4)
-      const publisher = book.publisher
-      console.log(GoogleId, ISBN, title)
+      // const publishedDate = book.publishedDate.slice(0, 4)
+      // const publisher = book.publisher
+      // console.log(GoogleId, ISBN, title)
 
-      return { GoogleId, ISBN, title, preview, description, authors, language, publishedDate, publisher }
+      return { GoogleId, ISBN, title, description, authors, language }
     },
     getISBN (arr) {
       try {
