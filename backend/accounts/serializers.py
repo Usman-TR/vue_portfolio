@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     # books = BookSerializer(many=True)
     achivements = AchivementSerializer(many=True)
     university = UniversitySerializer(many=False)
-    profile = ProfileSerializer(many=True)
+    profile = ProfileSerializer(many=False)
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'email', 'first_name', 'last_name',
