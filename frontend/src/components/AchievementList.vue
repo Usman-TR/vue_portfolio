@@ -6,7 +6,7 @@
         </div>
         <div class="cards-container achievement-list" :class="{'cards-container-row': !showFull}">
               <MDBCard :class="{'card-row': !showFull}" v-for="achievement in achievements" :key="achievement.title">
-                <MDBCardImg v-if="!achievement.image" top v-bind:src=achievement.image class="img-fluid" />
+                <MDBCardImg v-if="achievement.image" top v-bind:src=achievement.image class="img-fluid" />
                 <img v-else top alt="Vue logo" src="../assets/default-book.png">
                 <MDBCardBody>
                   <MDBCardTitle class="card__title">{{  cutText(achievement.title, 40)  }}</MDBCardTitle>
