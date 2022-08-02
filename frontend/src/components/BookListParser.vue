@@ -141,7 +141,6 @@ export default {
       return book
     },
     limitItems (items, maxNum = 6) {
-      console.log(items)
       return items.slice(0, maxNum)
     },
     showBookPage (book) {

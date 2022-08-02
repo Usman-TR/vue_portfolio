@@ -79,10 +79,10 @@
       </div>
       <AchievementList v-bind:achievements=userAchievements
         v-if="!(editIsActive || addAchievementIsActive || addSpecIsActive) && userAchievements.length" />
-      <BookListParser list_id="markedListID124" v-bind:books=getMarkedBookList() v-bind:list_title='marked_list_title'
+      <BookListDB list_id="markedListID124" v-bind:books=getMarkedBookList() v-bind:list_title='marked_list_title'
         v-if="!(editIsActive || addAchievementIsActive || addSpecIsActive) && getMarkedBookList().length"
         v-bind:userBookIds=userBookIds />
-      <BookListParser list_id="unMarkedListID224" v-bind:books=getUnMarkedBookList() v-bind:list_title=usernames_list
+      <BookListDB list_id="unMarkedListID224" v-bind:books=getUnMarkedBookList() v-bind:list_title=usernames_list
         v-if="!(editIsActive || addAchievementIsActive || addSpecIsActive) && getUnMarkedBookList().length"
         v-bind:userBookIds=userBookIds />
     </span>
@@ -97,7 +97,8 @@
 // @ is an alias to /src
 // import store from '@/store/'
 import { mapState } from 'vuex'
-import BookListParser from '@/components/BookListParser.vue'
+import BookListDB from '@/components/BookListDB.vue'
+// import BookListParser from '@/components/BookListParser.vue'
 import AchievementList from '@/components/AchievementList.vue'
 import ProfileContainer from '@/components/ProfileContainer.vue'
 import EditProfileContainer from '@/components/EditProfileContainer.vue'
@@ -127,8 +128,7 @@ export default {
     user: state => state.user,
     usernames_list: () => 'Ваша коллекция',
     marked_list_title: () => 'Подтверждено',
-    books: state => state.user.books,
-    auth_status: state => state.authStatus
+    books: state => state.user.books
   }),
   beforeCreate: function () {
     this.$store.dispatch('getUser')
@@ -143,7 +143,8 @@ export default {
     document.title = 'Профиль - Portfolio'
   },
   components: {
-    BookListParser,
+    // BookListParser,
+    BookListDB,
     ProfileContainer,
     EditProfileContainer,
     AchievementList,
@@ -151,6 +152,17 @@ export default {
     SpecForm
   },
   methods: {
+    getUserBookIds () {
+      const ids = []
+      this.exportBooks.forEach(element => {
+        try {
+          ids.push(element.GoogleId)
+        } catch (error) {
+          console.log(error)
+        }
+      })
+      return ids
+    },
     close_profile_edit () {
       this.$store.dispatch('getUser')
       this.editIsActive = false
@@ -199,26 +211,39 @@ export default {
       return markedBookList
     },
     updateUserBooks: async function () {
-      // this.$store.dispatch('userbooks/getBooks')
+      console.log('parsing')
       userService.getUserBooks(this.$store.state.user.username)
         .then((resp) => {
           resp.books.forEach(element => {
-            bookService.parseGoogleId(element.GoogleId).then((pb) => {
-              try {
-                pb[0].marked = element.marked
-                pb[0].mark = element.mark
-                pb[0].expert = element.expert
-                pb[0].rating = element.rating
-                pb = pb[0]
-                // console.log(pb)
-                this.exportBooks.push(pb)
-                this.userBookIds.push(element.GoogleId)
-              } catch (error) {
-                console.log('cant load book', error)
-              }
-            })
+            if (this.userBookIds.includes(element.GoogleId)) {
+              console.log('stopping from parsing', this.userBookIds, element.GoogleId)
+              return
+            }
+            this.exportBooks.push(element)
+            this.userBookIds.push(element.GoogleId)
+            // this.delay(1000).then(() => {
+            //   bookService.parseGoogleId(element.GoogleId).then((pb) => {
+            //     try {
+            //       pb[0].marked = element.marked
+            //       pb[0].mark = element.mark
+            //       pb[0].expert = element.expert
+            //       pb[0].rating = element.rating
+            //       pb = pb[0]
+            //       this.exportBooks.push(pb)
+            //       this.userBookIds.push(element.GoogleId)
+            //     } catch (error) {
+            //       console.log('cant load book', error)
+            //     }
+            //   })
+            // })
           })
         })
+    },
+    delay (time) {
+      console.log('delaying')
+      return new Promise(resolve => {
+        setTimeout(() => { resolve('') }, time)
+      })
     },
     logout: function () {
       this.$store.dispatch('logout')

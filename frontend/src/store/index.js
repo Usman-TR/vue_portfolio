@@ -22,7 +22,7 @@ export default createStore({
   },
   mutations: {
     setUser (state, user) {
-      console.log('setUser in store', user)
+      // console.log('setUser in store', user)
       state.user = Object.assign(state.user, user)
     },
     setToken (state, token) {
@@ -48,7 +48,7 @@ export default createStore({
     getUser ({ commit }) {
       userService.fetchUser(this.state.user.username)
         .then(user => {
-          console.log('getUser in store')
+          // console.log('getUser in store')
           console.log(user)
           commit('setUser', user, { root: true })
         })

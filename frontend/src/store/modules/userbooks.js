@@ -17,7 +17,7 @@ const getters = {
 
 const actions = {
   getBooks ({ commit }) {
-    console.log('getBooks')
+    // console.log('getBooks')
     userService.getUserBooks(this.state.user.username)
       .then(books => {
         commit('setbooks', books)

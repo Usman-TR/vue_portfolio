@@ -132,7 +132,6 @@ export default {
       userService.getUserBooks(this.$store.state.user.username)
         .then((resp) => {
           resp.books.forEach(element => {
-            console.log(element.GoogleId)
             this.userBooksDict[element.GoogleId] = element
           })
         })

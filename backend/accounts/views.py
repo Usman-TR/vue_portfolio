@@ -61,13 +61,15 @@ def get_userbooks(request, username):
 
     for book in books:
         book_dict = { 'id': book.id, 'rating': book.rating, 'ISBN': book.ISBN, 'GoogleId': book.GoogleId,
-                      'numberVoters': book.numberVoters, 'marked': False, 'mark': -1, 'expert': -1 }
+                      'numberVoters': book.numberVoters, 'marked': False, 'mark': -1, 'expert': -1,
+                      'language': book.language, 'publisher': book.publisher, 'publishedDate': book.publishedDate,
+                      'title': book.title, 'authors': book.authors, 'description': book.description, 'preview': str(book.preview).replace('zoom=1', 'zoom=1'),
+                       }
         if book.id in marked_book_dict.keys():
             book_dict['mark'] = marked_book_dict[book.id]['mark']
             book_dict['expert'] = marked_book_dict[book.id]['expert'].username
             book_dict['marked'] = True
         export.append(book_dict)
-
 
     return JsonResponse(
         {
@@ -80,7 +82,14 @@ def get_userbooks(request, username):
                     "numberVoters": book['numberVoters'],
                     "marked": book['marked'],
                     "mark": book['mark'],
-                    "expert": book['expert']
+                    "expert": book['expert'],
+                    "language": book['language'],
+                    "publisher": book['publisher'],
+                    "publishedDate": book['publishedDate'],
+                    "title": book['title'],
+                    "authors": book['authors'],
+                    "description": book['description'],
+                    "preview": str(book['preview']).replace('zoom=1', 'zoom=1'),
                 }
                 for book in export
             ]
@@ -263,6 +272,7 @@ def add_book(request, username):
     authors = data.get('authors', '')
     description = data.get('description', '')
     preview = data.get('preview', '')
+    preview = str(preview).replace('zoom=1', 'zoom=1'),
     language = data.get('language', '')
     publisher = data.get('publisher', '')
     publishedDate = data.get('publishedDate', '')
@@ -373,7 +383,7 @@ def get_request_marks(request, username):
                     "image": json.dumps(str(req.user.image)),
 					"GoogleId": str(req.book.GoogleId),
                     "bookTitle": str(req.book.title),
-                    "bookImage": str(req.book.preview),
+                    "bookImage": str(req.book.preview).replace('zoom=1', 'zoom=1'),
                     "bookAuthors": str(req.book.authors),
                     "GoogleId": str(req.book.GoogleId),
                     'profile': value_or_def(req.user.profile.first(), 'title', 'нет'),
@@ -523,7 +533,7 @@ def get_profile_books(request, profile_id):
                     "title": book.title,
                     "description": book.description,
                     "authors": book.authors,
-                    "preview": book.preview
+                    "preview": str(book.preview).replace('zoom=1', 'zoom=1')
                 }
                 for book in profile.books.all()
             ]
@@ -544,7 +554,7 @@ def get_popular_books(request):
                     "title": book.title,
                     "description": book.description,
                     "authors": book.authors,
-                    "preview": book.preview,
+                    "preview": str(book.preview).replace('zoom=1', 'zoom=1'),
                     "language": book.language,
                     "publisher": book.publisher,
                     "publishedDate": book.publishedDate
@@ -570,7 +580,7 @@ def get_recomendation_books(request):
                     "title": book.title,
                     "description": book.description,
                     "authors": book.authors,
-                    "preview": book.preview,
+                    "preview": str(book.preview).replace('zoom=1', 'zoom=1'),
                     "language": book.language,
                     "publisher": book.publisher,
                     "publishedDate": book.publishedDate

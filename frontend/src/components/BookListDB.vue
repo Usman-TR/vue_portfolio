@@ -10,7 +10,7 @@
 
     <div v-if="show_full && books.length" class="cards-container">
       <MDBCard style="width: 18rem" v-for="book in books" :key="book.title" v-on:click="showBookPage(book)">
-        <MDBCardImg v-if="book.preview" top v-bind:src=book.preview class="img-fluid" />
+        <MDBCardImg v-if="getPreview(book)" top v-bind:src=getPreview(book) class="img-fluid" />
         <img v-else top alt="Vue logo" src="../assets/default-book.png">
         <MDBCardBody>
           <MDBCardTitle>{{ cutText(book.title) }}</MDBCardTitle>
@@ -39,7 +39,7 @@
       <div class="carousel-inner">
         <div class="carousel-item" data-bs-interval="5000" v-on:click="showBookPage(book)"
           v-for="(book, idx) in limitItems(books)" :key="book.title" :class="{ active: idx == 0 }">
-          <img v-if="book.preview" top v-bind:src=book.preview class="img-fluid" />
+          <img v-if="getPreview(book)" top v-bind:src=getPreview(book) class="img-fluid" />
           <img v-else top alt="Vue logo" src="../assets/default-book.png">
           <div class="carousel-caption-custom">
             <h5>{{ cutText(book.title) }}</h5>
@@ -104,7 +104,6 @@ export default {
     },
     showBookPage (book) {
       this.active_book = book
-      console.log(book)
       this.BookPageActive = true
     },
     hideBookPage () {
@@ -114,8 +113,15 @@ export default {
     formateAuthors (authors) {
       return authors.replaceAll('[', '').replaceAll(']', '').replaceAll('\'', '')
     },
+    getPreview (book) {
+      if (book.preview && toString(book.preview).includes('/') ) {
+        return book.preview
+      } else {
+        return this.createPreviewLink(book.GoogleId)
+      }
+    },
     createPreviewLink (id) {
-      return 'https://books.google.ru/books?id=' + id
+      return 'https://books.google.com/books/content?id=' + id + '&printsec=frontcover&img=1'
     },
     cutText (str) {
       return str.slice(0, 100) + '...'

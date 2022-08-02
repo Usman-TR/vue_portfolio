@@ -8,14 +8,13 @@ export default {
 
     const response = await fetch(url + searchSeq)
     const volume = await response.json()
-    // console.log('volume', volume)
 
     const exportBooks = this.parse_volume([volume])
     return exportBooks
   },
   parse_volume (volume) {
-    // console.log('parse_volume', volume)
     const exportBooks = []
+
     volume.forEach(element => {
       try {
         const title = element.volumeInfo.title
@@ -49,6 +48,7 @@ export default {
         })
       } catch (error) {
         console.log('cant load book', error)
+        return exportBooks
       }
     })
     return exportBooks
