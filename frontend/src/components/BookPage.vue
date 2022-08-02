@@ -197,7 +197,7 @@ export default {
       const ISBN = this.getISBN(book.industryIdentifiers)
 
       // etag
-      console.log(book.preview)
+      console.log('etag', book)
       const GoogleId = this.getUrlVars(book.preview).id
       // title
       const title = book.title
@@ -206,7 +206,12 @@ export default {
       const authors = book.authors
       const preview = book.imageLink
       const language = book.language
-      const publishedDate = book.publishedDate.slice(0, 4)
+      let publishedDate = ''
+      try {
+        publishedDate = book.publishedDate.slice(0, 4)
+      } catch (error) {
+        console.log(error)
+      }
       const publisher = book.publisher
       // console.log(GoogleId, ISBN, title)
 
