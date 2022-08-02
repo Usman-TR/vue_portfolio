@@ -26,3 +26,9 @@ env/
 .vscode/
 __pycache__/
 backend/db.sqlite3
+backend/static
+backend/env
+backend/media
+frontend/dist
+migrations
+todo.txt

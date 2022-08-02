@@ -13,7 +13,6 @@
     "@vuelidate/validators": "^2.0.0-alpha.29",
     "axios": "^0.21.1",
     "bootstrap": "^5.0.0-beta3",
-    "caniuse-lite": "^1.0.30001294",
     "core-js": "^3.6.5",
     "cors": "^2.8.5",
     "js-cookie": "^2.2.1",
