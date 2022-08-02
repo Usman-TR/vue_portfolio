@@ -4,23 +4,26 @@
         <h3>Достижения</h3>
           <p class="list_toogle" @click="showFull = !showFull"><span v-if="!showFull">Показать все</span><span v-else>Показать меньше</span> </p>
         </div>
-        <div class="cards-container" :class="{'cards-container-row': !showFull}">
+        <div class="cards-container achievement-list" :class="{'cards-container-row': !showFull}">
               <MDBCard :class="{'card-row': !showFull}" v-for="achievement in achievements" :key="achievement.title">
-                <MDBCardImg v-if="achievement.image" top v-bind:src=achievement.image class="img-fluid" />
+                <MDBCardImg v-if="!achievement.image" top v-bind:src=achievement.image class="img-fluid" />
                 <img v-else top alt="Vue logo" src="../assets/default-book.png">
                 <MDBCardBody>
-                  <MDBCardTitle class="card__title">{{  achievement.title  }}</MDBCardTitle>
+                  <MDBCardTitle class="card__title">{{  cutText(achievement.title, 40)  }}</MDBCardTitle>
                   <template v-if="showFull">
                       <MDBCardText>
                       <span>
-                        {{  achievement.description }}
+                        {{  cutText(achievement.description, 50) }}
                       </span>
                     </MDBCardText>
                     <MDBCardText>
-                    <p>Книги</p>
-                    <p v-for="book in achievement.books" :key="book.id">
-                      {{book.title}}
-                    </p>
+                    <p>Книги:</p>
+                    <ul>
+                      <li v-for="book in achievement.books" :key="book.id">
+                      {{ cutText(book.title, 40) }}
+                      </li>
+                    </ul>
+
                     </MDBCardText>
                   </template>
                 </MDBCardBody>
@@ -50,6 +53,18 @@ export default {
     }
   },
   methods: {
+    cutText (str, len) {
+      try {
+        if (str.length > len) {
+          return str.slice(0, len) + '...'
+        } else {
+          return str
+        }
+      } catch (error) {
+        console.log(error)
+      }
+      return ''
+    },
     getImage (path) {
       return path
     }
@@ -61,9 +76,7 @@ export default {
 .book-list-container{
     width: 100%;
 }
-.book-item{
-    text-align: center;
-}
+
 .cards-container{
     display: flex;
     flex-flow: row wrap;
@@ -80,12 +93,14 @@ export default {
   max-height: 230px;
 }
 .card-row {
-  max-width: 160px;
+  width: 120px;
   padding-bottom: 0;
+  background: none;
+
 }
 .card-row .img-fluid {
-  max-width: 160px;
-  max-height: 160px;
+  width: 120px;
+  height: 120px;
 }
 .card-row .card-body {
   padding: 0;
@@ -98,7 +113,6 @@ export default {
 .cards-container img{
   object-fit: cover;
   width: 100%;
-  height: 250px;
-  max-height: 300px;
+  height: 100%;
 }
 </style>
