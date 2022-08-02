@@ -154,7 +154,7 @@ def add_achievement(request):
     return JsonResponse({'status': 'done'})
 
 
-def get_all_achievements(request, username):
+def get_all_achievements(request):
     # user = CustomUser.objects.filter(username=username).first()
     # if user is None:
     #     return JsonResponse({})

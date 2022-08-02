@@ -116,7 +116,7 @@ export default {
   },
   data: function () {
     return {
-      show_full: true,
+      show_full: false,
       active_book: {},
       BookPageActive: false
     }

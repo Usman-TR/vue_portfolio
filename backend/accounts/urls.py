@@ -18,7 +18,6 @@ urlpatterns = [
     path('<str:username>/cancelrequest/<str:expert>/<str:book>', cancel_mark_request, name='cancel_mark_request'),
     path('<str:username>/requests', get_request_marks, name='get_request_marks'),
     path('<str:username>/achivements/', get_achievements, name='get_achivements'),
-    path('<str:username>/allachievements/', get_all_achievements, name='get_all_achievements'),
     path('experts', get_experts, name='get_experts'),
     path('profiles', get_profiles, name='get_profiles'),
     path('profiles/add', add_profile, name='add_profile'),
@@ -29,7 +28,8 @@ urlpatterns = [
     path('profiles/<str:profile_id>/books', get_profile_books, name='get_profile_books'),
     path('popular', get_popular_books, name='get_popular_books'),
     path('recomendation', get_recomendation_books, name='get_recomendation_books'),
-    path('achievements', get_achievements, name='get_achievements'),
+    # path('achievements', get_achievements, name='get_achievements'),
     path('achievements/add', add_achievement, name='add_achievement'),
+    path('achievements', get_all_achievements, name='get_all_achievements'),
     path('<str:username>/achievements', get_user_achievements, name='get_user_achievements')
 ]

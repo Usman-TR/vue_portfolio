@@ -1,7 +1,8 @@
 <template>
     <div class="achievement-list-container">
       <div class="list_header">
-        <h3>Достижения</h3>
+        <h3 v-if="listTitle">{{listTitle}}</h3>
+        <h3 v-else>Достижения</h3>
           <p class="list_toogle" @click="showFull = !showFull"><span v-if="!showFull">Показать все</span><span v-else>Показать меньше</span> </p>
         </div>
         <div class="cards-container achievement-list" :class="{'cards-container-row': !showFull}">
@@ -9,7 +10,11 @@
                 <MDBCardImg v-if="achievement.image" top v-bind:src=achievement.image class="img-fluid" />
                 <img v-else top alt="Vue logo" src="../assets/default-book.png">
                 <MDBCardBody>
-                  <MDBCardTitle class="card__title">{{  cutText(achievement.title, 40)  }}</MDBCardTitle>
+                  <MDBCardTitle class="card__title">
+                    <router-link to="/achievements">
+                    {{  cutText(achievement.title, 40)  }}
+                    </router-link>
+                    </MDBCardTitle>
                   <template v-if="showFull">
                       <MDBCardText>
                       <span>
@@ -38,7 +43,8 @@ import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImg } from 'mdb
 export default {
   name: 'AchievementList',
   props: {
-    achievements: Object
+    achievements: Object,
+    listTitle: String
   },
   components: {
     MDBCard,
@@ -114,5 +120,9 @@ export default {
   object-fit: cover;
   width: 100%;
   height: 100%;
+}
+.cards-container a {
+  text-decoration: none;
+  color: #000;
 }
 </style>

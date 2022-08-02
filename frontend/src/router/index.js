@@ -36,6 +36,11 @@ const routes = [
     path: '/static',
     name: 'Static',
     component: () => import('../views/Static.vue')
+  },
+  {
+    path: '/achievements',
+    name: 'achievements',
+    component: () => import('../views/Achievements.vue')
   }
 ]
 

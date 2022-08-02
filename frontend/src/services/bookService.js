@@ -108,11 +108,14 @@ export default {
   getProgress (username) {
     return api.get(`/api/v1/users/${username}/progress`)
   },
-  getAllAchievements (username) {
-    return api.get(`/api/v1/users/${username}/allachievements`)
+  getAllAchievements () {
+    return api.get('/api/v1/users/achievements')
   },
   getUserAchievements (username) {
     return api.get(`/api/v1/users/${username}/achievements`)
+  },
+  getProfiles () {
+    return api.get('/api/v1/users/profiles')
   },
   getProfileBooks (profileId) {
     return api.get(`/api/v1/users/profiles/${profileId}/books`)

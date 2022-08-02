@@ -147,7 +147,7 @@ export default {
         })
     },
     loadOptions () {
-      bookService.getAllAchievements(this.$store.state.user.username)
+      bookService.getAllAchievements()
         .then((res) => {
           this.options = res.data
         })
