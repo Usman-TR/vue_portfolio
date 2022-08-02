@@ -2,13 +2,13 @@
   <div class="achivements_page">
     <AchievementList :achievements="achievements" :listTitle="'Все достижения'" />
     <div class="profile_form">
-      <p>Выберите специальность</p>
+      <p class="select_title">Выберите специальность</p>
       <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" v-model="profileID" @change="loadProfileBooks(profileID)">
         <option v-for="profile in profiles" :key="profile.id" :value="profile.id">{{profile.title}}</option>
       </select>
     </div>
     <BookListDB :books='profileBooks' :userBookIds="userBookIds" :list_id="'achievementsPageListID234'"
-    :list_title="'Книги по специальности'"
+    :list_title="'Книги'"
     />
   </div>
 </template>
@@ -84,6 +84,10 @@ export default {
 <style scoped>
 .achivements_page {
   margin-top: 16px;
+}
+.select_title {
+  font-size: 20px;
+  margin-bottom: 4px;
 }
 
 </style>
