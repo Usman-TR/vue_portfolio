@@ -258,7 +258,9 @@ def get_user_achievements(request, username):
                     if ach_counter <= 0:
                         break
             if ach_counter <= 0:
-                user_achievements.append(achivement_books)
+                if achivement_books not in user_achievements:
+                    user_achievements.append(achivement_books)
+                # print('user_achievements', user_achievements)
     return JsonResponse(user_achievements, safe=False)
 
 
@@ -472,7 +474,8 @@ def get_progress_all(request, username):
                     'id': key,
                     'title': profiles.filter(id=key).first().title,
                     'currentPage': len(my_books[key]),
-                    'allPages': len(all_profile_books[key])
+                    'allPages': len(all_profile_books[key]),
+                    'graded': progress_counter[key]
                 }
                 for key in my_books
             ]
@@ -481,21 +484,22 @@ def get_progress_all(request, username):
 
 
 #@login_required
-def get_achievements(request, username):
-    achivements = CustomUser.objects.filter(username=username).first().achivements.all()
-    return JsonResponse(
-        {
-            "achivements": [
-                {
-                    "id": achivement.id,
-                    "title": achivement.title,
-                    "description": achivement.description,
-                    "image": str(achivement.image),
-                }
-                for achivement in achivements
-            ]
-        }
-    )
+# def get_achievements(request, username):
+#     achivements = CustomUser.objects.filter(username=username).first().achivements.all()
+#     print('achivements', achivements)
+#     return JsonResponse(
+#         {
+#             "achivements": [
+#                 {
+#                     "id": achivement.id,
+#                     "title": achivement.title,
+#                     "description": achivement.description,
+#                     "image": str(achivement.image),
+#                 }
+#                 for achivement in achivements
+#             ]
+#         }
+#     )
 
 
 def get_profiles(request):
