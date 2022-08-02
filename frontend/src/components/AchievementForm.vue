@@ -36,7 +36,7 @@
             Иконка
           </span>
           <span class="alert_val" v-if="showFileMsg && !filename">Загрузите иконку</span>
-          <img class="file-img" v-if="file" :src="file" alt="no img">
+          <img class="file-img" v-if="file" :src="fileObj" alt="no img">
           <input type="file" accept="image/png, image/jpeg" name="upload-file" @change="setFilename" id="upload-file">
           <label class="form__input-file" for="upload-file" v-if="filename">
             <span>
@@ -125,6 +125,7 @@ export default {
       popup_msg: '',
       filename: '',
       file: null,
+      fileObj: null,
       searchSeq: '',
       searchPage: 0,
       searchedBooks: [],
@@ -287,6 +288,13 @@ export default {
       const filelist = [...e.target.files]
       this.file = filelist.pop()
       this.filename = this.file.name
+      if (this.file) {
+        const reader = new FileReader()
+        reader.readAsDataURL(this.file)
+        reader.onload = () => {
+          this.fileObj = reader.result
+        }
+      }
     }
   }
 }

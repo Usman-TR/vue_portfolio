@@ -109,7 +109,7 @@ def add_achievement(request):
     data = request.POST
 
     new_achievement = Achivement.objects.filter(title=data.get('title')).first()
-    if new_achievement and not request.method == 'PUT':
+    if new_achievement:
         return JsonResponse({ 'status': 'exists' })
 
     new_achievement = Achivement(
