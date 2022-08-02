@@ -114,7 +114,7 @@ export default {
       return authors.replaceAll('[', '').replaceAll(']', '').replaceAll('\'', '')
     },
     getPreview (book) {
-      if (book.preview && toString(book.preview).includes('/') ) {
+      if (book.preview && toString(book.preview).includes('/')) {
         return book.preview
       } else {
         return this.createPreviewLink(book.GoogleId)
