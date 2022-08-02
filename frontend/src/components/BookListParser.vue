@@ -32,32 +32,33 @@
         <!-- <MDBCardLink v-on:click="checkKnowledge(getBookSaveData(book).GoogleId)">Получить оценку</MDBCardLink> -->
         <!-- </MDBCardFooter> -->
       </MDBCard>
-      <div class="pagination_parser">
-        <span v-if="page > 1" v-on:click="this.changePage(0)">
-          <svg width="12" height="22" viewBox="0 0 12 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M11 21L1 11L11 1" stroke="#835ED2" stroke-width="2" stroke-linecap="round"
+      <div class="pagination_parser_container">
+        <div class="pagination_parser">
+          <span v-if="page > 1" v-on:click="this.changePage(0)" class="double">
+            <svg width="12" height="22" viewBox="0 0 12 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 21L1 11L11 1" stroke="#835ED2" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round" />
-          </svg>
-          <svg width="12" height="22" viewBox="0 0 12 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M11 21L1 11L11 1" stroke="#835ED2" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
+            </svg>
+            <svg width="12" height="22" viewBox="0 0 12 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 21L1 11L11 1" stroke="#835ED2" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </span>
+          <span v-if="page > 0" v-on:click="this.changePage(page - 1)">
+            <svg width="12" height="22" viewBox="0 0 12 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 21L1 11L11 1" stroke="#835ED2" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
 
-        </span>
-        <span v-if="page > 0" v-on:click="this.changePage(page - 1)">
-          <svg width="12" height="22" viewBox="0 0 12 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M11 21L1 11L11 1" stroke="#835ED2" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-
-        </span>
-        <span v-if="!isNaN(page)">{{ page }}{{ page + 1 }}</span>
-        <span v-if="books.length > maxBooksPerPage" v-on:click="this.changePage(page + 1)">
-          <svg width="12" height="22" viewBox="0 0 12 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 1L11 11L1 21" stroke="#835ED2" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </span>
+          </span>
+          <span v-if="!isNaN(page)">{{ page + 1 }}</span>
+          <span v-if="books.length > maxBooksPerPage" v-on:click="this.changePage(page + 1)">
+            <svg width="12" height="22" viewBox="0 0 12 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L11 11L1 21" stroke="#835ED2" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </span>
+        </div>
       </div>
     </div>
     <div :id="list_id" v-if="!show_full && books.length" class="carousel carousel-dark slide" data-bs-ride="carousel">
@@ -251,7 +252,14 @@ export default {
   max-height: 300px;
 }
 
+.pagination_parser_container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-flow: row nowrap;
+}
 .pagination_parser {
+  width: 100px;
   position: relative;
   display: flex;
   justify-content: space-around;
@@ -266,5 +274,9 @@ export default {
   filter: drop-shadow(0px 4px 8px rgba(176, 65, 118, 0.26));
   padding-bottom: 16px;
 
+}
+.double {
+  display: flex;
+  flex-flow: row nowrap;
 }
 </style>

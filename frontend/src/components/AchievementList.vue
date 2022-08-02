@@ -6,7 +6,7 @@
           <p class="list_toogle" @click="showFull = !showFull"><span v-if="!showFull">Показать все</span><span v-else>Показать меньше</span> </p>
         </div>
         <div class="cards-container achievement-list" :class="{'cards-container-row': !showFull}">
-              <MDBCard :class="{'card-row': !showFull}" v-for="achievement in achievements" :key="achievement.title">
+              <MDBCard :class="{'card-row': !showFull}" v-for="achievement in achievements" :key="achievement.id">
                 <MDBCardImg v-if="achievement.image" top v-bind:src=achievement.image class="img-fluid" />
                 <img v-else top alt="Vue logo" src="../assets/default-book.png">
                 <MDBCardBody>
@@ -15,7 +15,6 @@
                     {{  cutText(achievement.title, 40)  }}
                     </router-link>
                     </MDBCardTitle>
-                  <template v-if="showFull">
                       <MDBCardText>
                       <span>
                         {{  cutText(achievement.description, 50) }}
@@ -28,9 +27,7 @@
                       {{ cutText(book.title, 40) }}
                       </li>
                     </ul>
-
                     </MDBCardText>
-                  </template>
                 </MDBCardBody>
             </MDBCard>
         </div>

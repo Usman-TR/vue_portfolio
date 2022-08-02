@@ -3,11 +3,12 @@
     <div class="static-item__title">{{ staticItem.title }}</div>
     <div class="static-item-content">
       <div class="progressbar">
-        <div class="progressbar__value" :style="{ width: staticProgress }"></div>
+        <div class="progressbar__graded" :style="{ width: gradedProgress }"></div>
+        <div class="progressbar__ungraded" :style="{ width: ungradedProgress }"></div>
       </div>
       <div class="static-item__label">Прочитано
       </div>
-      <div class="static-item__label">{{ `${staticItem.currentPage}/${staticItem.allPages}` }}</div>
+      <div class="static-item__label">{{ `${staticItem.graded}/${staticItem.allPages}` }}</div>
     </div>
   </div>
 </template>
@@ -21,7 +22,10 @@ export default {
     }
   },
   computed: {
-    staticProgress () {
+    gradedProgress () {
+      return ((this.staticItem.graded / this.staticItem.allPages) * 100) + '%'
+    },
+    ungradedProgress () {
       return ((this.staticItem.currentPage / this.staticItem.allPages) * 100) + '%'
     }
   }
@@ -66,11 +70,20 @@ export default {
   margin-bottom: 7px;
 }
 
-.progressbar__value {
+.progressbar__graded {
   position: absolute;
   height: 5px;
   left: 0;
   border-radius: 12px;
+  z-index: 10;
+}
+
+.progressbar__ungraded {
+  position: absolute;
+  height: 5px;
+  left: 0;
+  border-radius: 12px;
+  z-index: 5;
 }
 
 .static-item:nth-child(1n) {
@@ -84,8 +97,12 @@ export default {
   & .progressbar {
     background-color: #dacafc;
 
-    &__value {
+    &__graded {
       background-color: #835ed2;
+    }
+    &__ungraded {
+      background-color: #835ed24e;
+
     }
   }
 
@@ -105,8 +122,11 @@ export default {
   & .progressbar {
     background-color: #F9DCB4;
 
-    &__value {
+    &__graded {
       background-color: #FF9500;
+    }
+    &__ungraded {
+      background-color: #ff950057;
     }
   }
 
@@ -126,8 +146,11 @@ export default {
   & .progressbar {
     background-color: #AFF0C5;
 
-    &__value {
+    &__graded {
       background-color: #219653;
+    }
+    &__ungraded {
+      background-color: #21965451;
     }
   }
 
